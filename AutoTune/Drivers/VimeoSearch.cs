@@ -33,6 +33,7 @@ namespace AutoTune.Drivers {
                     VideoId = v.id?.ToString(),
                     Description = v.description,
                     KeepOriginal = vimeo.KeepOriginal,
+                    Url = string.Format(vimeo.UrlPattern, v.id),
                     PlayUrl = string.Format(vimeo.PlayUrlPattern, v.id),
                     ShouldPostProcess = Settings.Instance.Vimeo.PostProcess,
                     DownloadUrl = string.Format(vimeo.DownloadUrlPattern, v.id),

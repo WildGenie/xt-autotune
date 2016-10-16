@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Windows.Forms;
 
 namespace AutoTune.Gui {
@@ -12,12 +13,13 @@ namespace AutoTune.Gui {
         public event EventHandler<EventArgs<Result>> SimilarClicked;
         public event EventHandler<EventArgs<Result>> DownloadClicked;
 
-        readonly Result result;
+        Result result;
+        public Result Result {
+            get { return result; }
+        }
 
-        public ResultView(Result result, byte[] imageData) {
-            this.result = result;
+        public ResultView() {
             InitializeComponent();
-            InitializeResult(imageData);
             InitializeColors();
         }
 
@@ -41,26 +43,43 @@ namespace AutoTune.Gui {
             uiSimilar.ActiveLinkColor = fore2;
         }
 
+        public void SetResult(Result result) {
+            this.result = result;
+            if (result?.ThumbnailUrl == null)
+                InitializeResult(null);
+            else
+                using (WebClient client = new WebClient()) {
+                    client.DownloadDataCompleted += (s, evt) => Invoke(new Action(() => InitializeResult(evt.Result)));
+                    client.DownloadDataAsync(new Uri(result.ThumbnailUrl));
+                }
+        }
+
         void InitializeResult(byte[] imageData) {
-            uiType.Text = result.Type;
+            uiText.Text = "";
+            uiType.Text = result == null ? "" : result.Type;
             if (imageData != null)
                 using (var stream = new MemoryStream(imageData))
                     uiImage.Image = Image.FromStream(stream);
-            string text = "{\\rtf \\b " + result.Title + " \\b0 ";
-            text += " \\line " + result.Description + " }";
-            uiText.Rtf = text;
+            if (result != null) {
+                string text = "{\\rtf \\b " + result.Title + " \\b0 ";
+                text += " \\line " + result.Description + " }";
+                uiText.Rtf = text;
+            }
         }
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            PlayClicked(this, new EventArgs<Result>(result));
+            if (result != null)
+                PlayClicked(this, new EventArgs<Result>(result));
         }
 
         void OnSimilarClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            SimilarClicked(this, new EventArgs<Result>(result));
+            if (result != null)
+                SimilarClicked(this, new EventArgs<Result>(result));
         }
 
         void OnDownloadClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            DownloadClicked(this, new EventArgs<Result>(result));
+            if (result != null)
+                DownloadClicked(this, new EventArgs<Result>(result));
         }
     }
 }

@@ -31,6 +31,7 @@
             System.Windows.Forms.TableLayoutPanel uiSearchPanel;
             System.Windows.Forms.TableLayoutPanel uiResultsContinueContainer;
             System.Windows.Forms.Panel uiPadLog;
+            System.Windows.Forms.TableLayoutPanel uiNotificationsCurrentContainer;
             this.uiToggleSearch = new System.Windows.Forms.LinkLabel();
             this.uiBrowserContainer = new System.Windows.Forms.Panel();
             this.uiToggleNotifications = new System.Windows.Forms.LinkLabel();
@@ -44,12 +45,14 @@
             this.uiResults = new System.Windows.Forms.FlowLayoutPanel();
             this.uiLoadMore = new System.Windows.Forms.LinkLabel();
             this.uiLogGroup = new System.Windows.Forms.GroupBox();
-            this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiSplitNotificationsLog = new System.Windows.Forms.SplitContainer();
+            this.uiCurrentGroup = new System.Windows.Forms.GroupBox();
+            this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiGroupSearch = new System.Windows.Forms.GroupBox();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
             this.uiDownloadQueue = new AutoTune.Gui.QueueView();
             this.uiPostProcessingQueue = new AutoTune.Gui.QueueView();
+            this.uiCurrentResult = new AutoTune.Gui.ResultView();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -58,6 +61,7 @@
             uiSearchPanel = new System.Windows.Forms.TableLayoutPanel();
             uiResultsContinueContainer = new System.Windows.Forms.TableLayoutPanel();
             uiPadLog = new System.Windows.Forms.Panel();
+            uiNotificationsCurrentContainer = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(uiSplitPlayerToggleSearch)).BeginInit();
             uiSplitPlayerToggleSearch.Panel1.SuspendLayout();
             uiSplitPlayerToggleSearch.Panel2.SuspendLayout();
@@ -75,14 +79,16 @@
             uiResultsContinueContainer.SuspendLayout();
             uiPadLog.SuspendLayout();
             this.uiLogGroup.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotifications)).BeginInit();
-            this.uiSplitNotifications.Panel1.SuspendLayout();
-            this.uiSplitNotifications.Panel2.SuspendLayout();
-            this.uiSplitNotifications.SuspendLayout();
+            uiNotificationsCurrentContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotificationsLog)).BeginInit();
             this.uiSplitNotificationsLog.Panel1.SuspendLayout();
             this.uiSplitNotificationsLog.Panel2.SuspendLayout();
             this.uiSplitNotificationsLog.SuspendLayout();
+            this.uiCurrentGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotifications)).BeginInit();
+            this.uiSplitNotifications.Panel1.SuspendLayout();
+            this.uiSplitNotifications.Panel2.SuspendLayout();
+            this.uiSplitNotifications.SuspendLayout();
             this.uiGroupSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitSearch)).BeginInit();
             this.uiSplitSearch.Panel1.SuspendLayout();
@@ -116,7 +122,7 @@
             this.uiToggleSearch.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.uiToggleSearch.AutoSize = true;
             this.uiToggleSearch.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.uiToggleSearch.Location = new System.Drawing.Point(5, 78);
+            this.uiToggleSearch.Location = new System.Drawing.Point(5, 177);
             this.uiToggleSearch.Margin = new System.Windows.Forms.Padding(0);
             this.uiToggleSearch.Name = "uiToggleSearch";
             this.uiToggleSearch.Size = new System.Drawing.Size(13, 13);
@@ -177,7 +183,7 @@
             uiNotificationsPanel.ColumnCount = 3;
             uiNotificationsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             uiNotificationsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            uiNotificationsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            uiNotificationsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 21F));
             uiNotificationsPanel.Controls.Add(this.uiDownloadGroup, 0, 0);
             uiNotificationsPanel.Controls.Add(this.uiPostProcessingGroup, 1, 0);
             uiNotificationsPanel.Controls.Add(this.uiToggleLog, 2, 0);
@@ -185,10 +191,10 @@
             uiNotificationsPanel.Location = new System.Drawing.Point(0, 0);
             uiNotificationsPanel.Margin = new System.Windows.Forms.Padding(0);
             uiNotificationsPanel.Name = "uiNotificationsPanel";
-            uiNotificationsPanel.Padding = new System.Windows.Forms.Padding(3);
+            uiNotificationsPanel.Padding = new System.Windows.Forms.Padding(3, 3, 3, 0);
             uiNotificationsPanel.RowCount = 1;
             uiNotificationsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            uiNotificationsPanel.Size = new System.Drawing.Size(195, 257);
+            uiNotificationsPanel.Size = new System.Drawing.Size(189, 156);
             uiNotificationsPanel.TabIndex = 0;
             // 
             // uiDownloadGroup
@@ -200,7 +206,7 @@
             this.uiDownloadGroup.Margin = new System.Windows.Forms.Padding(0, 0, 9, 0);
             this.uiDownloadGroup.Name = "uiDownloadGroup";
             this.uiDownloadGroup.Padding = new System.Windows.Forms.Padding(5);
-            this.uiDownloadGroup.Size = new System.Drawing.Size(75, 251);
+            this.uiDownloadGroup.Size = new System.Drawing.Size(72, 153);
             this.uiDownloadGroup.TabIndex = 0;
             this.uiDownloadGroup.TabStop = false;
             this.uiDownloadGroup.Text = "Downloads";
@@ -209,11 +215,11 @@
             // 
             this.uiPostProcessingGroup.Controls.Add(this.uiPostProcessingQueue);
             this.uiPostProcessingGroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiPostProcessingGroup.Location = new System.Drawing.Point(87, 3);
+            this.uiPostProcessingGroup.Location = new System.Drawing.Point(84, 3);
             this.uiPostProcessingGroup.Margin = new System.Windows.Forms.Padding(0, 0, 9, 0);
             this.uiPostProcessingGroup.Name = "uiPostProcessingGroup";
             this.uiPostProcessingGroup.Padding = new System.Windows.Forms.Padding(5);
-            this.uiPostProcessingGroup.Size = new System.Drawing.Size(75, 251);
+            this.uiPostProcessingGroup.Size = new System.Drawing.Size(72, 153);
             this.uiPostProcessingGroup.TabIndex = 1;
             this.uiPostProcessingGroup.TabStop = false;
             this.uiPostProcessingGroup.Text = "Post processing";
@@ -223,7 +229,7 @@
             this.uiToggleLog.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.uiToggleLog.AutoSize = true;
             this.uiToggleLog.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.uiToggleLog.Location = new System.Drawing.Point(176, 122);
+            this.uiToggleLog.Location = new System.Drawing.Point(170, 73);
             this.uiToggleLog.Name = "uiToggleLog";
             this.uiToggleLog.Size = new System.Drawing.Size(13, 13);
             this.uiToggleLog.TabIndex = 2;
@@ -239,11 +245,12 @@
             uiLogContainer.Controls.Add(uiLogLevelContainer, 0, 0);
             uiLogContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             uiLogContainer.Location = new System.Drawing.Point(5, 18);
+            uiLogContainer.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             uiLogContainer.Name = "uiLogContainer";
             uiLogContainer.RowCount = 2;
             uiLogContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             uiLogContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            uiLogContainer.Size = new System.Drawing.Size(356, 228);
+            uiLogContainer.Size = new System.Drawing.Size(356, 130);
             uiLogContainer.TabIndex = 6;
             // 
             // uiLog
@@ -256,7 +263,7 @@
             this.uiLog.Name = "uiLog";
             this.uiLog.ReadOnly = true;
             this.uiLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.uiLog.Size = new System.Drawing.Size(350, 192);
+            this.uiLog.Size = new System.Drawing.Size(350, 94);
             this.uiLog.TabIndex = 5;
             // 
             // uiLogLevelContainer
@@ -364,9 +371,10 @@
             uiPadLog.Controls.Add(this.uiLogGroup);
             uiPadLog.Dock = System.Windows.Forms.DockStyle.Fill;
             uiPadLog.Location = new System.Drawing.Point(0, 0);
+            uiPadLog.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             uiPadLog.Name = "uiPadLog";
-            uiPadLog.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            uiPadLog.Size = new System.Drawing.Size(366, 257);
+            uiPadLog.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            uiPadLog.Size = new System.Drawing.Size(366, 156);
             uiPadLog.TabIndex = 3;
             // 
             // uiLogGroup
@@ -374,13 +382,60 @@
             this.uiLogGroup.Controls.Add(uiLogContainer);
             this.uiLogGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiLogGroup.Location = new System.Drawing.Point(0, 3);
-            this.uiLogGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.uiLogGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.uiLogGroup.Name = "uiLogGroup";
             this.uiLogGroup.Padding = new System.Windows.Forms.Padding(5);
-            this.uiLogGroup.Size = new System.Drawing.Size(366, 251);
+            this.uiLogGroup.Size = new System.Drawing.Size(366, 153);
             this.uiLogGroup.TabIndex = 2;
             this.uiLogGroup.TabStop = false;
             this.uiLogGroup.Text = "Log";
+            // 
+            // uiNotificationsCurrentContainer
+            // 
+            uiNotificationsCurrentContainer.ColumnCount = 1;
+            uiNotificationsCurrentContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            uiNotificationsCurrentContainer.Controls.Add(this.uiSplitNotificationsLog, 0, 1);
+            uiNotificationsCurrentContainer.Controls.Add(this.uiCurrentGroup, 0, 0);
+            uiNotificationsCurrentContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            uiNotificationsCurrentContainer.Location = new System.Drawing.Point(0, 0);
+            uiNotificationsCurrentContainer.Name = "uiNotificationsCurrentContainer";
+            uiNotificationsCurrentContainer.RowCount = 2;
+            uiNotificationsCurrentContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 95F));
+            uiNotificationsCurrentContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            uiNotificationsCurrentContainer.Size = new System.Drawing.Size(565, 257);
+            uiNotificationsCurrentContainer.TabIndex = 0;
+            // 
+            // uiSplitNotificationsLog
+            // 
+            this.uiSplitNotificationsLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiSplitNotificationsLog.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.uiSplitNotificationsLog.IsSplitterFixed = true;
+            this.uiSplitNotificationsLog.Location = new System.Drawing.Point(3, 98);
+            this.uiSplitNotificationsLog.Name = "uiSplitNotificationsLog";
+            // 
+            // uiSplitNotificationsLog.Panel1
+            // 
+            this.uiSplitNotificationsLog.Panel1.Controls.Add(uiNotificationsPanel);
+            // 
+            // uiSplitNotificationsLog.Panel2
+            // 
+            this.uiSplitNotificationsLog.Panel2.Controls.Add(uiPadLog);
+            this.uiSplitNotificationsLog.Size = new System.Drawing.Size(559, 156);
+            this.uiSplitNotificationsLog.SplitterDistance = 189;
+            this.uiSplitNotificationsLog.TabIndex = 1;
+            // 
+            // uiCurrentGroup
+            // 
+            this.uiCurrentGroup.Controls.Add(this.uiCurrentResult);
+            this.uiCurrentGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiCurrentGroup.Location = new System.Drawing.Point(6, 3);
+            this.uiCurrentGroup.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+            this.uiCurrentGroup.Name = "uiCurrentGroup";
+            this.uiCurrentGroup.Padding = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.uiCurrentGroup.Size = new System.Drawing.Size(556, 89);
+            this.uiCurrentGroup.TabIndex = 6;
+            this.uiCurrentGroup.TabStop = false;
+            this.uiCurrentGroup.Text = "Current track";
             // 
             // uiSplitNotifications
             // 
@@ -398,29 +453,10 @@
             // 
             // uiSplitNotifications.Panel2
             // 
-            this.uiSplitNotifications.Panel2.Controls.Add(this.uiSplitNotificationsLog);
+            this.uiSplitNotifications.Panel2.Controls.Add(uiNotificationsCurrentContainer);
             this.uiSplitNotifications.Size = new System.Drawing.Size(565, 561);
             this.uiSplitNotifications.SplitterDistance = 300;
             this.uiSplitNotifications.TabIndex = 0;
-            // 
-            // uiSplitNotificationsLog
-            // 
-            this.uiSplitNotificationsLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiSplitNotificationsLog.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.uiSplitNotificationsLog.IsSplitterFixed = true;
-            this.uiSplitNotificationsLog.Location = new System.Drawing.Point(0, 0);
-            this.uiSplitNotificationsLog.Name = "uiSplitNotificationsLog";
-            // 
-            // uiSplitNotificationsLog.Panel1
-            // 
-            this.uiSplitNotificationsLog.Panel1.Controls.Add(uiNotificationsPanel);
-            // 
-            // uiSplitNotificationsLog.Panel2
-            // 
-            this.uiSplitNotificationsLog.Panel2.Controls.Add(uiPadLog);
-            this.uiSplitNotificationsLog.Size = new System.Drawing.Size(565, 257);
-            this.uiSplitNotificationsLog.SplitterDistance = 195;
-            this.uiSplitNotificationsLog.TabIndex = 1;
             // 
             // uiGroupSearch
             // 
@@ -461,7 +497,7 @@
             this.uiDownloadQueue.Location = new System.Drawing.Point(5, 18);
             this.uiDownloadQueue.MinimumSize = new System.Drawing.Size(372, 100);
             this.uiDownloadQueue.Name = "uiDownloadQueue";
-            this.uiDownloadQueue.Size = new System.Drawing.Size(372, 228);
+            this.uiDownloadQueue.Size = new System.Drawing.Size(372, 130);
             this.uiDownloadQueue.TabIndex = 0;
             // 
             // uiPostProcessingQueue
@@ -473,8 +509,18 @@
             this.uiPostProcessingQueue.Location = new System.Drawing.Point(5, 18);
             this.uiPostProcessingQueue.MinimumSize = new System.Drawing.Size(372, 100);
             this.uiPostProcessingQueue.Name = "uiPostProcessingQueue";
-            this.uiPostProcessingQueue.Size = new System.Drawing.Size(372, 228);
+            this.uiPostProcessingQueue.Size = new System.Drawing.Size(372, 130);
             this.uiPostProcessingQueue.TabIndex = 0;
+            // 
+            // uiCurrentResult
+            // 
+            this.uiCurrentResult.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.uiCurrentResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiCurrentResult.Location = new System.Drawing.Point(3, 16);
+            this.uiCurrentResult.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.uiCurrentResult.Name = "uiCurrentResult";
+            this.uiCurrentResult.Size = new System.Drawing.Size(550, 65);
+            this.uiCurrentResult.TabIndex = 0;
             // 
             // MainWindow
             // 
@@ -512,14 +558,16 @@
             uiResultsContinueContainer.PerformLayout();
             uiPadLog.ResumeLayout(false);
             this.uiLogGroup.ResumeLayout(false);
-            this.uiSplitNotifications.Panel1.ResumeLayout(false);
-            this.uiSplitNotifications.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotifications)).EndInit();
-            this.uiSplitNotifications.ResumeLayout(false);
+            uiNotificationsCurrentContainer.ResumeLayout(false);
             this.uiSplitNotificationsLog.Panel1.ResumeLayout(false);
             this.uiSplitNotificationsLog.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotificationsLog)).EndInit();
             this.uiSplitNotificationsLog.ResumeLayout(false);
+            this.uiCurrentGroup.ResumeLayout(false);
+            this.uiSplitNotifications.Panel1.ResumeLayout(false);
+            this.uiSplitNotifications.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotifications)).EndInit();
+            this.uiSplitNotifications.ResumeLayout(false);
             this.uiGroupSearch.ResumeLayout(false);
             this.uiSplitSearch.Panel1.ResumeLayout(false);
             this.uiSplitSearch.Panel2.ResumeLayout(false);
@@ -550,6 +598,8 @@
         private System.Windows.Forms.LinkLabel uiToggleLog;
         private QueueView uiPostProcessingQueue;
         private System.Windows.Forms.LinkLabel uiLoadMore;
+        private System.Windows.Forms.GroupBox uiCurrentGroup;
+        private ResultView uiCurrentResult;
     }
 }
 

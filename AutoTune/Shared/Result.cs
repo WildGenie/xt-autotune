@@ -4,6 +4,7 @@ namespace AutoTune.Shared {
 
     public class Result {
 
+        public string Url { get; set; }
         public string Type { get; set; }
         public string Title { get; set; }
         public string PlayUrl { get; set; }

@@ -11,6 +11,7 @@ namespace AutoTune.Shared {
             public bool Enabled { get; set; } = true;
             public bool PostProcess { get; set; } = true;
             public bool KeepOriginal { get; set; } = false;
+            public string UrlPattern { get; set; }
             public string PlayUrlPattern { get; set; }
             public string DownloadUrlPattern { get; set; }
         }
@@ -18,6 +19,7 @@ namespace AutoTune.Shared {
         public class YouTubeSettings : DriverSettings {
             public string APIKey { get; set; } = "?";
             public YouTubeSettings() {
+                UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&modestbranding=1";
                 PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&modestbranding=1";
                 DownloadUrlPattern = "https://www.youtube.com/watch?v={0}";
             }
@@ -27,6 +29,7 @@ namespace AutoTune.Shared {
             public string ClientId { get; set; } = "?";
             public string ClientSecret { get; set; } = "?";
             public VimeoSettings() {
+                UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0";
                 PlayUrlPattern = "https://player.vimeo.com/video/{0}?autoplay=1";
                 DownloadUrlPattern = "https://player.vimeo.com/video/{0}";
             }
@@ -34,6 +37,7 @@ namespace AutoTune.Shared {
 
         public class GeneralSettings {
             public int PageSize { get; set; } = 10;
+            public Result CurrentTrack { get; set; }
             public int DownloadThreads { get; set; } = 0;
             public string AppName { get; set; } = "AutoTune";
             public bool PersistSessions { get; set; } = true;

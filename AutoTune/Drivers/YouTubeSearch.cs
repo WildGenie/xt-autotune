@@ -40,6 +40,7 @@ namespace AutoTune.Drivers {
                         KeepOriginal = youTube.KeepOriginal,
                         ShouldPostProcess = youTube.PostProcess,
                         ThumbnailUrl = i.Snippet.Thumbnails.Default__.Url,
+                        Url = string.Format(youTube.UrlPattern, i.Id.VideoId),
                         PlayUrl = string.Format(youTube.PlayUrlPattern, i.Id.VideoId),
                         DownloadUrl = string.Format(youTube.DownloadUrlPattern, i.Id.VideoId)
                     })

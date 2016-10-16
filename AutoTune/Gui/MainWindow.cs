@@ -82,6 +82,7 @@ namespace AutoTune.Gui {
             uiToggleSearch.Text = UnicodeLeft;
             uiToggleNotifications.Text = UnicodeDown;
             uiBrowserContainer.Controls.Add(uiBrowser);
+            ConnectResultViewEventHandlers(uiCurrentResult);
             uiLogLevel.DataSource = Enum.GetValues(typeof(LogLevel));
             uiDownloadQueue.Play += (s, e) => uiBrowser.Load(e.Data.PlayUrl);
             uiPostProcessingQueue.Play += (s, e) => uiBrowser.Load(e.Data.PlayUrl);
@@ -89,6 +90,7 @@ namespace AutoTune.Gui {
 
         void InitializeSettings() {
             var ui = Settings.Instance.UI;
+            var current = Settings.Instance.General.CurrentTrack;
             uiQuery.Text = ui.LastSearch;
             uiLogLevel.SelectedItem = ui.TraceLevel;
             uiSplitSearch.Panel1Collapsed = ui.SearchCollapsed;
@@ -97,6 +99,9 @@ namespace AutoTune.Gui {
             uiToggleLog.Text = ui.LogCollapsed ? UnicodeLeft : UnicodeRight;
             uiSplitNotifications.Panel2Collapsed = ui.NotificationsCollapsed;
             uiToggleNotifications.Text = ui.NotificationsCollapsed ? UnicodeUp : UnicodeDown;
+            uiCurrentResult.SetResult(current);
+            if (current != null)
+                uiBrowser.Load(current.Url);
         }
 
         void InitializeLog() {
@@ -124,6 +129,7 @@ namespace AutoTune.Gui {
             uiQuery.ForeColor = fore1;
             uiQuery.BackColor = back2;
             uiLogGroup.ForeColor = fore1;
+            uiCurrentGroup.ForeColor = fore1;
             uiGroupSearch.ForeColor = fore1;
             uiDownloadGroup.ForeColor = fore1;
             uiPostProcessingGroup.ForeColor = fore1;
@@ -155,10 +161,6 @@ namespace AutoTune.Gui {
         void OnLogLevelSelectionChanged(object sender, EventArgs e) {
             if (!initializing)
                 Settings.Instance.UI.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
-        }
-
-        void OnResultPlayClicked(object sender, EventArgs<Result> e) {
-            uiBrowser.Load(e.Data.PlayUrl);
         }
 
         void OnResultDownloadClicked(object sender, EventArgs<Result> e) {
@@ -194,12 +196,18 @@ namespace AutoTune.Gui {
         }
 
         void OnUiResultsScroll(object sender, ScrollEventArgs e) {
-            if (searchState == null|| appendingResult)
+            if (searchState == null || appendingResult)
                 return;
             VScrollProperties properties = uiResults.VerticalScroll;
             if (e.NewValue != properties.Maximum - properties.LargeChange + 1)
                 return;
             Search.Continue(searchState, searchQuery, searchSimilar, AppendResults);
+        }
+
+        void OnResultPlayClicked(object sender, EventArgs<Result> e) {
+            uiBrowser.Load(e.Data.PlayUrl);
+            Settings.Instance.General.CurrentTrack = e.Data;
+            uiCurrentResult.SetResult(e.Data);
         }
 
         void OnToggleLogClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -240,28 +248,23 @@ namespace AutoTune.Gui {
                 Logger.Error(results.Error, "Search error.");
             } else
                 foreach (Result result in results.Items) {
-                    if (result.ThumbnailUrl == null)
-                        AppendResult(result, null);
-                    else
-                        using (WebClient client = new WebClient()) {
-                            client.DownloadDataCompleted += (s, e) => AppendResult(result, e.Result);
-                            client.DownloadDataAsync(new Uri(result.ThumbnailUrl), result);
-                        }
+                    BeginInvoke(new Action(() => {
+                        var view = new ResultView();
+                        ConnectResultViewEventHandlers(view);
+                        view.SetResult(result);
+                        uiResults.Controls.Add(view);
+                        appendingResult = true;
+                        uiResults.ScrollControlIntoView(view);
+                        appendingResult = false;
+                    }));
                 }
         }
 
-        void AppendResult(Result result, byte[] imageData) {
-            Invoke(new Action(() => {
-                var view = new ResultView(result, imageData);
-                view.PlayClicked += OnResultPlayClicked;
-                view.SimilarClicked += OnResultSimilarClicked;
-                view.DownloadClicked += OnResultDownloadClicked;
-                view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<Result>(result));
-                uiResults.Controls.Add(view);
-                appendingResult = true;
-                uiResults.ScrollControlIntoView(view);
-                appendingResult = false;
-            }));
+        void ConnectResultViewEventHandlers(ResultView view) {
+            view.PlayClicked += OnResultPlayClicked;
+            view.SimilarClicked += OnResultSimilarClicked;
+            view.DownloadClicked += OnResultDownloadClicked;
+            view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<Result>(((ResultView)s).Result));
         }
     }
 }

@@ -79,6 +79,7 @@
             // 
             // uiImage
             // 
+            this.uiImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.uiImage.Location = new System.Drawing.Point(0, 0);
             this.uiImage.Margin = new System.Windows.Forms.Padding(0);
             this.uiImage.Name = "uiImage";
@@ -116,7 +117,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Window;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.uiType);
             this.Controls.Add(this.uiSimilar);
             this.Controls.Add(this.uiDownload);
