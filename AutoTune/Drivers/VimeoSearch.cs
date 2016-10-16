@@ -8,7 +8,7 @@ namespace AutoTune.Drivers {
 
         public const string TypeId = "Vimeo";
 
-        protected override SearchResult Execute(int totalResults, string pageToken, string query) {
+        protected override SearchResult Execute(int totalResults, string pageToken, string query, Result similarTo) {
             var settings = Settings.Instance;
             var vimeo = settings.Vimeo;
             var client = new VimeoVideoClient(vimeo.ClientId, vimeo.ClientSecret);
@@ -21,7 +21,7 @@ namespace AutoTune.Drivers {
                     },
                     Results = Enumerable.Empty<Result>()
                 };
-            var videos = client.GetVideos(query, page, settings.General.PageSize);
+            var videos = client.GetVideos(query, similarTo?.VideoId, page, settings.General.PageSize);
             return new SearchResult {
                 State = new SearchState {
                     TotalResults = videos.total,
@@ -30,6 +30,7 @@ namespace AutoTune.Drivers {
                 Results = videos.data.Select(v => new Result {
                     Type = TypeId,
                     Title = v.name,
+                    VideoId = v.id?.ToString(),
                     Description = v.description,
                     KeepOriginal = vimeo.KeepOriginal,
                     PlayUrl = string.Format(vimeo.PlayUrlPattern, v.id),

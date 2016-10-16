@@ -52,8 +52,10 @@ namespace AutoTune.Gui {
         }
 
         private TextWriter logger;
+        private bool appendingResult;
         private bool initializing = true;
         private string searchQuery = null;
+        private Result searchSimilar = null;
         private IDictionary<string, SearchState> searchState;
         private readonly ChromiumWebBrowser uiBrowser = new ChromiumWebBrowser("http://www.youtube.com/");
 
@@ -169,27 +171,35 @@ namespace AutoTune.Gui {
             StartSearch();
         }
 
+        void OnResultSimilarClicked(object sender, EventArgs<Result> e) {
+            searchQuery = null;
+            searchSimilar = e.Data;
+            uiResults.Controls.Clear();
+            searchState = Search.Start(null, e.Data, AppendResults);
+        }
+
         void StartSearch() {
             if (uiQuery.Text.Trim().Length == 0)
                 return;
             uiResults.Controls.Clear();
+            searchSimilar = null;
             searchQuery = uiQuery.Text.Trim();
             Settings.Instance.UI.LastSearch = searchQuery;
-            searchState = Search.Start(uiQuery.Text, AppendResults);
+            searchState = Search.Start(searchQuery, null, AppendResults);
         }
 
         void OnLoadMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            if (searchQuery != null)
-                Search.Continue(searchState, searchQuery, AppendResults);
+            if (searchQuery != null || searchSimilar != null)
+                Search.Continue(searchState, searchQuery, searchSimilar, AppendResults);
         }
 
         void OnUiResultsScroll(object sender, ScrollEventArgs e) {
-            if (searchState == null)
+            if (searchState == null|| appendingResult)
                 return;
             VScrollProperties properties = uiResults.VerticalScroll;
             if (e.NewValue != properties.Maximum - properties.LargeChange + 1)
                 return;
-            Search.Continue(searchState, searchQuery, AppendResults);
+            Search.Continue(searchState, searchQuery, searchSimilar, AppendResults);
         }
 
         void OnToggleLogClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -244,9 +254,13 @@ namespace AutoTune.Gui {
             Invoke(new Action(() => {
                 var view = new ResultView(result, imageData);
                 view.PlayClicked += OnResultPlayClicked;
+                view.SimilarClicked += OnResultSimilarClicked;
                 view.DownloadClicked += OnResultDownloadClicked;
                 view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<Result>(result));
                 uiResults.Controls.Add(view);
+                appendingResult = true;
+                uiResults.ScrollControlIntoView(view);
+                appendingResult = false;
             }));
         }
     }

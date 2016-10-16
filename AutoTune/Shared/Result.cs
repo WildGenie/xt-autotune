@@ -7,6 +7,7 @@ namespace AutoTune.Shared {
         public string Type { get; set; }
         public string Title { get; set; }
         public string PlayUrl { get; set; }
+        public string VideoId { get; set; }
         public string FileName { get; set; }
         public bool KeepOriginal { get; set; }
         public string DownloadUrl { get; set; }

@@ -17,9 +17,9 @@ namespace AutoTune.Drivers {
             base(clientId, clientSecret) {
         }
 
-        public Paginated<Video> GetVideos(string query, int? page, int? perPage) {
+        public Paginated<Video> GetVideos(string query, string videoId, int? page, int? perPage) {
             try {
-                var result = GetVideosAsync(query, page, perPage);
+                var result = GetVideosAsync(query, videoId, page, perPage);
                 result.Wait();
                 return result.Result;
             } catch (AggregateException ex) {
@@ -28,15 +28,15 @@ namespace AutoTune.Drivers {
             }
         }
 
-        public async Task<Paginated<Video>> GetVideosAsync(string query, int? page, int? perPage) {
+        public async Task<Paginated<Video>> GetVideosAsync(string query, string videoId, int? page, int? perPage) {
             try {
-                IApiRequest request = GenerateVideosRequest(query, page, perPage);
+                IApiRequest request = GenerateVideosRequest(query, videoId, page, perPage);
                 IRestResponse<Paginated<Video>> response = await request.ExecuteRequestAsync<Paginated<Video>>();
                 UpdateRateLimit(response);
-                CheckStatusCodeError(response, "Error retrieving account videos.");
+                CheckStatusCodeError(response, "Error retrieving videos.");
                 return response.Data;
             } catch (Exception ex) {
-                throw new DriverException("Error retrieving account videos.", ex);
+                throw new DriverException("Error retrieving videos.", ex);
             }
         }
 
@@ -50,15 +50,18 @@ namespace AutoTune.Drivers {
             typeof(VimeoClient).GetField("_headers", flags).SetValue(this, response.Headers);
         }
 
-        IApiRequest GenerateVideosRequest(string query, int? page, int? perPage) {
+        IApiRequest GenerateVideosRequest(string query, string videoId, int? page, int? perPage) {
             IApiRequest request = ApiRequestFactory.GetApiRequest(ClientId, ClientSecret);
             request.Method = Method.GET;
-            request.Path = "/videos";
+            request.Path = query != null ? "/videos" : "/videos/" + videoId + "/videos";
             if (page.HasValue)
                 request.Query.Add("page", page.ToString());
             if (perPage.HasValue)
                 request.Query.Add("per_page", perPage.ToString());
-            request.Query.Add("query", query);
+            if (query != null)
+                request.Query.Add("query", query);
+            if (videoId != null)
+                request.Query.Add("filter", "related");
             return request;
         }
 

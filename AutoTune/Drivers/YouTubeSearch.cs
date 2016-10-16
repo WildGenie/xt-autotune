@@ -10,7 +10,7 @@ namespace AutoTune.Drivers {
 
         public const string TypeId = "YouTube";
 
-        protected override SearchResult Execute(int totalResults, string pageToken, string query) {
+        protected override SearchResult Execute(int totalResults, string pageToken, string query, Result similarTo) {
             var settings = Settings.Instance;
             var youTube = settings.YouTube;
             var general = settings.General;
@@ -19,7 +19,10 @@ namespace AutoTune.Drivers {
                 ApplicationName = general.AppName
             })) {
                 var request = service.Search.List("snippet");
-                request.Q = query;
+                if (query != null)
+                    request.Q = query;
+                else
+                    request.RelatedToVideoId = similarTo.VideoId;
                 request.Type = "video";
                 request.PageToken = pageToken;
                 request.MaxResults = general.PageSize;
@@ -31,6 +34,7 @@ namespace AutoTune.Drivers {
                     },
                     Results = response.Items.Select(i => new Result {
                         Type = TypeId,
+                        VideoId = i.Id.VideoId,
                         Title = i.Snippet.Title,
                         Description = i.Snippet.Description,
                         KeepOriginal = youTube.KeepOriginal,
