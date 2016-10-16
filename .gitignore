@@ -1,6 +1,6 @@
 # Ignore private settings.
 apikeys.xml
-folders.xml
+localpaths.xml
 
 # Created by https://www.gitignore.io/api/visualstudio
 

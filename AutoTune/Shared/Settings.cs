@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace AutoTune.Shared {
+﻿namespace AutoTune.Shared {
 
     public class Settings : SettingsBase<Settings> {
 
@@ -32,18 +30,14 @@ namespace AutoTune.Shared {
         }
 
         public class GeneralSettings {
+            public int ExtractorTimeout = 10000;
             public int PageSize { get; set; } = 10;
             public Result CurrentTrack { get; set; }
             public int DownloadThreads { get; set; } = 0;
+            public bool AutoLoadMore { get; set; } = true;
             public string AppName { get; set; } = "AutoTune";
             public bool PersistSessions { get; set; } = true;
-        }
-
-        public class ExtractorSettings {
-            public int Timeout = 10000;
-            public string ExecutablePath { get; set; } = "AutoTune.Extractor";
-            public string Delimiter = "{4863DB53-583E-4FB2-AC13-B76EB566A8AF}";
-            public string FilePath { get; set; } = Path.Combine(GetFolderPath(), "extract.html");
+            public string ExtractorDelimiter = "{4863DB53-583E-4FB2-AC13-B76EB566A8AF}";
         }
 
         public class ThemeSettings {
@@ -54,7 +48,7 @@ namespace AutoTune.Shared {
         }
 
         public class UISettings {
-            public string LastSearch { get; set; } = "youtube";
+            public string LastSearch { get; set; } = "";
             public LogLevel TraceLevel { get; set; } = LogLevel.Info;
             public bool LogCollapsed { get; set; } = true;
             public bool SearchCollapsed { get; set; } = false;
@@ -69,7 +63,6 @@ namespace AutoTune.Shared {
         }
 
         public GeneralSettings General { get; set; } = new GeneralSettings();
-        public ExtractorSettings Extractor { get; set; } = new ExtractorSettings();
         public PostProcessingSettings PostProcessing { get; set; } = new PostProcessingSettings();
         public VimeoSettings Vimeo { get; set; } = new VimeoSettings();
         public YouTubeSettings YouTube { get; set; } = new YouTubeSettings();
@@ -82,17 +75,6 @@ namespace AutoTune.Shared {
 
         public static void Initialize() {
             Initialize(FileName);
-            var extractor = Instance.Extractor;
-            if (!File.Exists(extractor.FilePath)) {
-                Directory.CreateDirectory(Directory.GetParent(extractor.FilePath).FullName);
-                string fileContents = null;
-                using (Stream resource = typeof(Settings).Assembly.GetManifestResourceStream("AutoTune.extract.html"))
-                using (StreamReader reader = new StreamReader(resource))
-                    fileContents = reader.ReadToEnd();
-                using (Stream file = new FileStream(extractor.FilePath, FileMode.Create, FileAccess.Write))
-                using (StreamWriter writer = new StreamWriter(file))
-                    writer.Write(fileContents);
-            }
         }
     }
 }

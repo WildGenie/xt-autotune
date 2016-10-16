@@ -18,10 +18,10 @@ namespace AutoTune.Drivers {
         static readonly Dictionary<string, string> ExtensionsByContentType = new Dictionary<string, string>();
 
         static string DoPostProcess(Result result) {
-            var folders = Folders.Instance;
+            var paths = LocalPaths.Instance;
             var processing = Settings.Instance.PostProcessing;
             string name = Guid.NewGuid().ToString();
-            string path = Path.Combine(folders.Process, name);
+            string path = Path.Combine(paths.ProcessFolder, name);
             string args = string.Format(processing.Arguments, result.DownloadPath, path, processing.Extension);
             ProcessStartInfo info = new ProcessStartInfo(processing.Command, args);
             info.UseShellExecute = false;
@@ -38,9 +38,9 @@ namespace AutoTune.Drivers {
         }
 
         static void CopyToTarget(Result result, string fromPath) {
-            var folders = Folders.Instance;
+            var paths = LocalPaths.Instance;
             string fileName = result.FileName + Path.GetExtension(fromPath);
-            string toPath = Path.Combine(folders.Target, fileName);
+            string toPath = Path.Combine(paths.TargetFolder, fileName);
             int counter = 1;
             while (true)
                 try {
@@ -52,7 +52,7 @@ namespace AutoTune.Drivers {
                     if (!File.Exists(toPath))
                         throw;
                     fileName = result.FileName + " (" + counter++ + ")" + Path.GetExtension(fromPath);
-                    toPath = Path.Combine(folders.Target, fileName);
+                    toPath = Path.Combine(paths.TargetFolder, fileName);
                 }
         }
 
@@ -72,11 +72,11 @@ namespace AutoTune.Drivers {
         }
 
         public static void Download(Result result) {
-            var settings = Settings.Instance;
-            var folders = Folders.Instance;
-            var extractor = settings.Extractor;
-            string args = string.Format("\"{0}\" {1} {2} {3}", extractor.FilePath, result.DownloadUrl, extractor.Delimiter, extractor.Timeout);
-            ProcessStartInfo info = new ProcessStartInfo(extractor.ExecutablePath, args);
+            var paths = LocalPaths.Instance;
+            var general = Settings.Instance.General;
+            string delimiter = general.ExtractorDelimiter;
+            string args = string.Format("\"{0}\" {1} {2} {3}", paths.ExtractorFilePath, result.DownloadUrl, delimiter, general.ExtractorTimeout);
+            ProcessStartInfo info = new ProcessStartInfo(paths.ExtractorExecutablePath, args);
             string link = null;
             info.CreateNoWindow = true;
             info.UseShellExecute = false;
@@ -84,8 +84,8 @@ namespace AutoTune.Drivers {
             using (Process extract = Process.Start(info)) {
                 extract.WaitForExit();
                 string output = extract.StandardOutput.ReadToEnd();
-                link = output.Substring(output.IndexOf(extractor.Delimiter) + extractor.Delimiter.Length);
-                link = link.Substring(0, link.IndexOf(extractor.Delimiter));
+                link = output.Substring(output.IndexOf(delimiter) + delimiter.Length);
+                link = link.Substring(0, link.IndexOf(delimiter));
                 if (extract.ExitCode != 0) {
                     Logger.Debug("Extraction error: console output: {0}.", output);
                     string format = "Extraction of {0} returned with code: {1}.";
@@ -124,7 +124,7 @@ namespace AutoTune.Drivers {
             }
             result.FileName = Path.GetFileNameWithoutExtension(fileName);
             string tempName = Guid.NewGuid().ToString() + Path.GetExtension(fileName);
-            result.DownloadPath = Path.Combine(folders.Download, tempName);
+            result.DownloadPath = Path.Combine(paths.DownloadFolder, tempName);
             File.WriteAllBytes(result.DownloadPath, bytes);
         }
     }

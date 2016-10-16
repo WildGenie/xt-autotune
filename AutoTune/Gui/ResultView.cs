@@ -21,6 +21,7 @@ namespace AutoTune.Gui {
         public ResultView() {
             InitializeComponent();
             InitializeColors();
+            Resize += OnResize;
         }
 
         void InitializeColors() {
@@ -65,6 +66,10 @@ namespace AutoTune.Gui {
                 text += " \\line " + result.Description + " }";
                 uiText.Rtf = text;
             }
+        }
+
+        void OnResize(object sender, EventArgs e) {
+            uiText.Width = Width - uiText.Left;
         }
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {

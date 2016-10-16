@@ -31,13 +31,13 @@ namespace AutoTune.Gui {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         static void Run() {
-            Folders.Initialize();
+            LocalPaths.Initialize();
             ApiKeys.Initialize();
             Settings.Initialize();
             var cef = new CefSettings();
             var settings = Settings.Instance;
             var proc = "CefSharp.BrowserSubprocess.exe";
-            cef.CachePath = Folders.Instance.BrowserCache;
+            cef.CachePath = LocalPaths.Instance.BrowserCacheFolder;
             cef.PersistSessionCookies = settings.General.PersistSessions;
             cef.BrowserSubprocessPath = Path.Combine(AppBase, Arch, proc);
             Cef.Initialize(cef);
@@ -59,7 +59,7 @@ namespace AutoTune.Gui {
         private string searchQuery = null;
         private Result searchSimilar = null;
         private IDictionary<string, SearchState> searchState;
-        private readonly ChromiumWebBrowser uiBrowser = new ChromiumWebBrowser("http://www.youtube.com/");
+        private readonly ChromiumWebBrowser uiBrowser = new ChromiumWebBrowser(LocalPaths.Instance.StartupFilePath);
 
         MainWindow() {
             InitializeComponent();
@@ -198,7 +198,7 @@ namespace AutoTune.Gui {
         }
 
         void OnUiResultsScroll(object sender, ScrollEventArgs e) {
-            if (searchState == null || appendingResult)
+            if (searchState == null || appendingResult || !Settings.Instance.General.AutoLoadMore)
                 return;
             VScrollProperties properties = uiResults.VerticalScroll;
             if (e.NewValue != properties.Maximum - properties.LargeChange + 1)

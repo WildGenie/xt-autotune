@@ -91,6 +91,7 @@
             // 
             this.uiText.BackColor = System.Drawing.SystemColors.Window;
             this.uiText.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.uiText.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.uiText.DetectUrls = false;
             this.uiText.Location = new System.Drawing.Point(70, 29);
             this.uiText.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
