@@ -11,7 +11,8 @@ namespace AutoTune.Drivers {
         protected override SearchResult Execute(int totalResults, string pageToken, string query, Result similarTo) {
             var settings = Settings.Instance;
             var vimeo = settings.Vimeo;
-            var client = new VimeoVideoClient(vimeo.ClientId, vimeo.ClientSecret);
+            var apiKeys = ApiKeys.Instance;
+            var client = new VimeoVideoClient(apiKeys.VimeoClientId, apiKeys.VimeoClientSecret);
             int? page = pageToken == null ? (int?)null : int.Parse(pageToken);
             if (totalResults >= 0 && page != null && page == -1 || (page - 1) * settings.General.PageSize >= totalResults)
                 return new SearchResult {

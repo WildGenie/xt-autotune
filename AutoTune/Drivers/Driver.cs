@@ -18,7 +18,7 @@ namespace AutoTune.Drivers {
         static readonly Dictionary<string, string> ExtensionsByContentType = new Dictionary<string, string>();
 
         static string DoPostProcess(Result result) {
-            var folders = Settings.Instance.Folders;
+            var folders = Folders.Instance;
             var processing = Settings.Instance.PostProcessing;
             string name = Guid.NewGuid().ToString();
             string path = Path.Combine(folders.Process, name);
@@ -38,7 +38,7 @@ namespace AutoTune.Drivers {
         }
 
         static void CopyToTarget(Result result, string fromPath) {
-            var folders = Settings.Instance.Folders;
+            var folders = Folders.Instance;
             string fileName = result.FileName + Path.GetExtension(fromPath);
             string toPath = Path.Combine(folders.Target, fileName);
             int counter = 1;
@@ -73,7 +73,7 @@ namespace AutoTune.Drivers {
 
         public static void Download(Result result) {
             var settings = Settings.Instance;
-            var folders = settings.Folders;
+            var folders = Folders.Instance;
             var extractor = settings.Extractor;
             string args = string.Format("\"{0}\" {1} {2} {3}", extractor.FilePath, result.DownloadUrl, extractor.Delimiter, extractor.Timeout);
             ProcessStartInfo info = new ProcessStartInfo(extractor.ExecutablePath, args);

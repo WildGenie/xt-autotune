@@ -143,6 +143,8 @@
     <Compile Include="Drivers\SearchState.cs" />
     <Compile Include="Drivers\VimeoSearch.cs" />
     <Compile Include="Drivers\VimeoVideoClient.cs" />
+    <Compile Include="Shared\ApiKeys.cs" />
+    <Compile Include="Shared\Folders.cs" />
     <Compile Include="Gui\QueueItemView.cs">
       <SubType>UserControl</SubType>
     </Compile>

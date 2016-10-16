@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace AutoTune.Shared {
 
@@ -17,7 +16,6 @@ namespace AutoTune.Shared {
         }
 
         public class YouTubeSettings : DriverSettings {
-            public string APIKey { get; set; } = "?";
             public YouTubeSettings() {
                 UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&modestbranding=1";
                 PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&modestbranding=1";
@@ -26,8 +24,6 @@ namespace AutoTune.Shared {
         }
 
         public class VimeoSettings : DriverSettings {
-            public string ClientId { get; set; } = "?";
-            public string ClientSecret { get; set; } = "?";
             public VimeoSettings() {
                 UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0";
                 PlayUrlPattern = "https://player.vimeo.com/video/{0}?autoplay=1";
@@ -65,13 +61,6 @@ namespace AutoTune.Shared {
             public bool NotificationsCollapsed { get; set; } = false;
         }
 
-        public class FolderSettings {
-            public string Process { get; set; } = Path.Combine(GetFolderPath(), "process");
-            public string Download { get; set; } = Path.Combine(GetFolderPath(), "download");
-            public string Target { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-            public string BrowserCache { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
-        }
-
         public class PostProcessingSettings {
             public string Command = "ffmpeg";
             public int Threads { get; set; } = 0;
@@ -80,7 +69,6 @@ namespace AutoTune.Shared {
         }
 
         public GeneralSettings General { get; set; } = new GeneralSettings();
-        public FolderSettings Folders { get; set; } = new FolderSettings();
         public ExtractorSettings Extractor { get; set; } = new ExtractorSettings();
         public PostProcessingSettings PostProcessing { get; set; } = new PostProcessingSettings();
         public VimeoSettings Vimeo { get; set; } = new VimeoSettings();
@@ -94,12 +82,7 @@ namespace AutoTune.Shared {
 
         public static void Initialize() {
             Initialize(FileName);
-            var folders = Instance.Folders;
             var extractor = Instance.Extractor;
-            Directory.CreateDirectory(folders.Target);
-            Directory.CreateDirectory(folders.Process);
-            Directory.CreateDirectory(folders.Download);
-            Directory.CreateDirectory(folders.BrowserCache);
             if (!File.Exists(extractor.FilePath)) {
                 Directory.CreateDirectory(Directory.GetParent(extractor.FilePath).FullName);
                 string fileContents = null;

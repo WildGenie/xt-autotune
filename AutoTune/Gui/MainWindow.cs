@@ -31,11 +31,13 @@ namespace AutoTune.Gui {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         static void Run() {
+            Folders.Initialize();
+            ApiKeys.Initialize();
             Settings.Initialize();
             var cef = new CefSettings();
             var settings = Settings.Instance;
             var proc = "CefSharp.BrowserSubprocess.exe";
-            cef.CachePath = settings.Folders.BrowserCache;
+            cef.CachePath = Folders.Instance.BrowserCache;
             cef.PersistSessionCookies = settings.General.PersistSessions;
             cef.BrowserSubprocessPath = Path.Combine(AppBase, Arch, proc);
             Cef.Initialize(cef);

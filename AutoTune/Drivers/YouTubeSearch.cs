@@ -11,11 +11,12 @@ namespace AutoTune.Drivers {
         public const string TypeId = "YouTube";
 
         protected override SearchResult Execute(int totalResults, string pageToken, string query, Result similarTo) {
+            var apiKeys = ApiKeys.Instance;
             var settings = Settings.Instance;
             var youTube = settings.YouTube;
             var general = settings.General;
             using (var service = new YouTubeService(new BaseClientService.Initializer() {
-                ApiKey = youTube.APIKey,
+                ApiKey = apiKeys.YouTubeAPIKey,
                 ApplicationName = general.AppName
             })) {
                 var request = service.Search.List("snippet");
