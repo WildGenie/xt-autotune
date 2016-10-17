@@ -83,6 +83,7 @@ namespace AutoTune.Drivers {
             info.CreateNoWindow = true;
             info.UseShellExecute = false;
             info.RedirectStandardOutput = true;
+            Logger.Info("Fetching " + result.Title + "...");
             using (Process fetch = Process.Start(info)) {
                 fetch.WaitForExit();
                 string output = fetch.StandardOutput.ReadToEnd();
@@ -97,6 +98,7 @@ namespace AutoTune.Drivers {
             byte[] bytes;
             string fileName = null;
             string contentType = null;
+            Logger.Info("Downloading " + result.Title + "...");
             using (WebClient client = new WebClient()) {
                 bytes = client.DownloadData(link);
                 for (int i = 0; i < client.ResponseHeaders.Count; i++) {

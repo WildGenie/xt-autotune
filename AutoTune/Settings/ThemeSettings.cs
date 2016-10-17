@@ -7,7 +7,7 @@ namespace AutoTune.Settings {
         public string BackColor1 { get; set; } = "#000000";
         public string BackColor2 { get; set; } = "#222222";
         public string ForeColor1 { get; set; } = "#cccccc";
-        public string ForeColor2 { get; set; } = "#f12b24";
+        public string ForeColor2 { get; set; } = "#00adef";
 
         protected override void OnTerminating() {
         }

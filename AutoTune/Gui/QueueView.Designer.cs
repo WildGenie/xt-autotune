@@ -27,7 +27,6 @@
             System.Windows.Forms.TableLayoutPanel uiRows;
             this.uiControls = new System.Windows.Forms.FlowLayoutPanel();
             this.uiClearQueue = new System.Windows.Forms.LinkLabel();
-            this.uiHideFinished = new System.Windows.Forms.LinkLabel();
             this.uiHideCompleted = new System.Windows.Forms.LinkLabel();
             this.uiPause = new System.Windows.Forms.LinkLabel();
             this.uiItems = new System.Windows.Forms.FlowLayoutPanel();
@@ -56,7 +55,6 @@
             // uiControls
             // 
             this.uiControls.Controls.Add(this.uiClearQueue);
-            this.uiControls.Controls.Add(this.uiHideFinished);
             this.uiControls.Controls.Add(this.uiHideCompleted);
             this.uiControls.Controls.Add(this.uiPause);
             this.uiControls.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -80,24 +78,11 @@
             this.uiTooltip.SetToolTip(this.uiClearQueue, "Empty the queue. Currently queued tracks will not be processed.");
             this.uiClearQueue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnClearQueueClicked);
             // 
-            // uiHideFinished
-            // 
-            this.uiHideFinished.AutoSize = true;
-            this.uiHideFinished.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiHideFinished.Location = new System.Drawing.Point(225, 0);
-            this.uiHideFinished.Name = "uiHideFinished";
-            this.uiHideFinished.Size = new System.Drawing.Size(68, 13);
-            this.uiHideFinished.TabIndex = 3;
-            this.uiHideFinished.TabStop = true;
-            this.uiHideFinished.Text = "Hide finished";
-            this.uiTooltip.SetToolTip(this.uiHideFinished, "Hide all completed tracks from the queue.");
-            this.uiHideFinished.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnHideFinishedClick);
-            // 
             // uiHideCompleted
             // 
             this.uiHideCompleted.AutoSize = true;
             this.uiHideCompleted.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiHideCompleted.Location = new System.Drawing.Point(138, 0);
+            this.uiHideCompleted.Location = new System.Drawing.Point(212, 0);
             this.uiHideCompleted.Name = "uiHideCompleted";
             this.uiHideCompleted.Size = new System.Drawing.Size(81, 13);
             this.uiHideCompleted.TabIndex = 4;
@@ -111,7 +96,7 @@
             this.uiPause.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.uiPause.AutoSize = true;
             this.uiPause.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPause.Location = new System.Drawing.Point(95, 0);
+            this.uiPause.Location = new System.Drawing.Point(169, 0);
             this.uiPause.Name = "uiPause";
             this.uiPause.Size = new System.Drawing.Size(37, 13);
             this.uiPause.TabIndex = 2;
@@ -152,7 +137,6 @@
         private System.Windows.Forms.FlowLayoutPanel uiControls;
         private System.Windows.Forms.LinkLabel uiPause;
         private System.Windows.Forms.FlowLayoutPanel uiItems;
-        private System.Windows.Forms.LinkLabel uiHideFinished;
         private System.Windows.Forms.LinkLabel uiHideCompleted;
         private System.Windows.Forms.ToolTip uiTooltip;
     }

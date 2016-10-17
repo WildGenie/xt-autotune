@@ -42,8 +42,8 @@ namespace AutoTune.Settings {
         };
         public DriverSettings YouTube = new DriverSettings {
             DownloadUrlPattern = "https://www.youtube.com/watch?v={0}",
-            UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&modestbranding=1",
-            PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&modestbranding=1"
+            UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&color=white",
+            PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&color=white"
         };
 
         protected override void OnTerminating() {

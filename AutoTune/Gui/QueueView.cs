@@ -38,8 +38,6 @@ namespace AutoTune.Gui {
             var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);
             uiPause.LinkColor = fore2;
             uiPause.ActiveLinkColor = fore2;
-            uiHideFinished.LinkColor = fore2;
-            uiHideFinished.ActiveLinkColor = fore2;
             uiHideCompleted.LinkColor = fore2;
             uiHideCompleted.ActiveLinkColor = fore2;
             uiClearQueue.LinkColor = fore2;
@@ -77,13 +75,6 @@ namespace AutoTune.Gui {
             var controls = uiItems.Controls.Cast<QueueItemView>().ToList();
             foreach (var v in controls)
                 if (QueueItemView.Done.Equals(v.State))
-                    uiItems.Controls.Remove(v);
-        }
-
-        void OnHideFinishedClick(object sender, LinkLabelLinkClickedEventArgs e) {
-            var controls = uiItems.Controls.Cast<QueueItemView>().ToList();
-            foreach (var v in controls)
-                if (!QueueItemView.Queued.Equals(v.State) && !QueueItemView.Started.Equals(v.State))
                     uiItems.Controls.Remove(v);
         }
 
