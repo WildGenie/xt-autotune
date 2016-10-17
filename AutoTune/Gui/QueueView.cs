@@ -59,6 +59,7 @@ namespace AutoTune.Gui {
             ResizeView(view);
             uiItems.Controls.Add(view);
             view.Initialize(result);
+            uiItems.ScrollControlIntoView(view);
         }
 
         void OnClearQueueClicked(object sender, LinkLabelLinkClickedEventArgs e) {
