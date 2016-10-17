@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
@@ -22,6 +21,8 @@ namespace AutoTune.Gui {
         static readonly string UnicodeDown = "\u25bc";
         static readonly string UnicodeLeft = "\u25c0";
         static readonly string UnicodeRight = "\u25b6";
+        static readonly string UnicodeLowerLeft = "\u25e3";
+        static readonly string UnicodeUpperRight = "\u25e5";
         static readonly string Arch = Environment.Is64BitProcess ? "x64" : "x86";
         static readonly string AppBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
@@ -74,8 +75,6 @@ namespace AutoTune.Gui {
 
         void InitializeControls() {
             uiBrowser.Dock = DockStyle.Fill;
-            uiToggleSearch.Text = UnicodeLeft;
-            uiToggleNotifications.Text = UnicodeDown;
             uiBrowserContainer.Controls.Add(uiBrowser);
             ConnectResultViewEventHandlers(uiCurrentResult);
             uiLogLevel.DataSource = Enum.GetValues(typeof(LogLevel));
@@ -95,6 +94,8 @@ namespace AutoTune.Gui {
             uiToggleNotifications.Text = ui.NotificationsCollapsed ? UnicodeUp : UnicodeDown;
             uiToggleCurrentControls.Text = uiSplitBrowserCurrentControls.Panel1Collapsed ? UnicodeDown : UnicodeUp;
             uiCurrentResult.SetResult(ui.CurrentTrack);
+            uiToggleFullScreen.Text = ui.FullScreen ? UnicodeLowerLeft : UnicodeUpperRight;
+            SetFullScreen(ui.FullScreen);
             if (ui.CurrentTrack != null)
                 uiBrowser.Load(ui.CurrentTrack.Url);
         }
@@ -135,6 +136,8 @@ namespace AutoTune.Gui {
             uiToggleNotifications.LinkColor = fore1;
             uiToggleNotifications.ActiveLinkColor = fore1;
             uiToggleCurrentControls.LinkColor = fore1;
+            uiToggleFullScreen.LinkColor = fore1;
+            uiToggleFullScreen.ActiveLinkColor = fore1;
             uiToggleCurrentControls.ActiveLinkColor = fore1;
             uiLoadMore.LinkColor = fore2;
             uiLoadMore.ActiveLinkColor = fore2;
@@ -231,6 +234,28 @@ namespace AutoTune.Gui {
             bool realCollapsed = collapsed || Width < ShowLogMinWidth;
             uiToggleLog.Text = realCollapsed ? UnicodeLeft : UnicodeRight;
             uiSplitNotificationsLog.Panel2Collapsed = realCollapsed;
+        }
+
+        void OnToggleFullScreenClick(object sender, LinkLabelLinkClickedEventArgs e) {
+            UiSettings.Instance.FullScreen = !UiSettings.Instance.FullScreen;
+            SetFullScreen(UiSettings.Instance.FullScreen);
+        }
+
+        void SetFullScreen(bool fullScreen) {
+            SuspendLayout();
+            if (fullScreen) {
+                TopMost = true;
+                WindowState = FormWindowState.Normal;
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+                uiToggleFullScreen.Text = UnicodeLowerLeft;
+            } else {
+                TopMost = false;
+                WindowState = FormWindowState.Maximized;
+                FormBorderStyle = FormBorderStyle.Sizable;
+                uiToggleFullScreen.Text = UnicodeUpperRight;
+            }
+            ResumeLayout(true);
         }
 
         void ToggleSearchClicked(object sender, LinkLabelLinkClickedEventArgs e) {

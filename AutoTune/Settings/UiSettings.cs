@@ -6,6 +6,7 @@ namespace AutoTune.Settings {
 
         public Result CurrentTrack { get; set; }
         public string LastSearch { get; set; } = "";
+        public bool FullScreen { get; set; } = false;
         public bool LogCollapsed { get; set; } = true;
         public bool SearchCollapsed { get; set; } = false;
         public bool NotificationsCollapsed { get; set; } = false;
