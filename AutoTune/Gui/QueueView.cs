@@ -114,6 +114,7 @@ namespace AutoTune.Gui {
 
         void ResizeView(QueueItemView v) {
             v.Width = Width - 30;
+            v.SetTitleWidth(Width - 80);
         }
     }
 }

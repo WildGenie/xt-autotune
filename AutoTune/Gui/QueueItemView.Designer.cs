@@ -81,7 +81,6 @@
             // uiTitle
             // 
             this.uiTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiTitle.AutoSize = true;
             this.uiTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.uiTitle.Location = new System.Drawing.Point(27, 5);
             this.uiTitle.Name = "uiTitle";

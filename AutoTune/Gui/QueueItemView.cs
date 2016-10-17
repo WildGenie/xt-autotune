@@ -25,6 +25,10 @@ namespace AutoTune.Gui {
             uiState.Text = Queued;
         }
 
+        internal void SetTitleWidth(int width) {
+            uiTitle.Width = width;
+        }
+
         public void SetState(string state) {
             Invoke(new Action(() => uiState.Text = state));
         }

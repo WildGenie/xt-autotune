@@ -121,7 +121,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(uiRows);
-            this.MinimumSize = new System.Drawing.Size(372, 100);
+            this.MinimumSize = new System.Drawing.Size(200, 100);
             this.Name = "QueueView";
             this.Size = new System.Drawing.Size(372, 100);
             this.Resize += new System.EventHandler(this.OnResized);
