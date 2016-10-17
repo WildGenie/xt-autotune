@@ -89,9 +89,11 @@ namespace AutoTune.Gui {
             uiSplitSearch.Panel1Collapsed = ui.SearchCollapsed;
             uiToggleSearch.Text = ui.SearchCollapsed ? UnicodeRight : UnicodeLeft;
             uiSplitNotificationsLog.Panel2Collapsed = ui.LogCollapsed;
+            uiSplitBrowserCurrentControls.Panel1Collapsed = ui.CurrentControlsCollapsed;
             uiToggleLog.Text = ui.LogCollapsed ? UnicodeLeft : UnicodeRight;
             uiSplitNotifications.Panel2Collapsed = ui.NotificationsCollapsed;
             uiToggleNotifications.Text = ui.NotificationsCollapsed ? UnicodeUp : UnicodeDown;
+            uiToggleCurrentControls.Text = uiSplitBrowserCurrentControls.Panel1Collapsed ? UnicodeDown : UnicodeUp;
             uiCurrentResult.SetResult(ui.CurrentTrack);
             if (ui.CurrentTrack != null)
                 uiBrowser.Load(ui.CurrentTrack.Url);
@@ -132,6 +134,8 @@ namespace AutoTune.Gui {
             uiToggleSearch.ActiveLinkColor = fore1;
             uiToggleNotifications.LinkColor = fore1;
             uiToggleNotifications.ActiveLinkColor = fore1;
+            uiToggleCurrentControls.LinkColor = fore1;
+            uiToggleCurrentControls.ActiveLinkColor = fore1;
             uiLoadMore.LinkColor = fore2;
             uiLoadMore.ActiveLinkColor = fore2;
         }
@@ -229,6 +233,12 @@ namespace AutoTune.Gui {
             UiSettings.Instance.NotificationsCollapsed = uiSplitNotifications.Panel2Collapsed;
         }
 
+        void OnToggleCurrentControlsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            uiToggleCurrentControls.Text = uiSplitBrowserCurrentControls.Panel1Collapsed ? UnicodeUp : UnicodeDown;
+            uiSplitBrowserCurrentControls.Panel1Collapsed = !uiSplitBrowserCurrentControls.Panel1Collapsed;
+            UiSettings.Instance.CurrentControlsCollapsed = uiSplitBrowserCurrentControls.Panel1Collapsed;
+        }
+
         void WriteLog(LogLevel level, string text) {
             Invoke(new Action(() => {
                 if (level < (LogLevel)uiLogLevel.SelectedItem)
@@ -266,6 +276,6 @@ namespace AutoTune.Gui {
             view.SimilarClicked += OnResultSimilarClicked;
             view.DownloadClicked += OnResultDownloadClicked;
             view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<Result>(((ResultView)s).Result));
-        }
+        }        
     }
 }

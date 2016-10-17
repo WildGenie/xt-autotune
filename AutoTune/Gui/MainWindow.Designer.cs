@@ -31,8 +31,10 @@
             System.Windows.Forms.TableLayoutPanel uiSearchPanel;
             System.Windows.Forms.TableLayoutPanel uiResultsContinueContainer;
             System.Windows.Forms.Panel uiPadLog;
-            System.Windows.Forms.TableLayoutPanel uiNotificationsCurrentContainer;
             this.uiToggleSearch = new System.Windows.Forms.LinkLabel();
+            this.uiSplitBrowserCurrentControls = new System.Windows.Forms.SplitContainer();
+            this.uiToggleCurrentControls = new System.Windows.Forms.LinkLabel();
+            this.uiCurrentGroup = new System.Windows.Forms.GroupBox();
             this.uiBrowserContainer = new System.Windows.Forms.Panel();
             this.uiToggleNotifications = new System.Windows.Forms.LinkLabel();
             this.uiDownloadGroup = new System.Windows.Forms.GroupBox();
@@ -46,13 +48,14 @@
             this.uiLoadMore = new System.Windows.Forms.LinkLabel();
             this.uiLogGroup = new System.Windows.Forms.GroupBox();
             this.uiSplitNotificationsLog = new System.Windows.Forms.SplitContainer();
-            this.uiCurrentGroup = new System.Windows.Forms.GroupBox();
             this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiGroupSearch = new System.Windows.Forms.GroupBox();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
+            this.uiBrowserCurrentControlsContainer = new System.Windows.Forms.TableLayoutPanel();
+            this.uiPadCurrentControls = new System.Windows.Forms.Panel();
+            this.uiCurrentResult = new AutoTune.Gui.ResultView();
             this.uiDownloadQueue = new AutoTune.Gui.QueueView();
             this.uiPostProcessingQueue = new AutoTune.Gui.QueueView();
-            this.uiCurrentResult = new AutoTune.Gui.ResultView();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -61,7 +64,6 @@
             uiSearchPanel = new System.Windows.Forms.TableLayoutPanel();
             uiResultsContinueContainer = new System.Windows.Forms.TableLayoutPanel();
             uiPadLog = new System.Windows.Forms.Panel();
-            uiNotificationsCurrentContainer = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(uiSplitPlayerToggleSearch)).BeginInit();
             uiSplitPlayerToggleSearch.Panel1.SuspendLayout();
             uiSplitPlayerToggleSearch.Panel2.SuspendLayout();
@@ -70,6 +72,11 @@
             uiSplitPlayerToggleNotications.Panel1.SuspendLayout();
             uiSplitPlayerToggleNotications.Panel2.SuspendLayout();
             uiSplitPlayerToggleNotications.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.uiSplitBrowserCurrentControls)).BeginInit();
+            this.uiSplitBrowserCurrentControls.Panel1.SuspendLayout();
+            this.uiSplitBrowserCurrentControls.Panel2.SuspendLayout();
+            this.uiSplitBrowserCurrentControls.SuspendLayout();
+            this.uiCurrentGroup.SuspendLayout();
             uiNotificationsPanel.SuspendLayout();
             this.uiDownloadGroup.SuspendLayout();
             this.uiPostProcessingGroup.SuspendLayout();
@@ -79,12 +86,10 @@
             uiResultsContinueContainer.SuspendLayout();
             uiPadLog.SuspendLayout();
             this.uiLogGroup.SuspendLayout();
-            uiNotificationsCurrentContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotificationsLog)).BeginInit();
             this.uiSplitNotificationsLog.Panel1.SuspendLayout();
             this.uiSplitNotificationsLog.Panel2.SuspendLayout();
             this.uiSplitNotificationsLog.SuspendLayout();
-            this.uiCurrentGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotifications)).BeginInit();
             this.uiSplitNotifications.Panel1.SuspendLayout();
             this.uiSplitNotifications.Panel2.SuspendLayout();
@@ -94,6 +99,8 @@
             this.uiSplitSearch.Panel1.SuspendLayout();
             this.uiSplitSearch.Panel2.SuspendLayout();
             this.uiSplitSearch.SuspendLayout();
+            this.uiBrowserCurrentControlsContainer.SuspendLayout();
+            this.uiPadCurrentControls.SuspendLayout();
             this.SuspendLayout();
             // 
             // uiSplitPlayerToggleSearch
@@ -144,7 +151,7 @@
             // 
             // uiSplitPlayerToggleNotications.Panel1
             // 
-            uiSplitPlayerToggleNotications.Panel1.Controls.Add(this.uiBrowserContainer);
+            uiSplitPlayerToggleNotications.Panel1.Controls.Add(this.uiSplitBrowserCurrentControls);
             // 
             // uiSplitPlayerToggleNotications.Panel2
             // 
@@ -154,14 +161,62 @@
             uiSplitPlayerToggleNotications.SplitterDistance = 271;
             uiSplitPlayerToggleNotications.TabIndex = 0;
             // 
+            // uiSplitBrowserCurrentControls
+            // 
+            this.uiSplitBrowserCurrentControls.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiSplitBrowserCurrentControls.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.uiSplitBrowserCurrentControls.IsSplitterFixed = true;
+            this.uiSplitBrowserCurrentControls.Location = new System.Drawing.Point(0, 0);
+            this.uiSplitBrowserCurrentControls.Margin = new System.Windows.Forms.Padding(0);
+            this.uiSplitBrowserCurrentControls.Name = "uiSplitBrowserCurrentControls";
+            this.uiSplitBrowserCurrentControls.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // uiSplitBrowserCurrentControls.Panel1
+            // 
+            this.uiSplitBrowserCurrentControls.Panel1.Controls.Add(this.uiPadCurrentControls);
+            // 
+            // uiSplitBrowserCurrentControls.Panel2
+            // 
+            this.uiSplitBrowserCurrentControls.Panel2.Controls.Add(this.uiBrowserCurrentControlsContainer);
+            this.uiSplitBrowserCurrentControls.Size = new System.Drawing.Size(536, 271);
+            this.uiSplitBrowserCurrentControls.SplitterDistance = 90;
+            this.uiSplitBrowserCurrentControls.TabIndex = 0;
+            // 
+            // uiToggleCurrentControls
+            // 
+            this.uiToggleCurrentControls.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.uiToggleCurrentControls.AutoSize = true;
+            this.uiToggleCurrentControls.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.uiToggleCurrentControls.Location = new System.Drawing.Point(261, 0);
+            this.uiToggleCurrentControls.Margin = new System.Windows.Forms.Padding(0);
+            this.uiToggleCurrentControls.Name = "uiToggleCurrentControls";
+            this.uiToggleCurrentControls.Size = new System.Drawing.Size(13, 13);
+            this.uiToggleCurrentControls.TabIndex = 7;
+            this.uiToggleCurrentControls.TabStop = true;
+            this.uiToggleCurrentControls.Text = "<";
+            this.uiToggleCurrentControls.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleCurrentControlsClicked);
+            // 
+            // uiCurrentGroup
+            // 
+            this.uiCurrentGroup.Controls.Add(this.uiCurrentResult);
+            this.uiCurrentGroup.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiCurrentGroup.Location = new System.Drawing.Point(0, 3);
+            this.uiCurrentGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.uiCurrentGroup.Name = "uiCurrentGroup";
+            this.uiCurrentGroup.Padding = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.uiCurrentGroup.Size = new System.Drawing.Size(536, 87);
+            this.uiCurrentGroup.TabIndex = 6;
+            this.uiCurrentGroup.TabStop = false;
+            this.uiCurrentGroup.Text = "Current track";
+            // 
             // uiBrowserContainer
             // 
             this.uiBrowserContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiBrowserContainer.Location = new System.Drawing.Point(0, 0);
+            this.uiBrowserContainer.Location = new System.Drawing.Point(0, 15);
             this.uiBrowserContainer.Margin = new System.Windows.Forms.Padding(0);
             this.uiBrowserContainer.Name = "uiBrowserContainer";
             this.uiBrowserContainer.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.uiBrowserContainer.Size = new System.Drawing.Size(536, 271);
+            this.uiBrowserContainer.Size = new System.Drawing.Size(536, 162);
             this.uiBrowserContainer.TabIndex = 5;
             // 
             // uiToggleNotifications
@@ -191,10 +246,10 @@
             uiNotificationsPanel.Location = new System.Drawing.Point(0, 0);
             uiNotificationsPanel.Margin = new System.Windows.Forms.Padding(0);
             uiNotificationsPanel.Name = "uiNotificationsPanel";
-            uiNotificationsPanel.Padding = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            uiNotificationsPanel.Padding = new System.Windows.Forms.Padding(3);
             uiNotificationsPanel.RowCount = 1;
             uiNotificationsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            uiNotificationsPanel.Size = new System.Drawing.Size(189, 156);
+            uiNotificationsPanel.Size = new System.Drawing.Size(195, 257);
             uiNotificationsPanel.TabIndex = 0;
             // 
             // uiDownloadGroup
@@ -206,7 +261,7 @@
             this.uiDownloadGroup.Margin = new System.Windows.Forms.Padding(0, 0, 9, 0);
             this.uiDownloadGroup.Name = "uiDownloadGroup";
             this.uiDownloadGroup.Padding = new System.Windows.Forms.Padding(5);
-            this.uiDownloadGroup.Size = new System.Drawing.Size(72, 153);
+            this.uiDownloadGroup.Size = new System.Drawing.Size(75, 251);
             this.uiDownloadGroup.TabIndex = 0;
             this.uiDownloadGroup.TabStop = false;
             this.uiDownloadGroup.Text = "Downloads";
@@ -215,11 +270,11 @@
             // 
             this.uiPostProcessingGroup.Controls.Add(this.uiPostProcessingQueue);
             this.uiPostProcessingGroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiPostProcessingGroup.Location = new System.Drawing.Point(84, 3);
+            this.uiPostProcessingGroup.Location = new System.Drawing.Point(87, 3);
             this.uiPostProcessingGroup.Margin = new System.Windows.Forms.Padding(0, 0, 9, 0);
             this.uiPostProcessingGroup.Name = "uiPostProcessingGroup";
             this.uiPostProcessingGroup.Padding = new System.Windows.Forms.Padding(5);
-            this.uiPostProcessingGroup.Size = new System.Drawing.Size(72, 153);
+            this.uiPostProcessingGroup.Size = new System.Drawing.Size(75, 251);
             this.uiPostProcessingGroup.TabIndex = 1;
             this.uiPostProcessingGroup.TabStop = false;
             this.uiPostProcessingGroup.Text = "Post processing";
@@ -229,7 +284,7 @@
             this.uiToggleLog.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.uiToggleLog.AutoSize = true;
             this.uiToggleLog.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.uiToggleLog.Location = new System.Drawing.Point(170, 73);
+            this.uiToggleLog.Location = new System.Drawing.Point(176, 122);
             this.uiToggleLog.Name = "uiToggleLog";
             this.uiToggleLog.Size = new System.Drawing.Size(13, 13);
             this.uiToggleLog.TabIndex = 2;
@@ -250,7 +305,7 @@
             uiLogContainer.RowCount = 2;
             uiLogContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             uiLogContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            uiLogContainer.Size = new System.Drawing.Size(356, 130);
+            uiLogContainer.Size = new System.Drawing.Size(356, 228);
             uiLogContainer.TabIndex = 6;
             // 
             // uiLog
@@ -263,7 +318,7 @@
             this.uiLog.Name = "uiLog";
             this.uiLog.ReadOnly = true;
             this.uiLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.uiLog.Size = new System.Drawing.Size(350, 94);
+            this.uiLog.Size = new System.Drawing.Size(350, 195);
             this.uiLog.TabIndex = 5;
             // 
             // uiLogLevelContainer
@@ -373,8 +428,8 @@
             uiPadLog.Location = new System.Drawing.Point(0, 0);
             uiPadLog.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             uiPadLog.Name = "uiPadLog";
-            uiPadLog.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            uiPadLog.Size = new System.Drawing.Size(366, 156);
+            uiPadLog.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            uiPadLog.Size = new System.Drawing.Size(366, 257);
             uiPadLog.TabIndex = 3;
             // 
             // uiLogGroup
@@ -385,32 +440,17 @@
             this.uiLogGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.uiLogGroup.Name = "uiLogGroup";
             this.uiLogGroup.Padding = new System.Windows.Forms.Padding(5);
-            this.uiLogGroup.Size = new System.Drawing.Size(366, 153);
+            this.uiLogGroup.Size = new System.Drawing.Size(366, 251);
             this.uiLogGroup.TabIndex = 2;
             this.uiLogGroup.TabStop = false;
             this.uiLogGroup.Text = "Log";
-            // 
-            // uiNotificationsCurrentContainer
-            // 
-            uiNotificationsCurrentContainer.ColumnCount = 1;
-            uiNotificationsCurrentContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            uiNotificationsCurrentContainer.Controls.Add(this.uiSplitNotificationsLog, 0, 1);
-            uiNotificationsCurrentContainer.Controls.Add(this.uiCurrentGroup, 0, 0);
-            uiNotificationsCurrentContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            uiNotificationsCurrentContainer.Location = new System.Drawing.Point(0, 0);
-            uiNotificationsCurrentContainer.Name = "uiNotificationsCurrentContainer";
-            uiNotificationsCurrentContainer.RowCount = 2;
-            uiNotificationsCurrentContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 95F));
-            uiNotificationsCurrentContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            uiNotificationsCurrentContainer.Size = new System.Drawing.Size(565, 257);
-            uiNotificationsCurrentContainer.TabIndex = 0;
             // 
             // uiSplitNotificationsLog
             // 
             this.uiSplitNotificationsLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiSplitNotificationsLog.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.uiSplitNotificationsLog.IsSplitterFixed = true;
-            this.uiSplitNotificationsLog.Location = new System.Drawing.Point(3, 98);
+            this.uiSplitNotificationsLog.Location = new System.Drawing.Point(0, 0);
             this.uiSplitNotificationsLog.Name = "uiSplitNotificationsLog";
             // 
             // uiSplitNotificationsLog.Panel1
@@ -420,22 +460,9 @@
             // uiSplitNotificationsLog.Panel2
             // 
             this.uiSplitNotificationsLog.Panel2.Controls.Add(uiPadLog);
-            this.uiSplitNotificationsLog.Size = new System.Drawing.Size(559, 156);
-            this.uiSplitNotificationsLog.SplitterDistance = 189;
+            this.uiSplitNotificationsLog.Size = new System.Drawing.Size(565, 257);
+            this.uiSplitNotificationsLog.SplitterDistance = 195;
             this.uiSplitNotificationsLog.TabIndex = 1;
-            // 
-            // uiCurrentGroup
-            // 
-            this.uiCurrentGroup.Controls.Add(this.uiCurrentResult);
-            this.uiCurrentGroup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiCurrentGroup.Location = new System.Drawing.Point(6, 3);
-            this.uiCurrentGroup.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-            this.uiCurrentGroup.Name = "uiCurrentGroup";
-            this.uiCurrentGroup.Padding = new System.Windows.Forms.Padding(3, 3, 3, 8);
-            this.uiCurrentGroup.Size = new System.Drawing.Size(556, 89);
-            this.uiCurrentGroup.TabIndex = 6;
-            this.uiCurrentGroup.TabStop = false;
-            this.uiCurrentGroup.Text = "Current track";
             // 
             // uiSplitNotifications
             // 
@@ -453,7 +480,7 @@
             // 
             // uiSplitNotifications.Panel2
             // 
-            this.uiSplitNotifications.Panel2.Controls.Add(uiNotificationsCurrentContainer);
+            this.uiSplitNotifications.Panel2.Controls.Add(this.uiSplitNotificationsLog);
             this.uiSplitNotifications.Size = new System.Drawing.Size(565, 561);
             this.uiSplitNotifications.SplitterDistance = 300;
             this.uiSplitNotifications.TabIndex = 0;
@@ -491,13 +518,48 @@
             this.uiSplitSearch.SplitterDistance = 415;
             this.uiSplitSearch.TabIndex = 6;
             // 
+            // uiBrowserCurrentControlsContainer
+            // 
+            this.uiBrowserCurrentControlsContainer.ColumnCount = 1;
+            this.uiBrowserCurrentControlsContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.uiBrowserCurrentControlsContainer.Controls.Add(this.uiBrowserContainer, 0, 1);
+            this.uiBrowserCurrentControlsContainer.Controls.Add(this.uiToggleCurrentControls, 0, 0);
+            this.uiBrowserCurrentControlsContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiBrowserCurrentControlsContainer.Location = new System.Drawing.Point(0, 0);
+            this.uiBrowserCurrentControlsContainer.Name = "uiBrowserCurrentControlsContainer";
+            this.uiBrowserCurrentControlsContainer.RowCount = 2;
+            this.uiBrowserCurrentControlsContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
+            this.uiBrowserCurrentControlsContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.uiBrowserCurrentControlsContainer.Size = new System.Drawing.Size(536, 177);
+            this.uiBrowserCurrentControlsContainer.TabIndex = 0;
+            // 
+            // uiPadCurrentControls
+            // 
+            this.uiPadCurrentControls.Controls.Add(this.uiCurrentGroup);
+            this.uiPadCurrentControls.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiPadCurrentControls.Location = new System.Drawing.Point(0, 0);
+            this.uiPadCurrentControls.Name = "uiPadCurrentControls";
+            this.uiPadCurrentControls.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.uiPadCurrentControls.Size = new System.Drawing.Size(536, 90);
+            this.uiPadCurrentControls.TabIndex = 0;
+            // 
+            // uiCurrentResult
+            // 
+            this.uiCurrentResult.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.uiCurrentResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiCurrentResult.Location = new System.Drawing.Point(3, 16);
+            this.uiCurrentResult.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.uiCurrentResult.Name = "uiCurrentResult";
+            this.uiCurrentResult.Size = new System.Drawing.Size(530, 63);
+            this.uiCurrentResult.TabIndex = 0;
+            // 
             // uiDownloadQueue
             // 
             this.uiDownloadQueue.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiDownloadQueue.Location = new System.Drawing.Point(5, 18);
             this.uiDownloadQueue.MinimumSize = new System.Drawing.Size(372, 100);
             this.uiDownloadQueue.Name = "uiDownloadQueue";
-            this.uiDownloadQueue.Size = new System.Drawing.Size(372, 130);
+            this.uiDownloadQueue.Size = new System.Drawing.Size(372, 228);
             this.uiDownloadQueue.TabIndex = 0;
             // 
             // uiPostProcessingQueue
@@ -509,18 +571,8 @@
             this.uiPostProcessingQueue.Location = new System.Drawing.Point(5, 18);
             this.uiPostProcessingQueue.MinimumSize = new System.Drawing.Size(372, 100);
             this.uiPostProcessingQueue.Name = "uiPostProcessingQueue";
-            this.uiPostProcessingQueue.Size = new System.Drawing.Size(372, 130);
+            this.uiPostProcessingQueue.Size = new System.Drawing.Size(372, 228);
             this.uiPostProcessingQueue.TabIndex = 0;
-            // 
-            // uiCurrentResult
-            // 
-            this.uiCurrentResult.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.uiCurrentResult.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiCurrentResult.Location = new System.Drawing.Point(3, 16);
-            this.uiCurrentResult.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.uiCurrentResult.Name = "uiCurrentResult";
-            this.uiCurrentResult.Size = new System.Drawing.Size(550, 65);
-            this.uiCurrentResult.TabIndex = 0;
             // 
             // MainWindow
             // 
@@ -543,6 +595,11 @@
             uiSplitPlayerToggleNotications.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(uiSplitPlayerToggleNotications)).EndInit();
             uiSplitPlayerToggleNotications.ResumeLayout(false);
+            this.uiSplitBrowserCurrentControls.Panel1.ResumeLayout(false);
+            this.uiSplitBrowserCurrentControls.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.uiSplitBrowserCurrentControls)).EndInit();
+            this.uiSplitBrowserCurrentControls.ResumeLayout(false);
+            this.uiCurrentGroup.ResumeLayout(false);
             uiNotificationsPanel.ResumeLayout(false);
             uiNotificationsPanel.PerformLayout();
             this.uiDownloadGroup.ResumeLayout(false);
@@ -558,12 +615,10 @@
             uiResultsContinueContainer.PerformLayout();
             uiPadLog.ResumeLayout(false);
             this.uiLogGroup.ResumeLayout(false);
-            uiNotificationsCurrentContainer.ResumeLayout(false);
             this.uiSplitNotificationsLog.Panel1.ResumeLayout(false);
             this.uiSplitNotificationsLog.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotificationsLog)).EndInit();
             this.uiSplitNotificationsLog.ResumeLayout(false);
-            this.uiCurrentGroup.ResumeLayout(false);
             this.uiSplitNotifications.Panel1.ResumeLayout(false);
             this.uiSplitNotifications.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotifications)).EndInit();
@@ -573,6 +628,9 @@
             this.uiSplitSearch.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitSearch)).EndInit();
             this.uiSplitSearch.ResumeLayout(false);
+            this.uiBrowserCurrentControlsContainer.ResumeLayout(false);
+            this.uiBrowserCurrentControlsContainer.PerformLayout();
+            this.uiPadCurrentControls.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -600,6 +658,10 @@
         private System.Windows.Forms.LinkLabel uiLoadMore;
         private System.Windows.Forms.GroupBox uiCurrentGroup;
         private ResultView uiCurrentResult;
+        private System.Windows.Forms.SplitContainer uiSplitBrowserCurrentControls;
+        private System.Windows.Forms.LinkLabel uiToggleCurrentControls;
+        private System.Windows.Forms.TableLayoutPanel uiBrowserCurrentControlsContainer;
+        private System.Windows.Forms.Panel uiPadCurrentControls;
     }
 }
 

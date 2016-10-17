@@ -9,6 +9,7 @@ namespace AutoTune.Settings {
         public bool LogCollapsed { get; set; } = true;
         public bool SearchCollapsed { get; set; } = false;
         public bool NotificationsCollapsed { get; set; } = false;
+        public bool CurrentControlsCollapsed { get; set; } = false;
         public LogLevel TraceLevel { get; set; } = LogLevel.Info;
 
         protected override void OnTerminating() {
