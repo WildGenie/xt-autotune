@@ -17,6 +17,7 @@ namespace AutoTune.Gui {
 
     public partial class MainWindow : Form {
 
+        const int ShowLogMinWidth = 1250;
         static readonly string UnicodeUp = "\u25b2";
         static readonly string UnicodeDown = "\u25bc";
         static readonly string UnicodeLeft = "\u25c0";
@@ -86,12 +87,11 @@ namespace AutoTune.Gui {
             var ui = UiSettings.Instance;
             uiQuery.Text = ui.LastSearch;
             uiLogLevel.SelectedItem = ui.TraceLevel;
+            ToggleLog(UiSettings.Instance.LogCollapsed);
             uiSplitSearch.Panel1Collapsed = ui.SearchCollapsed;
             uiToggleSearch.Text = ui.SearchCollapsed ? UnicodeRight : UnicodeLeft;
             uiSplitNotificationsLog.Panel2Collapsed = ui.LogCollapsed;
             uiSplitBrowserCurrentControls.Panel1Collapsed = ui.CurrentControlsCollapsed;
-            uiToggleLog.Text = ui.LogCollapsed ? UnicodeLeft : UnicodeRight;
-            uiSplitNotifications.Panel2Collapsed = ui.NotificationsCollapsed;
             uiToggleNotifications.Text = ui.NotificationsCollapsed ? UnicodeUp : UnicodeDown;
             uiToggleCurrentControls.Text = uiSplitBrowserCurrentControls.Panel1Collapsed ? UnicodeDown : UnicodeUp;
             uiCurrentResult.SetResult(ui.CurrentTrack);
@@ -195,6 +195,11 @@ namespace AutoTune.Gui {
             searchState = Search.Start(searchQuery, null, AppendResults);
         }
 
+        void OnMainWindowResized(object sender, EventArgs e) {
+            ToggleLog(UiSettings.Instance.LogCollapsed);
+            uiToggleLog.Visible = Width >= ShowLogMinWidth;
+        }
+
         void OnLoadMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (searchQuery != null || searchSimilar != null)
                 Search.Continue(searchState, searchQuery, searchSimilar, AppendResults);
@@ -216,9 +221,16 @@ namespace AutoTune.Gui {
         }
 
         void OnToggleLogClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            uiToggleLog.Text = uiSplitNotificationsLog.Panel2Collapsed ? UnicodeRight : UnicodeLeft;
-            uiSplitNotificationsLog.Panel2Collapsed = !uiSplitNotificationsLog.Panel2Collapsed;
-            UiSettings.Instance.LogCollapsed = uiSplitNotificationsLog.Panel2Collapsed;
+            if (Width < ShowLogMinWidth)
+                return;
+            UiSettings.Instance.LogCollapsed = !UiSettings.Instance.LogCollapsed;
+            ToggleLog(UiSettings.Instance.LogCollapsed);
+        }
+
+        void ToggleLog(bool collapsed) {
+            bool realCollapsed = collapsed || Width < ShowLogMinWidth;
+            uiToggleLog.Text = realCollapsed ? UnicodeLeft : UnicodeRight;
+            uiSplitNotificationsLog.Panel2Collapsed = realCollapsed;
         }
 
         void ToggleSearchClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -276,6 +288,6 @@ namespace AutoTune.Gui {
             view.SimilarClicked += OnResultSimilarClicked;
             view.DownloadClicked += OnResultDownloadClicked;
             view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<Result>(((ResultView)s).Result));
-        }        
+        }
     }
 }
