@@ -8,9 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoTune.Extractor</RootNamespace>
-    <AssemblyName>AutoTune.Extractor</AssemblyName>
+    <RootNamespace>AutoTune.Fetch</RootNamespace>
+    <AssemblyName>AutoTune.Fetch</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
@@ -49,10 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extractor.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
+    <Compile Include="Fetch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -73,6 +69,10 @@
   <Import Project="..\packages\cef.redist.x86.3.2785.1482\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2785.1482\build\cef.redist.x86.targets')" />
   <Import Project="..\packages\CefSharp.Common.53.0.0\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.53.0.0\build\CefSharp.Common.targets')" />
   <Import Project="..\packages\CefSharp.WinForms.53.0.0\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.53.0.0\build\CefSharp.WinForms.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

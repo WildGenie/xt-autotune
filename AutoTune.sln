@@ -4,8 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune", "AutoTune\AutoTune.csproj", "{4FEA1376-29DE-416A-9F6B-71D06E26E48E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0} = {C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune.Extractor", "AutoTune.Extractor\AutoTune.Extractor.csproj", "{C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune.Fetch", "AutoTune.Fetch\AutoTune.Fetch.csproj", "{C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

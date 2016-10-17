@@ -57,24 +57,6 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
       <HintPath>..\packages\BouncyCastle.1.7.0\lib\Net40-Client\BouncyCastle.Crypto.dll</HintPath>
@@ -143,8 +125,10 @@
     <Compile Include="Drivers\SearchState.cs" />
     <Compile Include="Drivers\VimeoSearch.cs" />
     <Compile Include="Drivers\VimeoVideoClient.cs" />
-    <Compile Include="Shared\ApiKeys.cs" />
-    <Compile Include="Shared\LocalPaths.cs" />
+    <Compile Include="Settings\AppSettings.cs" />
+    <Compile Include="Settings\ThemeSettings.cs" />
+    <Compile Include="Settings\UiSettings.cs" />
+    <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="Gui\QueueItemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -180,9 +164,9 @@
       <DependentUpon>ResultView.cs</DependentUpon>
     </Compile>
     <Compile Include="Drivers\Search.cs" />
-    <Compile Include="Shared\Settings.cs" />
     <Compile Include="Drivers\YouTubeSearch.cs" />
     <Compile Include="Shared\SettingsBase.cs" />
+    <Compile Include="Shared\Utility.cs" />
     <EmbeddedResource Include="Gui\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -213,7 +197,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="extract.html" />
+    <EmbeddedResource Include="fetch.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="startup.html" />
@@ -234,4 +218,7 @@
   <Import Project="..\packages\cef.redist.x86.3.2785.1482\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2785.1482\build\cef.redist.x86.targets')" />
   <Import Project="..\packages\CefSharp.Common.53.0.0\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.53.0.0\build\CefSharp.Common.targets')" />
   <Import Project="..\packages\CefSharp.WinForms.53.0.0\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.53.0.0\build\CefSharp.WinForms.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /e /y "$(SolutionDir)AutoTune.Fetch\bin\$(Configuration)\*.*"  "$(TargetDir)\Fetch\"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

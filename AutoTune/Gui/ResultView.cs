@@ -1,4 +1,5 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Settings;
+using AutoTune.Shared;
 using System;
 using System.Drawing;
 using System.IO;
@@ -25,7 +26,7 @@ namespace AutoTune.Gui {
         }
 
         void InitializeColors() {
-            var theme = Settings.Instance.Theme;
+            var theme = ThemeSettings.Instance;
             var back2 = ColorTranslator.FromHtml(theme.BackColor2);
             var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
             var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);
@@ -46,21 +47,13 @@ namespace AutoTune.Gui {
 
         public void SetResult(Result result) {
             this.result = result;
-            if (result?.ThumbnailUrl == null)
-                InitializeResult(null);
-            else
-                using (WebClient client = new WebClient()) {
-                    client.DownloadDataCompleted += (s, evt) => Invoke(new Action(() => InitializeResult(evt.Result)));
-                    client.DownloadDataAsync(new Uri(result.ThumbnailUrl));
-                }
+            Utility.WhenImageDownloaded(result?.ThumbnailUrl, i => Invoke(new Action(() => InitializeResult(i))));
         }
 
-        void InitializeResult(byte[] imageData) {
+        void InitializeResult(Image image) {
             uiText.Text = "";
+            uiImage.Image = image;
             uiType.Text = result == null ? "" : result.Type;
-            if (imageData != null)
-                using (var stream = new MemoryStream(imageData))
-                    uiImage.Image = Image.FromStream(stream);
             if (result != null) {
                 string text = "{\\rtf \\b " + result.Title + " \\b0 ";
                 text += " \\line " + result.Description + " }";

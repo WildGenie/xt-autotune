@@ -1,5 +1,6 @@
 ﻿using AutoTune.Drivers;
 using AutoTune.Queue;
+using AutoTune.Settings;
 using AutoTune.Shared;
 using CefSharp;
 using CefSharp.WinForms;
@@ -31,14 +32,14 @@ namespace AutoTune.Gui {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         static void Run() {
-            LocalPaths.Initialize();
-            ApiKeys.Initialize();
-            Settings.Initialize();
+            UiSettings.Initialize();
+            AppSettings.Initialize();
+            UserSettings.Initialize();
+            ThemeSettings.Initialize();
             var cef = new CefSettings();
-            var settings = Settings.Instance;
             var proc = "CefSharp.BrowserSubprocess.exe";
-            cef.CachePath = LocalPaths.Instance.BrowserCacheFolder;
-            cef.PersistSessionCookies = settings.General.PersistSessions;
+            cef.CachePath = AppSettings.BrowserCacheFolder;
+            cef.PersistSessionCookies = AppSettings.Instance.PersistBrowserSessions;
             cef.BrowserSubprocessPath = Path.Combine(AppBase, Arch, proc);
             Cef.Initialize(cef);
             Application.EnableVisualStyles();
@@ -59,24 +60,15 @@ namespace AutoTune.Gui {
         private string searchQuery = null;
         private Result searchSimilar = null;
         private IDictionary<string, SearchState> searchState;
-        private readonly ChromiumWebBrowser uiBrowser = new ChromiumWebBrowser(LocalPaths.Instance.StartupFilePath);
+        private readonly ChromiumWebBrowser uiBrowser = new ChromiumWebBrowser(AppSettings.StartupFilePath);
 
         MainWindow() {
             InitializeComponent();
             InitializeControls();
             InitializeSettings();
             InitializeColors();
-            InitializeQueues();
             InitializeLog();
             initializing = false;
-        }
-
-        void InitializeQueues() {
-            DownloadQueue.Initialize();
-            PostProcessingQueue.Initialize();
-            uiDownloadQueue.Initialize(DownloadQueue.Instance);
-            uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
-            DownloadQueue.Instance.Completed += (s, e) => Invoke(new Action(() => uiPostProcessingQueue.Enqueue(e.Data.NewId())));
         }
 
         void InitializeControls() {
@@ -91,8 +83,7 @@ namespace AutoTune.Gui {
         }
 
         void InitializeSettings() {
-            var ui = Settings.Instance.UI;
-            var current = Settings.Instance.General.CurrentTrack;
+            var ui = UiSettings.Instance;
             uiQuery.Text = ui.LastSearch;
             uiLogLevel.SelectedItem = ui.TraceLevel;
             uiSplitSearch.Panel1Collapsed = ui.SearchCollapsed;
@@ -101,13 +92,13 @@ namespace AutoTune.Gui {
             uiToggleLog.Text = ui.LogCollapsed ? UnicodeLeft : UnicodeRight;
             uiSplitNotifications.Panel2Collapsed = ui.NotificationsCollapsed;
             uiToggleNotifications.Text = ui.NotificationsCollapsed ? UnicodeUp : UnicodeDown;
-            uiCurrentResult.SetResult(current);
-            if (current != null)
-                uiBrowser.Load(current.Url);
+            uiCurrentResult.SetResult(ui.CurrentTrack);
+            if (ui.CurrentTrack != null)
+                uiBrowser.Load(ui.CurrentTrack.Url);
         }
 
         void InitializeLog() {
-            logger = new StreamWriter(Path.Combine(Settings.GetFolderPath(), "autotune.log").ToString(), false);
+            logger = new StreamWriter(AppSettings.LogFilePath, false);
             Logger.Trace += (s, e) => WriteLog(e.Level, e.Message);
             Logger.Trace += (s, e) => {
                 logger.WriteLine(string.Format("{0}: {1}: {2}.", DateTime.Now.ToLongTimeString(), e.Level, e.Message));
@@ -117,7 +108,7 @@ namespace AutoTune.Gui {
         }
 
         void InitializeColors() {
-            var theme = Settings.Instance.Theme;
+            var theme = ThemeSettings.Instance;
             var back1 = ColorTranslator.FromHtml(theme.BackColor1);
             var back2 = ColorTranslator.FromHtml(theme.BackColor2);
             var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
@@ -146,6 +137,11 @@ namespace AutoTune.Gui {
         }
 
         void OnMainWindowShown(object sender, EventArgs e) {
+            DownloadQueue.Initialize();
+            PostProcessingQueue.Initialize();
+            uiDownloadQueue.Initialize(DownloadQueue.Instance);
+            uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
+            DownloadQueue.Instance.Completed += (s, evt) => Invoke(new Action(() => uiPostProcessingQueue.Enqueue(evt.Data.NewId())));
             DownloadQueue.Start();
             PostProcessingQueue.Start();
             StartSearch();
@@ -153,16 +149,19 @@ namespace AutoTune.Gui {
 
         void OnMainWindowClosed(object sender, FormClosedEventArgs e) {
             Cef.Shutdown();
-            Settings.Save();
-            DownloadQueue.Terminate();
-            PostProcessingQueue.Terminate();
             logger.Flush();
             logger.Dispose();
+            UiSettings.Terminate();
+            AppSettings.Terminate();
+            UserSettings.Terminate();
+            ThemeSettings.Terminate();
+            DownloadQueue.Terminate();
+            PostProcessingQueue.Terminate();
         }
 
         void OnLogLevelSelectionChanged(object sender, EventArgs e) {
             if (!initializing)
-                Settings.Instance.UI.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
+                UiSettings.Instance.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
         }
 
         void OnResultDownloadClicked(object sender, EventArgs<Result> e) {
@@ -188,7 +187,7 @@ namespace AutoTune.Gui {
             uiResults.Controls.Clear();
             searchSimilar = null;
             searchQuery = uiQuery.Text.Trim();
-            Settings.Instance.UI.LastSearch = searchQuery;
+            UiSettings.Instance.LastSearch = searchQuery;
             searchState = Search.Start(searchQuery, null, AppendResults);
         }
 
@@ -198,7 +197,7 @@ namespace AutoTune.Gui {
         }
 
         void OnUiResultsScroll(object sender, ScrollEventArgs e) {
-            if (searchState == null || appendingResult || !Settings.Instance.General.AutoLoadMore)
+            if (searchState == null || appendingResult || !AppSettings.Instance.AutoLoadMoreSearchResults)
                 return;
             VScrollProperties properties = uiResults.VerticalScroll;
             if (e.NewValue != properties.Maximum - properties.LargeChange + 1)
@@ -208,26 +207,26 @@ namespace AutoTune.Gui {
 
         void OnResultPlayClicked(object sender, EventArgs<Result> e) {
             uiBrowser.Load(e.Data.PlayUrl);
-            Settings.Instance.General.CurrentTrack = e.Data;
+            UiSettings.Instance.CurrentTrack = e.Data;
             uiCurrentResult.SetResult(e.Data);
         }
 
         void OnToggleLogClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             uiToggleLog.Text = uiSplitNotificationsLog.Panel2Collapsed ? UnicodeRight : UnicodeLeft;
             uiSplitNotificationsLog.Panel2Collapsed = !uiSplitNotificationsLog.Panel2Collapsed;
-            Settings.Instance.UI.LogCollapsed = uiSplitNotificationsLog.Panel2Collapsed;
+            UiSettings.Instance.LogCollapsed = uiSplitNotificationsLog.Panel2Collapsed;
         }
 
         void ToggleSearchClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             uiToggleSearch.Text = uiSplitSearch.Panel1Collapsed ? UnicodeLeft : UnicodeRight;
             uiSplitSearch.Panel1Collapsed = !uiSplitSearch.Panel1Collapsed;
-            Settings.Instance.UI.SearchCollapsed = uiSplitSearch.Panel1Collapsed;
+            UiSettings.Instance.SearchCollapsed = uiSplitSearch.Panel1Collapsed;
         }
 
         void ToggleNotificationsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             uiToggleNotifications.Text = uiSplitNotifications.Panel2Collapsed ? UnicodeDown : UnicodeUp;
             uiSplitNotifications.Panel2Collapsed = !uiSplitNotifications.Panel2Collapsed;
-            Settings.Instance.UI.NotificationsCollapsed = uiSplitNotifications.Panel2Collapsed;
+            UiSettings.Instance.NotificationsCollapsed = uiSplitNotifications.Panel2Collapsed;
         }
 
         void WriteLog(LogLevel level, string text) {

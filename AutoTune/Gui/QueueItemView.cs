@@ -1,4 +1,5 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Settings;
+using AutoTune.Shared;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -15,27 +16,31 @@ namespace AutoTune.Gui {
 
         public event EventHandler<EventArgs<Result>> Play;
 
-        public readonly Result result;
+        public Result result;
         public string State { get { return uiState.Text; } }
 
-        public QueueItemView(Result result) {
-            this.result = result;
+        public QueueItemView() {
             InitializeComponent();
-            InitializeResult();
             InitializeColors();
+            uiState.Text = Queued;
         }
 
         public void SetState(string state) {
             Invoke(new Action(() => uiState.Text = state));
         }
 
-        void InitializeResult() {
+        public void Initialize(Result result) {
+            this.result = result;
+            Utility.WhenImageDownloaded(result?.ThumbnailUrl, i => Invoke(new Action(() => InitializeResult(i))));
+        }
+
+        void InitializeResult(Image image) {
             uiTitle.Text = result.Title;
-            uiState.Text = Queued;
+            uiImage.Image = image;
         }
 
         void InitializeColors() {
-            var theme = Settings.Instance.Theme;
+            var theme = ThemeSettings.Instance;
             var back2 = ColorTranslator.FromHtml(theme.BackColor2);
             var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
             var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);

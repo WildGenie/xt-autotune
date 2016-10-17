@@ -10,12 +10,10 @@ namespace AutoTune.Shared {
         public string PlayUrl { get; set; }
         public string VideoId { get; set; }
         public string FileName { get; set; }
-        public bool KeepOriginal { get; set; }
         public string DownloadUrl { get; set; }
         public string Description { get; set; }
         public string DownloadPath { get; set; }
         public string ThumbnailUrl { get; set; }
-        public bool ShouldPostProcess { get; set; }
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
         public Result NewId() {

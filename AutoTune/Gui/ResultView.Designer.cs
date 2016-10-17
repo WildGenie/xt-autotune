@@ -112,7 +112,7 @@
             this.uiType.Name = "uiType";
             this.uiType.Size = new System.Drawing.Size(39, 13);
             this.uiType.TabIndex = 5;
-            this.uiType.Text = "Spotify";
+            this.uiType.Text = "YouTube";
             // 
             // ResultView
             // 

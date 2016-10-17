@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace AutoTune.Extractor {
+namespace AutoTune.Fetch {
 
-    public static class Extractor {
+    public static class Fetch {
 
         static bool shown = false;
         static string result = null;
@@ -141,7 +141,7 @@ namespace AutoTune.Extractor {
         static void OnFrameLoadEnd(ChromiumWebBrowser browser, string path, string url, FrameLoadEndEventArgs e) {
             bool wasPathLoad = false;
             bool wasBlankLoad = false;
-            string script = "extractLink('" + url + "')";
+            string script = "fetchLink('" + url + "')";
             lock (LoadLock) {
                 if (!blankLoad) {
                     blankLoad = true;

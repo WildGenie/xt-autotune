@@ -11,7 +11,7 @@ function iFrameDoc() {
   return document.getElementById('container').contentWindow.document;
 }
 
-function extractLink(url) {
+function fetchLink(url) {
   var grab = iFrameDoc().getElementById('grab1');
   var input = iFrameDoc().getElementById('input1');
   if(!input || !grab)

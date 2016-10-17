@@ -1,4 +1,5 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Settings;
+using AutoTune.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,10 +19,10 @@ namespace AutoTune.Drivers {
         static readonly Dictionary<string, string> ExtensionsByContentType = new Dictionary<string, string>();
 
         static string DoPostProcess(Result result) {
-            var paths = LocalPaths.Instance;
-            var processing = Settings.Instance.PostProcessing;
+            var user = UserSettings.Instance;
+            var processing = AppSettings.Instance.PostProcessing;
             string name = Guid.NewGuid().ToString();
-            string path = Path.Combine(paths.ProcessFolder, name);
+            string path = Path.Combine(user.ProcessFolder, name);
             string args = string.Format(processing.Arguments, result.DownloadPath, path, processing.Extension);
             ProcessStartInfo info = new ProcessStartInfo(processing.Command, args);
             info.UseShellExecute = false;
@@ -38,9 +39,9 @@ namespace AutoTune.Drivers {
         }
 
         static void CopyToTarget(Result result, string fromPath) {
-            var paths = LocalPaths.Instance;
+            var user = UserSettings.Instance;
             string fileName = result.FileName + Path.GetExtension(fromPath);
-            string toPath = Path.Combine(paths.TargetFolder, fileName);
+            string toPath = Path.Combine(user.TargetFolder, fileName);
             int counter = 1;
             while (true)
                 try {
@@ -52,43 +53,44 @@ namespace AutoTune.Drivers {
                     if (!File.Exists(toPath))
                         throw;
                     fileName = result.FileName + " (" + counter++ + ")" + Path.GetExtension(fromPath);
-                    toPath = Path.Combine(paths.TargetFolder, fileName);
+                    toPath = Path.Combine(user.TargetFolder, fileName);
                 }
         }
 
         public static void PostProcess(Result result) {
+            var postProcessing = AppSettings.Instance.PostProcessing;
             if (!File.Exists(result.DownloadPath))
                 throw new FileNotFoundException(string.Format("File not found: {0}.", result.DownloadPath));
-            if (result.ShouldPostProcess) {
+            if (postProcessing.Enabled) {
                 string processPath = DoPostProcess(result);
                 if (!File.Exists(processPath))
                     throw new FileNotFoundException(string.Format("File not found: {0}.", processPath));
                 CopyToTarget(result, processPath);
                 File.Delete(processPath);
             }
-            if (!result.ShouldPostProcess || result.KeepOriginal)
+            if (!postProcessing.Enabled || postProcessing.KeepOriginal)
                 CopyToTarget(result, result.DownloadPath);
             File.Delete(result.DownloadPath);
         }
 
         public static void Download(Result result) {
-            var paths = LocalPaths.Instance;
-            var general = Settings.Instance.General;
-            string delimiter = general.ExtractorDelimiter;
-            string args = string.Format("\"{0}\" {1} {2} {3}", paths.ExtractorFilePath, result.DownloadUrl, delimiter, general.ExtractorTimeout);
-            ProcessStartInfo info = new ProcessStartInfo(paths.ExtractorExecutablePath, args);
+            var app = AppSettings.Instance;
+            var user = UserSettings.Instance;
+            string delimiter = Guid.NewGuid().ToString();
+            string args = string.Format("\"{0}\" {1} {2} {3}", AppSettings.FetchFilePath, result.DownloadUrl, delimiter, app.FetchTimeout);
+            ProcessStartInfo info = new ProcessStartInfo(AppSettings.FetchExecutablePath, args);
             string link = null;
             info.CreateNoWindow = true;
             info.UseShellExecute = false;
             info.RedirectStandardOutput = true;
-            using (Process extract = Process.Start(info)) {
-                extract.WaitForExit();
-                string output = extract.StandardOutput.ReadToEnd();
+            using (Process fetch = Process.Start(info)) {
+                fetch.WaitForExit();
+                string output = fetch.StandardOutput.ReadToEnd();
                 link = output.Substring(output.IndexOf(delimiter) + delimiter.Length);
                 link = link.Substring(0, link.IndexOf(delimiter));
-                if (extract.ExitCode != 0) {
-                    Logger.Debug("Extraction error: console output: {0}.", output);
-                    string format = "Extraction of {0} returned with code: {1}.";
+                if (fetch.ExitCode != 0) {
+                    Logger.Debug("Fetch error: console output: {0}.", output);
+                    string format = "Fetching {0} returned with code: {1}.";
                     throw new DriverException(string.Format(format, result.Title, link));
                 }
             }
@@ -124,7 +126,7 @@ namespace AutoTune.Drivers {
             }
             result.FileName = Path.GetFileNameWithoutExtension(fileName);
             string tempName = Guid.NewGuid().ToString() + Path.GetExtension(fileName);
-            result.DownloadPath = Path.Combine(paths.DownloadFolder, tempName);
+            result.DownloadPath = Path.Combine(user.DownloadFolder, tempName);
             File.WriteAllBytes(result.DownloadPath, bytes);
         }
     }

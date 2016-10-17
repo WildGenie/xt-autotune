@@ -35,11 +35,19 @@ namespace AutoTune.Queue {
         protected abstract int GetThreadCount();
         protected abstract void ProcessItem(Result result);
 
+        protected override void OnInitialized() {
+        }
+
         public void Clear() {
             lock (Lock) {
                 Items.Clear();
                 InProgress.Clear();
             }
+        }
+
+        protected override void OnTerminating() {
+            lock (Instance.Lock)
+                   Instance.Items.InsertRange(0, Instance.InProgress);
         }
 
         public static void Start() {
@@ -50,12 +58,6 @@ namespace AutoTune.Queue {
                 thread.IsBackground = true;
                 thread.Start();
             }
-        }
-
-        protected static void Terminate(string fileName) {
-            lock (Instance.Lock)
-                    Instance.Items.InsertRange(0, Instance.InProgress);
-            Save(fileName);
         }
 
         public void Enqueue(Result result, Action ifQueued) {

@@ -1,10 +1,11 @@
 ﻿using AutoTune.Queue;
-using System.Linq;
+using AutoTune.Settings;
 using AutoTune.Shared;
 using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
@@ -33,7 +34,8 @@ namespace AutoTune.Gui {
         }
 
         void InitializeColors() {
-            var fore2 = ColorTranslator.FromHtml(Settings.Instance.Theme.ForeColor2);
+            var theme = ThemeSettings.Instance;
+            var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);
             uiPause.LinkColor = fore2;
             uiPause.ActiveLinkColor = fore2;
             uiHideFinished.LinkColor = fore2;
@@ -54,10 +56,11 @@ namespace AutoTune.Gui {
         }
 
         void AddView(Result result) {
-            QueueItemView view = new QueueItemView(result);
+            QueueItemView view = new QueueItemView();
             view.Play += (s, e) => Play(this, e);
             ResizeView(view);
             uiItems.Controls.Add(view);
+            view.Initialize(result);
         }
 
         void OnClearQueueClicked(object sender, LinkLabelLinkClickedEventArgs e) {

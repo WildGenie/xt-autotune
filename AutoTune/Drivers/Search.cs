@@ -1,4 +1,5 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Settings;
+using AutoTune.Shared;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,10 +19,10 @@ namespace AutoTune.Drivers {
             lock (Lock) {
                 if (Drivers.Count > 0)
                     return;
-                if (Settings.Instance.YouTube.Enabled)
-                    Drivers.Add(YouTubeSearch.TypeId, new YouTubeSearch());
-                if (Settings.Instance.Vimeo.Enabled)
+                if (AppSettings.Instance.Vimeo.Enabled)
                     Drivers.Add(VimeoSearch.TypeId, new VimeoSearch());
+                if (AppSettings.Instance.YouTube.Enabled)
+                    Drivers.Add(YouTubeSearch.TypeId, new YouTubeSearch());
             }
         }
 
