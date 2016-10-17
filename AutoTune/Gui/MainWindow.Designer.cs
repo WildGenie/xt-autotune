@@ -188,7 +188,7 @@
             this.uiPadCurrentControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiPadCurrentControls.Location = new System.Drawing.Point(0, 0);
             this.uiPadCurrentControls.Name = "uiPadCurrentControls";
-            this.uiPadCurrentControls.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.uiPadCurrentControls.Padding = new System.Windows.Forms.Padding(0, 3, 3, 0);
             this.uiPadCurrentControls.Size = new System.Drawing.Size(496, 90);
             this.uiPadCurrentControls.TabIndex = 0;
             // 
@@ -200,7 +200,7 @@
             this.uiCurrentGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.uiCurrentGroup.Name = "uiCurrentGroup";
             this.uiCurrentGroup.Padding = new System.Windows.Forms.Padding(3, 3, 3, 8);
-            this.uiCurrentGroup.Size = new System.Drawing.Size(496, 87);
+            this.uiCurrentGroup.Size = new System.Drawing.Size(493, 87);
             this.uiCurrentGroup.TabIndex = 6;
             this.uiCurrentGroup.TabStop = false;
             this.uiCurrentGroup.Text = "Current track";
@@ -226,7 +226,7 @@
             this.uiBrowserContainer.Location = new System.Drawing.Point(0, 15);
             this.uiBrowserContainer.Margin = new System.Windows.Forms.Padding(0);
             this.uiBrowserContainer.Name = "uiBrowserContainer";
-            this.uiBrowserContainer.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.uiBrowserContainer.Padding = new System.Windows.Forms.Padding(0, 6, 3, 0);
             this.uiBrowserContainer.Size = new System.Drawing.Size(496, 282);
             this.uiBrowserContainer.TabIndex = 5;
             // 
@@ -330,7 +330,7 @@
             uiLogContainer.RowCount = 2;
             uiLogContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             uiLogContainer.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            uiLogContainer.Size = new System.Drawing.Size(356, 228);
+            uiLogContainer.Size = new System.Drawing.Size(353, 228);
             uiLogContainer.TabIndex = 6;
             // 
             // uiLog
@@ -343,7 +343,7 @@
             this.uiLog.Name = "uiLog";
             this.uiLog.ReadOnly = true;
             this.uiLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.uiLog.Size = new System.Drawing.Size(350, 195);
+            this.uiLog.Size = new System.Drawing.Size(347, 195);
             this.uiLog.TabIndex = 5;
             // 
             // uiLogLevelContainer
@@ -354,7 +354,7 @@
             uiLogLevelContainer.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             uiLogLevelContainer.Location = new System.Drawing.Point(3, 3);
             uiLogLevelContainer.Name = "uiLogLevelContainer";
-            uiLogLevelContainer.Size = new System.Drawing.Size(350, 24);
+            uiLogLevelContainer.Size = new System.Drawing.Size(347, 24);
             uiLogLevelContainer.TabIndex = 6;
             uiLogLevelContainer.WrapContents = false;
             // 
@@ -362,7 +362,7 @@
             // 
             this.uiLogLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.uiLogLevel.FormattingEnabled = true;
-            this.uiLogLevel.Location = new System.Drawing.Point(265, 3);
+            this.uiLogLevel.Location = new System.Drawing.Point(262, 3);
             this.uiLogLevel.Name = "uiLogLevel";
             this.uiLogLevel.Size = new System.Drawing.Size(82, 21);
             this.uiLogLevel.TabIndex = 1;
@@ -372,7 +372,7 @@
             // 
             this.uiLogLevelLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiLogLevelLabel.AutoSize = true;
-            this.uiLogLevelLabel.Location = new System.Drawing.Point(180, 7);
+            this.uiLogLevelLabel.Location = new System.Drawing.Point(177, 7);
             this.uiLogLevelLabel.Margin = new System.Windows.Forms.Padding(0);
             this.uiLogLevelLabel.Name = "uiLogLevelLabel";
             this.uiLogLevelLabel.Size = new System.Drawing.Size(82, 13);
@@ -453,7 +453,7 @@
             uiPadLog.Location = new System.Drawing.Point(0, 0);
             uiPadLog.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             uiPadLog.Name = "uiPadLog";
-            uiPadLog.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            uiPadLog.Padding = new System.Windows.Forms.Padding(0, 3, 3, 3);
             uiPadLog.Size = new System.Drawing.Size(366, 257);
             uiPadLog.TabIndex = 3;
             // 
@@ -465,7 +465,7 @@
             this.uiLogGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.uiLogGroup.Name = "uiLogGroup";
             this.uiLogGroup.Padding = new System.Windows.Forms.Padding(5);
-            this.uiLogGroup.Size = new System.Drawing.Size(366, 251);
+            this.uiLogGroup.Size = new System.Drawing.Size(363, 251);
             this.uiLogGroup.TabIndex = 2;
             this.uiLogGroup.TabStop = false;
             this.uiLogGroup.Text = "Log";
@@ -550,7 +550,7 @@
             this.uiCurrentResult.Location = new System.Drawing.Point(3, 16);
             this.uiCurrentResult.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.uiCurrentResult.Name = "uiCurrentResult";
-            this.uiCurrentResult.Size = new System.Drawing.Size(490, 63);
+            this.uiCurrentResult.Size = new System.Drawing.Size(487, 63);
             this.uiCurrentResult.TabIndex = 0;
             // 
             // uiDownloadQueue
