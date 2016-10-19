@@ -6,11 +6,14 @@ namespace AutoTune.Settings {
 
     public class AppSettings : SettingsBase<AppSettings> {
 
-        public static string LogFilePath = Path.Combine(GetFolderPath(), "autotune.log");
-        public static string FetchFilePath = Path.Combine(GetFolderPath(), "fetch.html");
+        public static string LogFilePath = Path.Combine(GetFolderPath(), "AutoTune.log");
         public static string StartupFilePath = Path.Combine(GetFolderPath(), "startup.html");
         public static string FetchExecutablePath = Path.Combine("Fetch", "AutoTune.Fetch.exe");
         public static string BrowserCacheFolder = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
+
+        public static string GetFetchFilePath(string type) {
+            return Path.Combine(GetFolderPath(), "Fetch" + type + ".html");
+        }
 
         public class DriverSettings {
             public bool Enabled { get; set; } = true;
@@ -50,8 +53,8 @@ namespace AutoTune.Settings {
         }
 
         protected override void OnInitialized() {
-            InitializeResource(FetchFilePath, "AutoTune.fetch.html");
-            InitializeResource(StartupFilePath, "AutoTune.startup.html");
+            InitializeResource(GetFetchFilePath("Vimeo"), "AutoTune.Vimeo.html");
+            InitializeResource(GetFetchFilePath("YouTube"), "AutoTune.YouTube.html");
         }
 
         static void InitializeResource(string path, string resourceName) {

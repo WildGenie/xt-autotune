@@ -1,0 +1,46 @@
+<html><head><script>
+"use strict";
+const poll = 500;
+const delay = 1000;
+const retries = 120;
+const scriptError = "script-error";
+const scriptTimeout = "script-timeout";
+const matches = ['hd', '720', '360', 'flac'];
+
+function iFrameDoc() {
+  return document.getElementById('container').contentWindow.document;
+}
+
+function fetchLink(url) {
+  var grab = iFrameDoc().getElementById('grab1');
+  var input = iFrameDoc().getElementById('input1');
+  if(!input || !grab)
+    return callback.accept(scriptError);
+  input.value = url;
+  grab.click();
+  setTimeout(function() { scanLinks(0); }, delay);
+}
+
+function reschedule(retry) {
+  if(retry == retries)
+    return callback.accept(scriptTimeout);
+  else
+    setTimeout(function() { scanLinks(retry); }, poll);
+}
+
+function scanLinks(retry) {
+  var downloads = iFrameDoc().getElementsByClassName('list1');
+  if(downloads.length == 0)
+    return reschedule(retry + 1);
+  if(downloads.length > 1)
+    return callback.accept(scriptError);
+  var links = downloads[0].getElementsByTagName('a');
+  if(links.length == 0)
+    return reschedule(retry + 1);
+  for(var i = 0; i < matches.length; i++)
+    for(var j = 0; j < links.length; j++)
+      if(links[j].parentNode.innerText.indexOf(matches[i]) !== -1)
+        return callback.accept(links[j].href);
+  return callback.accept(scriptError);
+}
+</script></head><body><iframe id="container" width="100%" height="100%" src="http://catchvideo.net"/></body></html>

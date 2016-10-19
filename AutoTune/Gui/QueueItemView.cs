@@ -35,7 +35,10 @@ namespace AutoTune.Gui {
 
         public void Initialize(Result result) {
             this.result = result;
-            Utility.WhenImageDownloaded(result?.ThumbnailUrl, i => Invoke(new Action(() => InitializeResult(i))));
+            Utility.WhenImageDownloaded(result?.ThumbnailUrl, i => {
+                if (!IsDisposed)
+                    Invoke(new Action(() => InitializeResult(i)));
+            });
         }
 
         void InitializeResult(Image image) {
