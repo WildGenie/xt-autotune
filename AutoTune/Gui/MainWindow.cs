@@ -93,7 +93,6 @@ namespace AutoTune.Gui {
             uiSplitBrowserCurrentControls.Panel1Collapsed = ui.CurrentControlsCollapsed;
             uiToggleNotifications.Text = ui.NotificationsCollapsed ? UnicodeUp : UnicodeDown;
             uiToggleCurrentControls.Text = uiSplitBrowserCurrentControls.Panel1Collapsed ? UnicodeDown : UnicodeUp;
-            uiCurrentResult.SetResult(ui.CurrentTrack);
             uiToggleFullScreen.Text = ui.FullScreen ? UnicodeLowerLeft : UnicodeUpperRight;
             SetFullScreen(ui.FullScreen);
             if (ui.CurrentTrack != null)
@@ -152,6 +151,7 @@ namespace AutoTune.Gui {
             DownloadQueue.Start();
             PostProcessingQueue.Start();
             StartSearch();
+            uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
         }
 
         void OnMainWindowClosed(object sender, FormClosedEventArgs e) {
