@@ -157,6 +157,7 @@
             this.uiToggleSearch.TabStop = true;
             this.uiToggleSearch.Text = "<";
             this.uiToggleSearch.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.uiTooltip.SetToolTip(this.uiToggleSearch, "Toggle search window.");
             this.uiToggleSearch.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ToggleSearchClicked);
             // 
             // uiSplitPlayerToggleNotications
@@ -262,6 +263,7 @@
             this.uiToggleCurrentControls.TabIndex = 7;
             this.uiToggleCurrentControls.TabStop = true;
             this.uiToggleCurrentControls.Text = "<";
+            this.uiTooltip.SetToolTip(this.uiToggleCurrentControls, "Toggle current track window.");
             this.uiToggleCurrentControls.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleCurrentControlsClicked);
             // 
             // uiToggleNotifications
@@ -276,6 +278,7 @@
             this.uiToggleNotifications.TabIndex = 0;
             this.uiToggleNotifications.TabStop = true;
             this.uiToggleNotifications.Text = "<";
+            this.uiTooltip.SetToolTip(this.uiToggleNotifications, "Toggle notifications window.");
             this.uiToggleNotifications.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ToggleNotificationsClicked);
             // 
             // uiNotificationsPanel
@@ -335,6 +338,7 @@
             this.uiToggleLog.TabIndex = 2;
             this.uiToggleLog.TabStop = true;
             this.uiToggleLog.Text = ">";
+            this.uiTooltip.SetToolTip(this.uiToggleLog, "Toggle log window.");
             this.uiToggleLog.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleLogClicked);
             // 
             // uiLogContainer
