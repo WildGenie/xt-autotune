@@ -17,12 +17,14 @@ namespace AutoTune.Gui {
     public partial class MainWindow : Form {
 
         const int ShowLogMinWidth = 1250;
+        static readonly string UnicodeBlackLowerLeftTriangle = "\u25e3";
+        static readonly string UnicodeBlackUpperRightTriangle = "\u25e5";
+        static readonly string UnicodeWhiteLowerLeftTriangle = "\u25fa";
+        static readonly string UnicodeWhiteUpperRightTriangle = "\u25f9";
         static readonly string UnicodeBlackUpPointingTriangle = "\u25b2";
         static readonly string UnicodeBlackDownPointingTriangle = "\u25bc";
         static readonly string UnicodeBlackLeftPointingTriangle = "\u25c0";
         static readonly string UnicodeBlackRightPointingTriangle = "\u25b6";
-        static readonly string UnicodeBlackLowerLeftTriangle = "\u25e3";
-        static readonly string UnicodeBlackUpperRightTriangle = "\u25e5";
         static readonly string Arch = Environment.Is64BitProcess ? "x64" : "x86";
         static readonly string AppBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
@@ -86,15 +88,12 @@ namespace AutoTune.Gui {
             var ui = UiSettings.Instance;
             uiQuery.Text = ui.LastSearch;
             uiLogLevel.SelectedItem = ui.TraceLevel;
+            ToggleFullScreen(ui.FullScreen);
             ToggleLog(UiSettings.Instance.LogCollapsed);
-            uiSplitSearch.Panel1Collapsed = ui.SearchCollapsed;
-            uiToggleSearch.Text = ui.SearchCollapsed ? UnicodeBlackRightPointingTriangle : UnicodeBlackLeftPointingTriangle;
-            uiSplitNotificationsLog.Panel2Collapsed = ui.LogCollapsed;
-            uiSplitBrowserCurrentControls.Panel1Collapsed = ui.CurrentControlsCollapsed;
-            uiToggleNotifications.Text = ui.NotificationsCollapsed ? UnicodeBlackUpPointingTriangle : UnicodeBlackDownPointingTriangle;
-            uiToggleCurrentControls.Text = uiSplitBrowserCurrentControls.Panel1Collapsed ? UnicodeBlackDownPointingTriangle : UnicodeBlackUpPointingTriangle;
-            uiToggleFullScreen.Text = ui.FullScreen ? UnicodeBlackLowerLeftTriangle : UnicodeBlackUpperRightTriangle;
-            SetFullScreen(ui.FullScreen);
+            TogglePlayerFull(UiSettings.Instance.PlayerFull);
+            ToggleSearch(UiSettings.Instance.SearchCollapsed);
+            ToggleNotifications(UiSettings.Instance.NotificationsCollapsed);
+            ToggleCurrentControls(UiSettings.Instance.CurrentControlsCollapsed);
             if (ui.CurrentTrack != null)
                 uiBrowser.Load(ui.CurrentTrack.Url);
         }
@@ -137,6 +136,8 @@ namespace AutoTune.Gui {
             uiToggleCurrentControls.LinkColor = fore1;
             uiToggleFullScreen.LinkColor = fore1;
             uiToggleFullScreen.ActiveLinkColor = fore1;
+            uiTogglePlayerFull.LinkColor = fore1;
+            uiTogglePlayerFull.ActiveLinkColor = fore1;
             uiToggleCurrentControls.ActiveLinkColor = fore1;
             uiLoadMore.LinkColor = fore2;
             uiLoadMore.ActiveLinkColor = fore2;
@@ -238,11 +239,10 @@ namespace AutoTune.Gui {
 
         void OnToggleFullScreenClick(object sender, LinkLabelLinkClickedEventArgs e) {
             UiSettings.Instance.FullScreen = !UiSettings.Instance.FullScreen;
-            SetFullScreen(UiSettings.Instance.FullScreen);
+            ToggleFullScreen(UiSettings.Instance.FullScreen);
         }
 
-        void SetFullScreen(bool fullScreen) {
-            SuspendLayout();
+        void ToggleFullScreen(bool fullScreen) {
             if (fullScreen) {
                 TopMost = true;
                 WindowState = FormWindowState.Normal;
@@ -255,25 +255,56 @@ namespace AutoTune.Gui {
                 FormBorderStyle = FormBorderStyle.Sizable;
                 uiToggleFullScreen.Text = UnicodeBlackUpperRightTriangle;
             }
-            ResumeLayout(true);
         }
 
         void ToggleSearchClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            uiToggleSearch.Text = uiSplitSearch.Panel1Collapsed ? UnicodeBlackLeftPointingTriangle : UnicodeBlackRightPointingTriangle;
-            uiSplitSearch.Panel1Collapsed = !uiSplitSearch.Panel1Collapsed;
-            UiSettings.Instance.SearchCollapsed = uiSplitSearch.Panel1Collapsed;
+            ToggleSearch(!UiSettings.Instance.SearchCollapsed);
+            UiSettings.Instance.SearchCollapsed = !UiSettings.Instance.SearchCollapsed;
+        }
+
+        void ToggleSearch(bool collapsed) {
+            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
+            uiToggleSearch.Text = realCollapsed ? UnicodeBlackRightPointingTriangle : UnicodeBlackLeftPointingTriangle;
+            uiSplitSearch.Panel1Collapsed = realCollapsed;
         }
 
         void ToggleNotificationsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            uiToggleNotifications.Text = uiSplitNotifications.Panel2Collapsed ? UnicodeBlackDownPointingTriangle : UnicodeBlackUpPointingTriangle;
-            uiSplitNotifications.Panel2Collapsed = !uiSplitNotifications.Panel2Collapsed;
+            ToggleNotifications(!UiSettings.Instance.NotificationsCollapsed);
             UiSettings.Instance.NotificationsCollapsed = uiSplitNotifications.Panel2Collapsed;
         }
 
+        void ToggleNotifications(bool collapsed) {
+            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
+            uiToggleNotifications.Text = realCollapsed ? UnicodeBlackUpPointingTriangle : UnicodeBlackDownPointingTriangle;
+            uiSplitNotifications.Panel2Collapsed = realCollapsed;
+        }
+
         void OnToggleCurrentControlsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            uiToggleCurrentControls.Text = uiSplitBrowserCurrentControls.Panel1Collapsed ? UnicodeBlackUpPointingTriangle : UnicodeBlackDownPointingTriangle;
-            uiSplitBrowserCurrentControls.Panel1Collapsed = !uiSplitBrowserCurrentControls.Panel1Collapsed;
+            ToggleCurrentControls(!UiSettings.Instance.CurrentControlsCollapsed);
             UiSettings.Instance.CurrentControlsCollapsed = uiSplitBrowserCurrentControls.Panel1Collapsed;
+        }
+
+        void ToggleCurrentControls(bool collapsed) {
+            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
+            uiToggleCurrentControls.Text = realCollapsed ? UnicodeBlackDownPointingTriangle : UnicodeBlackUpPointingTriangle;
+            uiSplitBrowserCurrentControls.Panel1Collapsed = realCollapsed;
+        }
+
+        void OnTogglePlayerFullClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            var ui = UiSettings.Instance;
+            ui.PlayerFull = !ui.PlayerFull;
+            TogglePlayerFull(ui.PlayerFull);
+        }
+
+        void TogglePlayerFull(bool full) {
+            var ui = UiSettings.Instance;
+            ToggleSearch(ui.SearchCollapsed);
+            ToggleNotifications(ui.NotificationsCollapsed);
+            ToggleCurrentControls(ui.CurrentControlsCollapsed);
+            uiToggleSearch.Visible = !full;
+            uiToggleNotifications.Visible = !full;
+            uiToggleCurrentControls.Visible = !full;
+            uiTogglePlayerFull.Text = full ? UnicodeWhiteLowerLeftTriangle : UnicodeWhiteUpperRightTriangle;
         }
 
         void WriteLog(LogLevel level, string text) {
