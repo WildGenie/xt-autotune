@@ -7,7 +7,7 @@ namespace AutoTune.Settings {
     public class AppSettings : SettingsBase<AppSettings> {
 
         public static string LogFilePath = Path.Combine(GetFolderPath(), "AutoTune.log");
-        public static string StartupFilePath = Path.Combine(GetFolderPath(), "startup.html");
+        public static string StartupFilePath = Path.Combine(GetFolderPath(), "Startup.html");
         public static string FetchExecutablePath = Path.Combine("Fetch", "AutoTune.Fetch.exe");
         public static string BrowserCacheFolder = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
 
@@ -53,6 +53,7 @@ namespace AutoTune.Settings {
         }
 
         protected override void OnInitialized() {
+            InitializeResource(StartupFilePath, "AutoTune.Startup.html");
             InitializeResource(GetFetchFilePath("Vimeo"), "AutoTune.Vimeo.html");
             InitializeResource(GetFetchFilePath("YouTube"), "AutoTune.YouTube.html");
         }
