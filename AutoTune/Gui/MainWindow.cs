@@ -330,8 +330,8 @@ namespace AutoTune.Gui {
                     BeginInvoke(new Action(() => {
                         var view = new ResultView();
                         ConnectResultViewEventHandlers(view);
-                        view.SetResult(result);
                         uiResults.Controls.Add(view);
+                        view.SetResult(result);
                         appendingResult = true;
                         uiResults.ScrollControlIntoView(view);
                         appendingResult = false;
