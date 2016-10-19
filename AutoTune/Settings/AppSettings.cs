@@ -9,7 +9,6 @@ namespace AutoTune.Settings {
         public static string LogFilePath = Path.Combine(GetFolderPath(), "AutoTune.log");
         public static string StartupFilePath = Path.Combine(GetFolderPath(), "Startup.html");
         public static string FetchExecutablePath = Path.Combine("Fetch", "AutoTune.Fetch.exe");
-        public static string BrowserCacheFolder = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
 
         public static string GetFetchFilePath(string type) {
             return Path.Combine(GetFolderPath(), "Fetch" + type + ".html");
@@ -38,6 +37,11 @@ namespace AutoTune.Settings {
         public bool PersistBrowserSessions { get; set; } = true;
         public bool AutoLoadMoreSearchResults { get; set; } = true;
         public PostProcessingSettings PostProcessing = new PostProcessingSettings();
+        public DriverSettings Spotify = new DriverSettings {
+            UrlPattern = "{0}",
+            PlayUrlPattern = "{0}",
+            DownloadUrlPattern = "{0}"
+        };
         public DriverSettings Vimeo = new DriverSettings {
             DownloadUrlPattern = "https://player.vimeo.com/video/{0}",
             UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0",

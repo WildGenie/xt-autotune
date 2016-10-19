@@ -42,7 +42,7 @@ namespace AutoTune.Gui {
             ThemeSettings.Initialize();
             var cef = new CefSettings();
             var proc = "CefSharp.BrowserSubprocess.exe";
-            cef.CachePath = AppSettings.BrowserCacheFolder;
+            cef.CachePath = UserSettings.Instance.BrowserCacheFolder;
             cef.PersistSessionCookies = AppSettings.Instance.PersistBrowserSessions;
             cef.BrowserSubprocessPath = Path.Combine(AppBase, Arch, proc);
             Cef.Initialize(cef);
@@ -80,8 +80,8 @@ namespace AutoTune.Gui {
             uiBrowserContainer.Controls.Add(uiBrowser);
             ConnectResultViewEventHandlers(uiCurrentResult);
             uiLogLevel.DataSource = Enum.GetValues(typeof(LogLevel));
-            uiDownloadQueue.Play += (s, e) => uiBrowser.Load(e.Data.PlayUrl);
-            uiPostProcessingQueue.Play += (s, e) => uiBrowser.Load(e.Data.PlayUrl);
+            uiDownloadQueue.Play += (s, e) => PlayResult(e.Data);
+            uiPostProcessingQueue.Play += (s, e) => PlayResult(e.Data);
         }
 
         void InitializeSettings() {
@@ -94,8 +94,10 @@ namespace AutoTune.Gui {
             ToggleSearch(UiSettings.Instance.SearchCollapsed);
             ToggleNotifications(UiSettings.Instance.NotificationsCollapsed);
             ToggleCurrentControls(UiSettings.Instance.CurrentControlsCollapsed);
-            if (ui.CurrentTrack != null)
+            if (ui.CurrentTrack != null) {
+                Logger.Debug("Opening " + ui.CurrentTrack.Url + " in player.");
                 uiBrowser.Load(ui.CurrentTrack.Url);
+            }
         }
 
         void InitializeLog() {
@@ -219,9 +221,14 @@ namespace AutoTune.Gui {
         }
 
         void OnResultPlayClicked(object sender, EventArgs<Result> e) {
-            uiBrowser.Load(e.Data.PlayUrl);
+            PlayResult(e.Data);
             UiSettings.Instance.CurrentTrack = e.Data;
             uiCurrentResult.SetResult(e.Data);
+        }
+
+        void PlayResult(Result result) {
+            uiBrowser.Load(result.PlayUrl);
+            Logger.Debug("Playing " + result.PlayUrl + " in player.");
         }
 
         void OnToggleLogClicked(object sender, LinkLabelLinkClickedEventArgs e) {

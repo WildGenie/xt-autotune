@@ -12,10 +12,13 @@ namespace AutoTune.Settings {
         [XmlIgnore]
         public string DownloadFolder => Path.Combine(TempFolder, "Download");
 
+        public string SpotifyId { get; set; } = "?";
+        public string SpotifySecret { get; set; } = "?";
         public string YouTubeAPIKey { get; set; } = "?";
         public string VimeoClientId { get; set; } = "?";
         public string VimeoClientSecret { get; set; } = "?";
         public string TempFolder { get; set; } = Path.Combine(GetFolderPath(), "Temp");
+        public string BrowserCacheFolder = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
         public string TargetFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
 
         protected override void OnTerminating() {
@@ -26,6 +29,7 @@ namespace AutoTune.Settings {
             Directory.CreateDirectory(Instance.TargetFolder);
             Directory.CreateDirectory(Instance.ProcessFolder);
             Directory.CreateDirectory(Instance.DownloadFolder);
+            Directory.CreateDirectory(Instance.BrowserCacheFolder);
         }
     }
 }

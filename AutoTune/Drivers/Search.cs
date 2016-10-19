@@ -21,6 +21,8 @@ namespace AutoTune.Drivers {
                     return;
                 if (AppSettings.Instance.Vimeo.Enabled)
                     Drivers.Add(VimeoSearch.TypeId, new VimeoSearch());
+                if (AppSettings.Instance.Spotify.Enabled)
+                    Drivers.Add(SpotifySearch.TypeId, new SpotifySearch());
                 if (AppSettings.Instance.YouTube.Enabled)
                     Drivers.Add(YouTubeSearch.TypeId, new YouTubeSearch());
             }

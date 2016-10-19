@@ -218,7 +218,7 @@
             // 
             this.uiSplitBrowserCurrentControls.Panel2.Controls.Add(this.uiBrowserCurrentControlsContainer);
             this.uiSplitBrowserCurrentControls.Size = new System.Drawing.Size(496, 391);
-            this.uiSplitBrowserCurrentControls.SplitterDistance = 90;
+            this.uiSplitBrowserCurrentControls.SplitterDistance = 91;
             this.uiSplitBrowserCurrentControls.TabIndex = 0;
             // 
             // uiPadCurrentControls
@@ -228,7 +228,7 @@
             this.uiPadCurrentControls.Location = new System.Drawing.Point(0, 0);
             this.uiPadCurrentControls.Name = "uiPadCurrentControls";
             this.uiPadCurrentControls.Padding = new System.Windows.Forms.Padding(0, 3, 3, 0);
-            this.uiPadCurrentControls.Size = new System.Drawing.Size(496, 90);
+            this.uiPadCurrentControls.Size = new System.Drawing.Size(496, 91);
             this.uiPadCurrentControls.TabIndex = 0;
             // 
             // uiCurrentGroup
@@ -239,7 +239,7 @@
             this.uiCurrentGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.uiCurrentGroup.Name = "uiCurrentGroup";
             this.uiCurrentGroup.Padding = new System.Windows.Forms.Padding(3, 3, 3, 8);
-            this.uiCurrentGroup.Size = new System.Drawing.Size(493, 87);
+            this.uiCurrentGroup.Size = new System.Drawing.Size(493, 88);
             this.uiCurrentGroup.TabIndex = 6;
             this.uiCurrentGroup.TabStop = false;
             this.uiCurrentGroup.Text = "Current track";
@@ -251,7 +251,7 @@
             this.uiCurrentResult.Location = new System.Drawing.Point(3, 16);
             this.uiCurrentResult.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.uiCurrentResult.Name = "uiCurrentResult";
-            this.uiCurrentResult.Size = new System.Drawing.Size(487, 63);
+            this.uiCurrentResult.Size = new System.Drawing.Size(487, 64);
             this.uiCurrentResult.TabIndex = 0;
             // 
             // uiBrowserCurrentControlsContainer
@@ -266,7 +266,7 @@
             this.uiBrowserCurrentControlsContainer.RowCount = 2;
             this.uiBrowserCurrentControlsContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
             this.uiBrowserCurrentControlsContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.uiBrowserCurrentControlsContainer.Size = new System.Drawing.Size(496, 297);
+            this.uiBrowserCurrentControlsContainer.Size = new System.Drawing.Size(496, 296);
             this.uiBrowserCurrentControlsContainer.TabIndex = 0;
             // 
             // uiBrowserContainer
@@ -276,7 +276,7 @@
             this.uiBrowserContainer.Margin = new System.Windows.Forms.Padding(0);
             this.uiBrowserContainer.Name = "uiBrowserContainer";
             this.uiBrowserContainer.Padding = new System.Windows.Forms.Padding(0, 6, 3, 0);
-            this.uiBrowserContainer.Size = new System.Drawing.Size(496, 282);
+            this.uiBrowserContainer.Size = new System.Drawing.Size(496, 281);
             this.uiBrowserContainer.TabIndex = 5;
             // 
             // uiToggleCurrentControls

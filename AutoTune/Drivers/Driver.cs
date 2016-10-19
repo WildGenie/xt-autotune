@@ -78,6 +78,7 @@ namespace AutoTune.Drivers {
             var user = UserSettings.Instance;
             string delimiter = Guid.NewGuid().ToString();
             string fetchFilePath = AppSettings.GetFetchFilePath(result.Type);
+            Logger.Info("Downloading " + result.DownloadUrl + ".");
             string args = string.Format("\"{0}\" {1} {2} {3}", fetchFilePath, result.DownloadUrl, delimiter, app.FetchTimeout);
             ProcessStartInfo info = new ProcessStartInfo(AppSettings.FetchExecutablePath, args);
             string link = null;
