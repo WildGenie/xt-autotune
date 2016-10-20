@@ -37,11 +37,6 @@ namespace AutoTune.Settings {
         public bool PersistBrowserSessions { get; set; } = true;
         public bool AutoLoadMoreSearchResults { get; set; } = true;
         public PostProcessingSettings PostProcessing = new PostProcessingSettings();
-        public DriverSettings Spotify = new DriverSettings {
-            UrlPattern = "{0}",
-            PlayUrlPattern = "{0}",
-            DownloadUrlPattern = "{0}"
-        };
         public DriverSettings Vimeo = new DriverSettings {
             DownloadUrlPattern = "https://player.vimeo.com/video/{0}",
             UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0",
@@ -58,8 +53,8 @@ namespace AutoTune.Settings {
 
         protected override void OnInitialized() {
             InitializeResource(StartupFilePath, "AutoTune.Startup.html");
-            InitializeResource(GetFetchFilePath("Vimeo"), "AutoTune.Vimeo.html");
-            InitializeResource(GetFetchFilePath("YouTube"), "AutoTune.YouTube.html");
+            InitializeResource(GetFetchFilePath("Vimeo"), "AutoTune.FetchGeneric.html");
+            InitializeResource(GetFetchFilePath("YouTube"), "AutoTune.FetchGeneric.html");
         }
 
         static void InitializeResource(string path, string resourceName) {
