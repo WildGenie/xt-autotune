@@ -119,6 +119,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drivers\DailyMotionResponse.cs" />
+    <Compile Include="Drivers\DailyMotionSearch.cs" />
+    <Compile Include="Drivers\DailyMotionVideo.cs" />
     <Compile Include="Drivers\Driver.cs" />
     <Compile Include="Drivers\DriverException.cs" />
     <Compile Include="Drivers\SearchResult.cs" />

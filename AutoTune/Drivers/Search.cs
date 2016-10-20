@@ -23,6 +23,8 @@ namespace AutoTune.Drivers {
                     Drivers.Add(VimeoSearch.TypeId, new VimeoSearch());
                 if (AppSettings.Instance.YouTube.Enabled)
                     Drivers.Add(YouTubeSearch.TypeId, new YouTubeSearch());
+                if (AppSettings.Instance.DailyMotion.Enabled)
+                    Drivers.Add(DailyMotionSearch.TypeId, new DailyMotionSearch());
             }
         }
 

@@ -12,6 +12,7 @@ namespace AutoTune.Settings {
         [XmlIgnore]
         public string DownloadFolder => Path.Combine(TempFolder, "Download");
 
+        public string AppName { get; set; } = "?";
         public string YouTubeAPIKey { get; set; } = "?";
         public string VimeoClientId { get; set; } = "?";
         public string VimeoClientSecret { get; set; } = "?";

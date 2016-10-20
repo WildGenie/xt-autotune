@@ -1,6 +1,7 @@
 ﻿using AutoTune.Shared;
 using System.IO;
 using System;
+using AutoTune.Drivers;
 
 namespace AutoTune.Settings {
 
@@ -33,10 +34,14 @@ namespace AutoTune.Settings {
         public int FetchTimeout = 60000;
         public int SearchPageSize { get; set; } = 10;
         public int DownloadThreadCount { get; set; } = 0;
-        public string AppName { get; set; } = "AutoTune";
         public bool PersistBrowserSessions { get; set; } = true;
         public bool AutoLoadMoreSearchResults { get; set; } = true;
         public PostProcessingSettings PostProcessing = new PostProcessingSettings();
+        public DriverSettings DailyMotion = new DriverSettings {
+            UrlPattern = "{0}",
+            DownloadUrlPattern = "{0}",
+            PlayUrlPattern = "{0}?autoplay=1"
+        };
         public DriverSettings Vimeo = new DriverSettings {
             DownloadUrlPattern = "https://player.vimeo.com/video/{0}",
             UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0",
@@ -47,14 +52,14 @@ namespace AutoTune.Settings {
             UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&color=white",
             PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&color=white"
         };
-
         protected override void OnTerminating() {
         }
 
         protected override void OnInitialized() {
             InitializeResource(StartupFilePath, "AutoTune.Startup.html");
-            InitializeResource(GetFetchFilePath("Vimeo"), "AutoTune.FetchGeneric.html");
-            InitializeResource(GetFetchFilePath("YouTube"), "AutoTune.FetchGeneric.html");
+            InitializeResource(GetFetchFilePath(VimeoSearch.TypeId), "AutoTune.FetchGeneric.html");
+            InitializeResource(GetFetchFilePath(YouTubeSearch.TypeId), "AutoTune.FetchGeneric.html");
+            InitializeResource(GetFetchFilePath(DailyMotionSearch.TypeId), "AutoTune.FetchGeneric.html");
         }
 
         static void InitializeResource(string path, string resourceName) {

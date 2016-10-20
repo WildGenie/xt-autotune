@@ -16,7 +16,7 @@ namespace AutoTune.Drivers {
             var user = UserSettings.Instance;
             using (var service = new YouTubeService(new BaseClientService.Initializer() {
                 ApiKey = user.YouTubeAPIKey,
-                ApplicationName = app.AppName
+                ApplicationName = user.AppName
             })) {
                 var request = service.Search.List("snippet");
                 if (query != null)
