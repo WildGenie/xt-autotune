@@ -23,7 +23,7 @@ namespace AutoTune.Drivers {
             string delimiter = Guid.NewGuid().ToString();
             string fetchFilePath = AppSettings.GetFetchFilePath(result.Type);
             Logger.Debug("Downloading " + result.DownloadUrl + ".");
-            string args = string.Format("\"{0}\" {1} {2} {3}", fetchFilePath, result.DownloadUrl, delimiter, app.FetchTimeout);
+            string args = string.Format("\"{0}\" {1} {2} {3} {4} {5}", fetchFilePath, result.DownloadUrl, delimiter, app.FetchTimeout, app.FetchDelay, app.FetchRetries);
             ProcessStartInfo info = new ProcessStartInfo(AppSettings.FetchExecutablePath, args);
             info.CreateNoWindow = true;
             info.UseShellExecute = false;
@@ -39,6 +39,7 @@ namespace AutoTune.Drivers {
                     string format = "Fetching {0} returned with code: {1}.";
                     throw new DriverException(string.Format(format, result.Title, link));
                 }
+                Logger.Debug("Fetched download link: " + link + ".");
                 return link;
             }
         }

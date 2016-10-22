@@ -41,10 +41,12 @@ namespace AutoTune.Fetch {
 
         [STAThread]
         public static void Main(string[] args) {
+            int delay;
+            int retries;
             int timeout;
             AppDomain.CurrentDomain.AssemblyResolve += ResolveCef;
-            if (args.Length != 4)
-                Error("Expected arguments: path url delimiter timeout.");
+            if (args.Length != 6)
+                Error("Expected arguments: path url delimiter timeout delay poll retries.");
             if (!File.Exists(args[0]))
                 Error("Path '" + args[0] + "'does not exist.");
             if (string.IsNullOrEmpty(args[1]))
@@ -53,11 +55,15 @@ namespace AutoTune.Fetch {
                 Error("No delimiter specified.");
             if (!int.TryParse(args[3], out timeout) || timeout < 1)
                 Error("Invalid timeout specified.");
-            Run(args[0], args[1], args[2], timeout);
+            if (!int.TryParse(args[4], out delay) || delay < 1)
+                Error("Invalid delay specified.");
+            if (!int.TryParse(args[5], out retries) || retries < 1)
+                Error("Invalid retries specified.");
+            Run(args[0], args[1], args[2], timeout, delay, retries);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static void Run(string path, string url, string delimiter, int timeout) {
+        static void Run(string path, string url, string delimiter, int timeout, int delay, int retries) {
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add(UserDataDir, UserDataDir);
             settings.CefCommandLineArgs.Add(DisableWebSecurity, DisableWebSecurity);
@@ -71,7 +77,7 @@ namespace AutoTune.Fetch {
             browser.ConsoleMessage += OnConsoleMessage;
             browser.RegisterJsObject("callback", new Callback());
             browser.IsBrowserInitializedChanged += OnBrowserInitialized;
-            browser.FrameLoadEnd += (s, e) => OnFrameLoadEnd(browser, path, url, e);
+            browser.FrameLoadEnd += (s, e) => OnFrameLoadEnd(browser, path, url, delay, retries, e);
             form.Controls.Add(browser);
             Thread finish = new Thread(() => Finish(browser, delimiter, timeout));
             finish.SetApartmentState(ApartmentState.STA);
@@ -138,10 +144,10 @@ namespace AutoTune.Fetch {
             Application.Exit();
         }
 
-        static void OnFrameLoadEnd(ChromiumWebBrowser browser, string path, string url, FrameLoadEndEventArgs e) {
+        static void OnFrameLoadEnd(ChromiumWebBrowser browser, string path, string url, int delay, int retries, FrameLoadEndEventArgs e) {
             bool wasPathLoad = false;
             bool wasBlankLoad = false;
-            string script = "fetchLink('" + url + "')";
+            string script = string.Format("fetchLink('{0}', {1}, {2})", url, delay, retries);
             lock (LoadLock) {
                 if (!blankLoad) {
                     blankLoad = true;

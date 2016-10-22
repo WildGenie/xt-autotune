@@ -14,6 +14,7 @@ namespace AutoTune.Settings {
         public const string YouTubeTypeId = "YouTube";
         public const string DailyMotionTypeId = "DailyMotion";
 
+        public static string FetchFilePath = Path.Combine(GetFolderPath(), "Fetch.js");
         public static string LogFilePath = Path.Combine(GetFolderPath(), "AutoTune.log");
         public static string StartupFilePath = Path.Combine(GetFolderPath(), "Startup.html");
         public static string FetchExecutablePath = Path.Combine("Fetch", "AutoTune.Fetch.exe");
@@ -42,21 +43,17 @@ namespace AutoTune.Settings {
             public string Arguments { get; set; } = "-i \"{0}\" -y \"{1}.{2}\" -quality good -cpu-used 0";
         }
 
+        public int FetchRetries = 55;
+        public int FetchDelay = 1000;
         public int FetchTimeout = 60000;
         public int SearchPageSize { get; set; } = 10;
         public int DownloadThreadCount { get; set; } = 0;
         public bool PersistBrowserSessions { get; set; } = true;
         public bool AutoLoadMoreSearchResults { get; set; } = true;
         public PostProcessingSettings PostProcessing = new PostProcessingSettings();
-        public SearchSettings DailyMotion = new SearchSettings {
-            UrlPattern = "{0}",
-            DownloadUrlPattern = "{0}",
-            FetchFile = "Convert2Mp3.html",
-            PlayUrlPattern = "{0}?autoplay=1"
-        };
         public SearchSettings Vimeo = new SearchSettings {
             FetchFile = "CatchVideo.html",
-            DownloadUrlPattern = "https://player.vimeo.com/video/{0}",
+            DownloadUrlPattern = "https://vimeo.com/{0}",
             UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0",
             PlayUrlPattern = "https://player.vimeo.com/video/{0}?autoplay=1",
         };
@@ -65,6 +62,12 @@ namespace AutoTune.Settings {
             DownloadUrlPattern = "https://www.youtube.com/watch?v={0}",
             UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&color=white",
             PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&color=white"
+        };
+        public SearchSettings DailyMotion = new SearchSettings {
+            FetchFile = "Convert2Mp3.html",
+            DownloadUrlPattern = "https://www.dailymotion.com/video/{0}",
+            UrlPattern = "https://www.dailymotion.com/embed/video/{0}?autoplay=false&sharing-enable=false",
+            PlayUrlPattern = "https://www.dailymotion.com/embed/video/{0}?autoplay=true&sharing-enable=false"
         };
 
         protected override void OnTerminating() {
@@ -83,6 +86,7 @@ namespace AutoTune.Settings {
                 Searches.Add(DailyMotionTypeId, DailyMotion);
                 Searchers.Add(DailyMotionTypeId, new DailyMotionSearch());
             }
+            InitializeResource(FetchFilePath, "AutoTune.Fetch.js");
             InitializeResource(StartupFilePath, "AutoTune.Startup.html");
             InitializeResource(Path.Combine(GetFolderPath(), Vimeo.FetchFile), "AutoTune." + Vimeo.FetchFile);
             InitializeResource(Path.Combine(GetFolderPath(), YouTube.FetchFile), "AutoTune." + YouTube.FetchFile);

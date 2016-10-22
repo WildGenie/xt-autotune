@@ -1,46 +1,23 @@
-<html><head><script>
+<html><head><script src="Fetch.js"></script><script>
 "use strict";
-const poll = 500;
-const delay = 1000;
-const retries = 120;
-const scriptError = "script-error";
-const scriptTimeout = "script-timeout";
 const matches = ['hd', '720', '360', 'flac'];
 
-function iFrameDoc() {
-  return document.getElementById('container').contentWindow.document;
-}
-
-function fetchLink(url) {
-  var grab = iFrameDoc().getElementById('grab1');
-  var input = iFrameDoc().getElementById('input1');
-  if(!input || !grab)
+function fetchLink(url, delay, retries) {
+  var input = iFrameDoc().getElementById('urlinput');
+  var selectMain = iFrameDoc().getElementById('select_main');
+  var convertForm = iFrameDoc().getElementById('convertForm');
+  if(!input || !selectMain || !convertForm)
     return callback.accept(scriptError);
   input.value = url;
-  grab.click();
-  setTimeout(function() { scanLinks(0); }, delay);
+  selectMain.value = 'mp4';
+  convertForm.submit();
+  schedule(scanLink, delay, retries, 0);
 }
 
-function reschedule(retry) {
-  if(retry == retries)
-    return callback.accept(scriptTimeout);
-  else
-    setTimeout(function() { scanLinks(retry); }, poll);
+function scanLink(delay, retries, retry) {
+  var success = iFrameDoc().getElementsByClassName('btn-success');
+  if(success.length == 0)
+    return schedule(scanLink, delay, retries, retry);
+  return callback.accept(success[0].href);
 }
-
-function scanLinks(retry) {
-  var downloads = iFrameDoc().getElementsByClassName('list1');
-  if(downloads.length == 0)
-    return reschedule(retry + 1);
-  if(downloads.length > 1)
-    return callback.accept(scriptError);
-  var links = downloads[0].getElementsByTagName('a');
-  if(links.length == 0)
-    return reschedule(retry + 1);
-  for(var i = 0; i < matches.length; i++)
-    for(var j = 0; j < links.length; j++)
-      if(links[j].parentNode.innerText.indexOf(matches[i]) !== -1)
-        return callback.accept(links[j].href);
-  return callback.accept(scriptError);
-}
-</script></head><body><iframe id="container" width="100%" height="100%" src="http://catchvideo.net"/></body></html>
+</script></head><body><iframe id="container" width="100%" height="100%" src="http://convert2mp3.net"/></body></html>

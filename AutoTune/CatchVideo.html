@@ -1,42 +1,26 @@
-<html><head><script>
+<html><head><script src="Fetch.js"></script><script>
 "use strict";
-const poll = 500;
-const delay = 1000;
-const retries = 120;
-const scriptError = "script-error";
-const scriptTimeout = "script-timeout";
 const matches = ['hd', '720', '360', 'flac'];
 
-function iFrameDoc() {
-  return document.getElementById('container').contentWindow.document;
-}
-
-function fetchLink(url) {
+function fetchLink(url, delay, retries) {
   var grab = iFrameDoc().getElementById('grab1');
   var input = iFrameDoc().getElementById('input1');
   if(!input || !grab)
     return callback.accept(scriptError);
   input.value = url;
   grab.click();
-  setTimeout(function() { scanLinks(0); }, delay);
+  schedule(scanLinks, delay, retries, 0);
 }
 
-function reschedule(retry) {
-  if(retry == retries)
-    return callback.accept(scriptTimeout);
-  else
-    setTimeout(function() { scanLinks(retry); }, poll);
-}
-
-function scanLinks(retry) {
+function scanLinks(delay, retries, retry) {
   var downloads = iFrameDoc().getElementsByClassName('list1');
   if(downloads.length == 0)
-    return reschedule(retry + 1);
+    return schedule(scanLinks, delay, retries, retry);
   if(downloads.length > 1)
     return callback.accept(scriptError);
   var links = downloads[0].getElementsByTagName('a');
   if(links.length == 0)
-    return reschedule(retry + 1);
+    return schedule(scanLinks, delay, retries, retry);
   for(var i = 0; i < matches.length; i++)
     for(var j = 0; j < links.length; j++)
       if(links[j].parentNode.innerText.indexOf(matches[i]) !== -1)
