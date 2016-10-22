@@ -1,6 +1,6 @@
-﻿namespace AutoTune.Drivers {
+﻿namespace AutoTune.Drivers.DailyMotion {
 
-    public  class DailyMotionVideo {
+    public class DailyMotionVideo {
 
         public string id;
         public string url;

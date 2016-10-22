@@ -11,7 +11,7 @@ namespace AutoTune.Queue {
         }
 
         protected override void ProcessItem(Result result) {
-            Driver.PostProcess(result);
+            PostProcess.Execute(result);
         }
 
         protected override int GetThreadCount() {

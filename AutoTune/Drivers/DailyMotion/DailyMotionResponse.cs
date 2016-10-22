@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AutoTune.Drivers {
+namespace AutoTune.Drivers.DailyMotion {
 
     public class DailyMotionResponse {
 

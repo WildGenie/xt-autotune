@@ -2,11 +2,9 @@
 using AutoTune.Shared;
 using System.Linq;
 
-namespace AutoTune.Drivers {
+namespace AutoTune.Drivers.Vimeo {
 
     class VimeoSearch : Search {
-
-        public const string TypeId = "Vimeo";
 
         protected override SearchResult Execute(int totalResults, string pageToken, string query, Result similarTo) {
             var app = AppSettings.Instance;
@@ -28,13 +26,9 @@ namespace AutoTune.Drivers {
                     NextPageToken = (videos.page + 1).ToString()
                 },
                 Results = videos.data.Select(v => new Result {
-                    Type = TypeId,
                     Title = v.name,
                     VideoId = v.id?.ToString(),
                     Description = v.description,
-                    Url = string.Format(app.Vimeo.UrlPattern, v.id),
-                    PlayUrl = string.Format(app.Vimeo.PlayUrlPattern, v.id),
-                    DownloadUrl = string.Format(app.Vimeo.DownloadUrlPattern, v.id),
                     ThumbnailUrl = v.pictures.Any() && v.pictures[0].sizes.Any() ? v.pictures[0].sizes[0].link : null
                 })
             };

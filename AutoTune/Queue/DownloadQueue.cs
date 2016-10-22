@@ -15,7 +15,7 @@ namespace AutoTune.Queue {
         }
 
         protected override void ProcessItem(Result result) {
-            Driver.Download(result);
+            Download.Execute(result);
         }
     }
 }

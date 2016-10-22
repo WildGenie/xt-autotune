@@ -9,7 +9,7 @@ using VimeoDotNet;
 using VimeoDotNet.Models;
 using VimeoDotNet.Net;
 
-namespace AutoTune.Drivers {
+namespace AutoTune.Drivers.Vimeo {
 
     class VimeoVideoClient : VimeoClient {
 
