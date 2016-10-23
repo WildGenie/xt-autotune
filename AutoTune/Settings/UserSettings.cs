@@ -31,6 +31,8 @@ namespace AutoTune.Settings {
         internal string TempFolder { get; set; } = Path.Combine(GetFolderPath(), "Temp");
         [YAXComment("Files are placed here after post-processing.")]
         internal string TargetFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+        [YAXComment("The folder that is scanned for existing tracks.")]
+        internal string LibraryFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
         [YAXComment("Search provider credentials.")]
         [YAXDictionary(EachPairName = "Provider", KeyName = "Id", ValueName = "Credentials", SerializeKeyAs = YAXNodeTypes.Attribute)]
         internal Dictionary<string, SearchCredentials> Credentials { get; set; } = new Dictionary<string, SearchCredentials>() {

@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune.Search", "AutoTune
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune.Shared", "AutoTune.Shared\AutoTune.Shared.csproj", "{75D3EF23-C920-4F9A-89F4-62324E5461EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune.Local", "AutoTune.Local\AutoTune.Local.csproj", "{4683D0CF-4A14-41FB-99C5-4E20DB394429}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{75D3EF23-C920-4F9A-89F4-62324E5461EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75D3EF23-C920-4F9A-89F4-62324E5461EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75D3EF23-C920-4F9A-89F4-62324E5461EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4683D0CF-4A14-41FB-99C5-4E20DB394429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4683D0CF-4A14-41FB-99C5-4E20DB394429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4683D0CF-4A14-41FB-99C5-4E20DB394429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4683D0CF-4A14-41FB-99C5-4E20DB394429}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

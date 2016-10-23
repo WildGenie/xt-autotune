@@ -1,4 +1,5 @@
-﻿using AutoTune.Processing;
+﻿using AutoTune.Local;
+using AutoTune.Processing;
 using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
@@ -146,11 +147,13 @@ namespace AutoTune.Gui {
         void OnMainWindowShown(object sender, EventArgs e) {
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();
+            Database.Initialize(AppSettings.GetFolderPath());
             uiDownloadQueue.Initialize(DownloadQueue.Instance);
             uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
             DownloadQueue.Instance.Completed += (s, evt) => Invoke(new Action(() => uiPostProcessingQueue.Enqueue(evt.Data.NewId())));
             DownloadQueue.Start();
             PostProcessingQueue.Start();
+            Scanner.Start(UserSettings.Instance.LibraryFolder);
             StartSearch();
             uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
         }
@@ -159,6 +162,7 @@ namespace AutoTune.Gui {
             Cef.Shutdown();
             logger.Flush();
             logger.Dispose();
+            Scanner.Terminate();
             UiSettings.Terminate();
             AppSettings.Terminate();
             UserSettings.Terminate();
