@@ -1,8 +1,10 @@
 ﻿using AutoTune.Search;
 using System;
+using YAXLib;
 
 namespace AutoTune.Processing {
 
+    [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
     internal class QueueItem {
 
         internal SearchResult Search { get; set; }
@@ -10,7 +12,7 @@ namespace AutoTune.Processing {
         internal string BaseFileName { get; set; }
         internal string Id { get; set; } = Guid.NewGuid().ToString();
 
-        internal QueueItem() {
+        public QueueItem() {
         }
 
         internal QueueItem(SearchResult search) {

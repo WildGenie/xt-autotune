@@ -2,9 +2,11 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using YAXLib;
 
 namespace AutoTune.Processing {
 
+    [YAXComment("Do not modify! Changes will be overwritten by the application.")]
     internal class PostProcessingQueue : Queue<PostProcessingQueue> {
 
         internal override string GetAction() {

@@ -3,9 +3,11 @@ using AutoTune.Shared;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using YAXLib;
 
 namespace AutoTune.Processing {
 
+    [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
     internal abstract class Queue<T> : SettingsBase<T>, IQueue where T : Queue<T>, new() {
 
         private readonly object Lock = new object();
@@ -17,7 +19,7 @@ namespace AutoTune.Processing {
         public event EventHandler<EventArgs<QueueItem>> Completed;
 
         bool paused = false;
-        public List<QueueItem> Items { get; private set; } = new List<QueueItem>();
+        public List<QueueItem> Items { get; set; } = new List<QueueItem>();
 
         public bool Paused {
             get {

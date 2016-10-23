@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using YAXLib;
 
 namespace AutoTune.Processing {
 
+    [YAXComment("Do not modify! Changes will be overwritten by the application.")]
     internal class DownloadQueue : Queue<DownloadQueue> {
 
         const string AppTimeout = "app-timeout";

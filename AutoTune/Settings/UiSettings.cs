@@ -4,7 +4,7 @@ using YAXLib;
 
 namespace AutoTune.Settings {
 
-    [YAXComment("Do not modify! These values are overwritten when the application is closed.")]
+    [YAXComment("Do not modify! Changes will be overwritten by the application.")]
     [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
     internal class UiSettings : SettingsBase<UiSettings> {
 
