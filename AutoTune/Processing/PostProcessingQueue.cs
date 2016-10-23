@@ -5,7 +5,7 @@ using System.IO;
 
 namespace AutoTune.Processing {
 
-    public class PostProcessingQueue : Queue<PostProcessingQueue> {
+    internal class PostProcessingQueue : Queue<PostProcessingQueue> {
 
         internal override string GetAction() {
             return "post processing";
@@ -16,29 +16,29 @@ namespace AutoTune.Processing {
         }
 
         internal override void ProcessItem(QueueItem item) {
+            var app = AppSettings.Instance;
             var user = UserSettings.Instance;
-            var process = AppSettings.Instance.PostProcessing;
             if (!File.Exists(item.DownloadPath))
                 throw new FileNotFoundException(string.Format("File not found: {0}.", item.DownloadPath));
-            if (process.Enabled) {
+            if (app.PostProcessingEnabled) {
                 string processPath = DoPostProcess(item);
                 if (!File.Exists(processPath))
                     throw new FileNotFoundException(string.Format("File not found: {0}.", processPath));
                 CopyToTarget(processPath, user.TargetFolder, item.BaseFileName);
                 File.Delete(processPath);
             }
-            if (!process.Enabled || process.KeepOriginal)
+            if (!app.PostProcessingEnabled || app.PostProcessingKeepOriginal)
                 CopyToTarget(item.DownloadPath, user.TargetFolder, item.BaseFileName);
             File.Delete(item.DownloadPath);
         }
 
         static string DoPostProcess(QueueItem item) {
+            var app = AppSettings.Instance;
             var user = UserSettings.Instance;
             string name = Guid.NewGuid().ToString();
-            var process = AppSettings.Instance.PostProcessing;
             string path = Path.Combine(user.ProcessFolder, name);
-            string args = string.Format(process.Arguments, item.DownloadPath, path, process.Extension);
-            ProcessStartInfo info = new ProcessStartInfo(process.Command, args);
+            string args = string.Format(app.PostProcessingArguments, item.DownloadPath, path, app.PostProcessingExtension);
+            ProcessStartInfo info = new ProcessStartInfo(app.PostProcessingCommand, args);
             info.UseShellExecute = false;
             info.CreateNoWindow = true;
             using (var processor = Process.Start(info)) {
@@ -49,7 +49,7 @@ namespace AutoTune.Processing {
                     throw new ProcessingException(message);
                 }
             }
-            return path + "." + process.Extension;
+            return path + "." + app.PostProcessingExtension;
         }
 
         static void CopyToTarget(string fromPath, string targetFolder, string baseFileName) {

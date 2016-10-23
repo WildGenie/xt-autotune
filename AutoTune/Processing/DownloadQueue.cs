@@ -9,7 +9,7 @@ using System.Net;
 
 namespace AutoTune.Processing {
 
-    public class DownloadQueue : Queue<DownloadQueue> {
+    internal class DownloadQueue : Queue<DownloadQueue> {
 
         const string AppTimeout = "app-timeout";
         const string ScriptError = "script-error";
@@ -23,12 +23,12 @@ namespace AutoTune.Processing {
             return "download";
         }
 
-        internal override int GetThreadCount() {
-            return AppSettings.Instance.DownloadThreadCount;
-        }
-
         internal override void ProcessItem(QueueItem item) {
             Download(item, FetchDownloadLink(item.Search));
+        }
+
+        internal override int GetThreadCount() {
+            return AppSettings.Instance.DownloadThreadCount;
         }
 
         static void ValidateFileName(string title, string fileName, string contentType) {
@@ -66,7 +66,7 @@ namespace AutoTune.Processing {
             }
 
             ValidateFileName(item.Search.Title, fileName, contentType);
-            if (fileName == null) 
+            if (fileName == null)
                 fileName = item.Search.Title + "." + contentType.Substring(contentType.LastIndexOf("/") + 1);
             item.BaseFileName = Path.GetFileNameWithoutExtension(fileName);
             string tempName = Guid.NewGuid().ToString() + Path.GetExtension(fileName);
@@ -76,13 +76,13 @@ namespace AutoTune.Processing {
 
         static string FetchDownloadLink(SearchResult item) {
 
+            var app = AppSettings.Instance;
             string delimiter = Guid.NewGuid().ToString();
-            var fetch = AppSettings.Instance.Fetch;
             var provider = AppSettings.GetProvider(item.TypeId);
             var executable = Path.Combine("Fetch", "AutoTune.Fetch.exe");
             string fetchFilePath = Path.Combine(AppSettings.GetFolderPath(), provider.FetchFile);
             string url = string.Format(provider.DownloadUrlPattern, item.VideoId);
-            string args = string.Format("\"{0}\" {1} {2} {3} {4} {5}", fetchFilePath, url, delimiter, fetch.Timeout, fetch.Delay, fetch.Retries);
+            string args = string.Format("\"{0}\" {1} {2} {3} {4} {5}", fetchFilePath, url, delimiter, app.FetchTimeout, app.FetchDelay, app.FetchRetries);
 
             string link = null;
             ProcessStartInfo info = new ProcessStartInfo(executable, args);

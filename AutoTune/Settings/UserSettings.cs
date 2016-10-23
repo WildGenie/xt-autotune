@@ -3,29 +3,47 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
+using YAXLib;
 
 namespace AutoTune.Settings {
 
-    public class UserSettings : SettingsBase<UserSettings> {
+    [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
+    internal class UserSettings : SettingsBase<UserSettings> {
 
-        internal static SearchCredentials GetCredentials(string typeId) => Instance.Credentials.Single(c => c.Id.Equals(typeId)).Item;
+        internal static SearchCredentials GetCredentials(string typeId) => Instance.Credentials.Single(c => c.Key.Equals(typeId)).Value;
 
-        [XmlIgnore]
+        [YAXDontSerialize]
         internal string ProcessFolder => Path.Combine(TempFolder, "Process");
-        [XmlIgnore]
+        [YAXDontSerialize]
         internal string DownloadFolder => Path.Combine(TempFolder, "Download");
 
-        public class SearchCredentials {
-            public string APIKey { get; set; }
-            public string ClientSecret { get; set; }
+        [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
+        internal class SearchCredentials {
+            [YAXComment("API key or client id, must match the specified application name.")]
+            internal string APIKey { get; set; }
+            [YAXComment("Client secret, must match the specified application name.")]
+            internal string ClientSecret { get; set; }
         }
 
-        public string AppName { get; set; } = "registered-app-name";
-        public string TempFolder { get; set; } = Path.Combine(GetFolderPath(), "Temp");
-        public string BrowserCacheFolder = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache);
-        public List<Entry<SearchCredentials>> Credentials { get; set; } = new List<Entry<SearchCredentials>>();
-        public string TargetFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+        [YAXComment("Application name as specified when generating API keys.")]
+        internal string ApplicationName { get; set; } = "registered-app-name";
+        [YAXComment("Downloads and post-processing files are stored here.")]
+        internal string TempFolder { get; set; } = Path.Combine(GetFolderPath(), "Temp");
+        [YAXComment("Files are placed here after post-processing.")]
+        internal string TargetFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+        [YAXComment("Search provider credentials.")]
+        [YAXDictionary(EachPairName = "Provider", KeyName = "Id", ValueName = "Credentials", SerializeKeyAs = YAXNodeTypes.Attribute)]
+        internal Dictionary<string, SearchCredentials> Credentials { get; set; } = new Dictionary<string, SearchCredentials>() {
+            { SearchEngine.VimeoTypeId, new SearchCredentials() {
+                APIKey = "vimeo-client-id",
+                ClientSecret = "vimeo-client-secret" } },
+            { SearchEngine.YouTubeTypeId, new SearchCredentials() {
+                APIKey = "youtube-api-key",
+                ClientSecret = "not-needed" } },
+            { SearchEngine.DailyMotionTypeId, new SearchCredentials() {
+                APIKey = "not-needed",
+                ClientSecret = "not-needed" } }
+        };
 
         internal override void OnTerminating() {
         }
@@ -35,21 +53,6 @@ namespace AutoTune.Settings {
             Directory.CreateDirectory(Instance.TargetFolder);
             Directory.CreateDirectory(Instance.ProcessFolder);
             Directory.CreateDirectory(Instance.DownloadFolder);
-            Directory.CreateDirectory(Instance.BrowserCacheFolder);
-            if (Credentials.Count != 0)
-                return;
-            Credentials.Add(new Entry<SearchCredentials>(SearchEngine.VimeoTypeId, new SearchCredentials() {
-                APIKey = "vimeo-client-id",
-                ClientSecret = "vimeo-client-secret"
-            }));
-            Credentials.Add(new Entry<SearchCredentials>(SearchEngine.YouTubeTypeId, new SearchCredentials() {
-                APIKey = "youtube-api-key",
-                ClientSecret = "not-needed"
-            }));
-            Credentials.Add(new Entry<SearchCredentials>(SearchEngine.DailyMotionTypeId, new SearchCredentials() {
-                APIKey = "not-needed",
-                ClientSecret = "not-needed"
-            }));
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AutoTune.Processing {
 
-    interface IQueue {
+    internal interface IQueue {
 
         void Clear();
         bool Paused { get; set; }

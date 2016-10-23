@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace AutoTune.Processing {
 
-    public abstract class Queue<T> : SettingsBase<T>, IQueue where T : Queue<T>, new() {
+    internal abstract class Queue<T> : SettingsBase<T>, IQueue where T : Queue<T>, new() {
 
         private readonly object Lock = new object();
         private readonly List<QueueItem> InProgress = new List<QueueItem>();

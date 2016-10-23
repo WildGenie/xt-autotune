@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Xml.Serialization;
+using YAXLib;
 
 namespace AutoTune.Settings {
 
-    public abstract class SettingsBase<T> where T : SettingsBase<T>, new() {
+    internal abstract class SettingsBase<T> where T : SettingsBase<T>, new() {
 
         internal static T Instance { get; private set; } = new T();
         internal abstract void OnTerminating();
@@ -13,18 +13,15 @@ namespace AutoTune.Settings {
         internal static void Terminate() {
             Instance.OnTerminating();
             var filePath = Path.Combine(GetFolderPath(), typeof(T).Name + ".xml");
-            using (Stream file = new FileStream(filePath, FileMode.Create))
-                new XmlSerializer(typeof(T)).Serialize(file, Instance);
+            File.WriteAllText(filePath, new YAXSerializer(typeof(T)).Serialize(Instance));
         }
 
         internal static void Initialize() {
             var filePath = Path.Combine(GetFolderPath(), typeof(T).Name + ".xml");
             Directory.CreateDirectory(GetFolderPath());
             if (File.Exists(filePath))
-                using (Stream file = new FileStream(filePath, FileMode.Open))
-                    Instance = (T)new XmlSerializer(typeof(T)).Deserialize(file);
-            using (Stream file = new FileStream(filePath, FileMode.Create))
-                new XmlSerializer(typeof(T)).Serialize(file, Instance);
+                Instance = (T)new YAXSerializer(typeof(T)).Deserialize(File.ReadAllText(filePath));
+            File.WriteAllText(filePath, new YAXSerializer(typeof(T)).Serialize(Instance));
             Instance.OnInitialized();
         }
 

@@ -41,8 +41,6 @@ namespace AutoTune.Gui {
             ThemeSettings.Initialize();
             var cef = new CefSettings();
             var proc = "CefSharp.BrowserSubprocess.exe";
-            cef.CachePath = UserSettings.Instance.BrowserCacheFolder;
-            cef.PersistSessionCookies = AppSettings.Instance.PersistBrowserSessions;
             cef.BrowserSubprocessPath = Path.Combine(AppBase, Arch, proc);
             Cef.Initialize(cef);
             Application.EnableVisualStyles();
@@ -188,8 +186,9 @@ namespace AutoTune.Gui {
             searchQuery = null;
             searchRelated = e.Data;
             uiResults.Controls.Clear();
+            var pageSize = AppSettings.Instance.SearchPageSize;
             var credentials = Utility.GetSearchCredentials()[e.Data.TypeId];
-            var query = new SearchQuery(e.Data.TypeId, credentials, e.Data.VideoId, AppSettings.Instance.SearchPageSize);
+            var query = new SearchQuery(e.Data.TypeId, credentials, e.Data.VideoId, pageSize);
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
@@ -200,7 +199,8 @@ namespace AutoTune.Gui {
             searchRelated = null;
             searchQuery = uiQuery.Text.Trim();
             UiSettings.Instance.LastSearch = searchQuery;
-            var query = new SearchQuery(Utility.GetSearchCredentials(), searchQuery, AppSettings.Instance.SearchPageSize);
+            var pageSize = AppSettings.Instance.SearchPageSize;
+            var query = new SearchQuery(Utility.GetSearchCredentials(), searchQuery, pageSize);
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
@@ -225,7 +225,8 @@ namespace AutoTune.Gui {
         }
 
         void OnUiResultsScroll(object sender, ScrollEventArgs e) {
-            if (searchState == null || appendingResult || !AppSettings.Instance.AutoLoadMoreSearchResults)
+            var autoLoad = AppSettings.Instance.AutoLoadMoreSearchResults;
+            if (searchState == null || appendingResult || !autoLoad)
                 return;
             VScrollProperties properties = uiResults.VerticalScroll;
             if (e.NewValue != properties.Maximum - properties.LargeChange + 1)

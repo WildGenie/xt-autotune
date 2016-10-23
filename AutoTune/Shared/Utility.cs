@@ -34,7 +34,7 @@ namespace AutoTune.Shared {
         internal static Dictionary<string, SearchCredentials> GetSearchCredentials() {
             var result = new Dictionary<string, SearchCredentials>();
             foreach (var entry in UserSettings.Instance.Credentials)
-                result.Add(entry.Id, new SearchCredentials(UserSettings.Instance.AppName, entry.Item.APIKey, entry.Item.ClientSecret));
+                result.Add(entry.Key, new SearchCredentials(UserSettings.Instance.ApplicationName, entry.Value.APIKey, entry.Value.ClientSecret));
             return result;
         }
     }

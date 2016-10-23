@@ -1,19 +1,22 @@
 ﻿using AutoTune.Search;
 using AutoTune.Shared;
+using YAXLib;
 
 namespace AutoTune.Settings {
 
-    public class UiSettings : SettingsBase<UiSettings> {
+    [YAXComment("Do not modify! These values are overwritten when the application is closed.")]
+    [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
+    internal class UiSettings : SettingsBase<UiSettings> {
 
-        public string LastSearch { get; set; } = "";
-        public bool FullScreen { get; set; } = false;
-        public bool PlayerFull { get; set; } = false;
-        public SearchResult CurrentTrack { get; set; }
-        public bool LogCollapsed { get; set; } = true;
-        public bool SearchCollapsed { get; set; } = false;
-        public bool NotificationsCollapsed { get; set; } = false;
-        public bool CurrentControlsCollapsed { get; set; } = false;
-        public LogLevel TraceLevel { get; set; } = LogLevel.Info;
+        internal string LastSearch { get; set; } = "";
+        internal bool FullScreen { get; set; } = false;
+        internal bool PlayerFull { get; set; } = false;
+        internal SearchResult CurrentTrack { get; set; }
+        internal bool LogCollapsed { get; set; } = true;
+        internal bool SearchCollapsed { get; set; } = false;
+        internal bool NotificationsCollapsed { get; set; } = false;
+        internal bool CurrentControlsCollapsed { get; set; } = false;
+        internal LogLevel TraceLevel { get; set; } = LogLevel.Info;
         
         internal override void OnTerminating() {
         }

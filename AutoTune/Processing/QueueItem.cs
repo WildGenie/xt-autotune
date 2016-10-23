@@ -3,12 +3,12 @@ using System;
 
 namespace AutoTune.Processing {
 
-    public class QueueItem {
+    internal class QueueItem {
 
-        public SearchResult Search { get; set; }
-        public string DownloadPath { get; set; }
-        public string BaseFileName { get; set; }
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        internal SearchResult Search { get; set; }
+        internal string DownloadPath { get; set; }
+        internal string BaseFileName { get; set; }
+        internal string Id { get; set; } = Guid.NewGuid().ToString();
 
         internal QueueItem() {
         }
