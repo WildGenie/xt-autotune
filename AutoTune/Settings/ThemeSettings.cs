@@ -1,6 +1,4 @@
-﻿using AutoTune.Shared;
-
-namespace AutoTune.Settings {
+﻿namespace AutoTune.Settings {
 
     public class ThemeSettings : SettingsBase<ThemeSettings> {
 
@@ -9,10 +7,10 @@ namespace AutoTune.Settings {
         public string ForeColor1 { get; set; } = "#cccccc";
         public string ForeColor2 { get; set; } = "#00adef";
 
-        protected override void OnTerminating() {
+        internal override void OnTerminating() {
         }
 
-        protected override void OnInitialized() {
+        internal override void OnInitialized() {
         }
     }
 }

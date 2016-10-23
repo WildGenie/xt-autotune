@@ -2,22 +2,22 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace AutoTune.Shared {
+namespace AutoTune.Settings {
 
     public abstract class SettingsBase<T> where T : SettingsBase<T>, new() {
 
-        public static T Instance { get; private set; } = new T();
-        protected abstract void OnTerminating();
-        protected abstract void OnInitialized();
+        internal static T Instance { get; private set; } = new T();
+        internal abstract void OnTerminating();
+        internal abstract void OnInitialized();
 
-        public static void Terminate() {
+        internal static void Terminate() {
             Instance.OnTerminating();
             var filePath = Path.Combine(GetFolderPath(), typeof(T).Name + ".xml");
             using (Stream file = new FileStream(filePath, FileMode.Create))
                 new XmlSerializer(typeof(T)).Serialize(file, Instance);
         }
 
-        public static void Initialize() {
+        internal static void Initialize() {
             var filePath = Path.Combine(GetFolderPath(), typeof(T).Name + ".xml");
             Directory.CreateDirectory(GetFolderPath());
             if (File.Exists(filePath))
@@ -28,7 +28,7 @@ namespace AutoTune.Shared {
             Instance.OnInitialized();
         }
 
-        public static string GetFolderPath() {
+        internal static string GetFolderPath() {
             var appData = Environment.SpecialFolder.LocalApplicationData;
             return Path.Combine(Environment.GetFolderPath(appData), "AutoTune");
         }

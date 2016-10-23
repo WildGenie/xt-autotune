@@ -1,11 +1,10 @@
-﻿using AutoTune.Drivers;
-using AutoTune.Queue;
+﻿using AutoTune.Processing;
+using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
 using CefSharp;
 using CefSharp.WinForms;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -14,7 +13,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    public partial class MainWindow : Form {
+    internal partial class MainWindow : Form {
 
         const int ShowLogMinWidth = 1250;
         static readonly string UnicodeBlackLowerLeftTriangle = "\u25e3";
@@ -61,9 +60,9 @@ namespace AutoTune.Gui {
         private TextWriter logger;
         private bool appendingResult;
         private bool initializing = true;
+        private object searchState = null;
         private string searchQuery = null;
-        private Result searchSimilar = null;
-        private IDictionary<string, SearchState> searchState;
+        private SearchResult searchRelated = null;
         private readonly ChromiumWebBrowser uiBrowser = new ChromiumWebBrowser(AppSettings.StartupFilePath);
 
         MainWindow() {
@@ -80,8 +79,8 @@ namespace AutoTune.Gui {
             uiBrowserContainer.Controls.Add(uiBrowser);
             ConnectResultViewEventHandlers(uiCurrentResult);
             uiLogLevel.DataSource = Enum.GetValues(typeof(LogLevel));
-            uiDownloadQueue.Play += (s, e) => PlayResult(e.Data);
-            uiPostProcessingQueue.Play += (s, e) => PlayResult(e.Data);
+            uiDownloadQueue.Play += (s, e) => PlayResult(e.Data.Search);
+            uiPostProcessingQueue.Play += (s, e) => PlayResult(e.Data.Search);
         }
 
         void InitializeSettings() {
@@ -95,8 +94,9 @@ namespace AutoTune.Gui {
             ToggleNotifications(UiSettings.Instance.NotificationsCollapsed);
             ToggleCurrentControls(UiSettings.Instance.CurrentControlsCollapsed);
             if (ui.CurrentTrack != null) {
-                Logger.Debug("Opening " + ui.CurrentTrack.Url + " in player.");
-                uiBrowser.Load(ui.CurrentTrack.Url);
+                var url = Utility.GetUrl(ui.CurrentTrack);
+                Logger.Debug("Opening {0} in player.", url);
+                uiBrowser.Load(url);
             }
         }
 
@@ -174,8 +174,8 @@ namespace AutoTune.Gui {
                 UiSettings.Instance.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
         }
 
-        void OnResultDownloadClicked(object sender, EventArgs<Result> e) {
-            uiDownloadQueue.Enqueue(e.Data.NewId());
+        void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {
+            uiDownloadQueue.Enqueue(new QueueItem(e.Data));
         }
 
         void OnQueryKeyPress(object sender, KeyPressEventArgs e) {
@@ -184,21 +184,34 @@ namespace AutoTune.Gui {
             StartSearch();
         }
 
-        void OnResultSimilarClicked(object sender, EventArgs<Result> e) {
+        void OnResultRelatedClicked(object sender, EventArgs<SearchResult> e) {
             searchQuery = null;
-            searchSimilar = e.Data;
+            searchRelated = e.Data;
             uiResults.Controls.Clear();
-            searchState = Search.Start(null, e.Data, AppendResults);
+            var credentials = Utility.GetSearchCredentials()[e.Data.TypeId];
+            var query = new SearchQuery(e.Data.TypeId, credentials, e.Data.VideoId, AppSettings.Instance.SearchPageSize);
+            searchState = SearchEngine.Start(query, AppendResults);
         }
 
         void StartSearch() {
             if (uiQuery.Text.Trim().Length == 0)
                 return;
             uiResults.Controls.Clear();
-            searchSimilar = null;
+            searchRelated = null;
             searchQuery = uiQuery.Text.Trim();
             UiSettings.Instance.LastSearch = searchQuery;
-            searchState = Search.Start(searchQuery, null, AppendResults);
+            var query = new SearchQuery(Utility.GetSearchCredentials(), searchQuery, AppSettings.Instance.SearchPageSize);
+            searchState = SearchEngine.Start(query, AppendResults);
+        }
+
+        void LoadMore() {
+            var typeId = searchRelated?.TypeId;
+            var credentials = Utility.GetSearchCredentials();
+            var pageSize = AppSettings.Instance.SearchPageSize;
+            SearchQuery q = searchRelated == null ? 
+                new SearchQuery(credentials, searchQuery, pageSize) :
+                new SearchQuery(typeId, credentials[typeId], searchRelated.VideoId, pageSize);
+            SearchEngine.Continue(q, searchState, AppendResults);
         }
 
         void OnMainWindowResized(object sender, EventArgs e) {
@@ -207,8 +220,8 @@ namespace AutoTune.Gui {
         }
 
         void OnLoadMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            if (searchQuery != null || searchSimilar != null)
-                Search.Continue(searchState, searchQuery, searchSimilar, AppendResults);
+            if (searchQuery != null || searchRelated != null)
+                LoadMore();
         }
 
         void OnUiResultsScroll(object sender, ScrollEventArgs e) {
@@ -217,18 +230,18 @@ namespace AutoTune.Gui {
             VScrollProperties properties = uiResults.VerticalScroll;
             if (e.NewValue != properties.Maximum - properties.LargeChange + 1)
                 return;
-            Search.Continue(searchState, searchQuery, searchSimilar, AppendResults);
+            LoadMore();
         }
 
-        void OnResultPlayClicked(object sender, EventArgs<Result> e) {
+        void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
             PlayResult(e.Data);
             UiSettings.Instance.CurrentTrack = e.Data;
             uiCurrentResult.SetResult(e.Data);
         }
 
-        void PlayResult(Result result) {
-            uiBrowser.Load(result.PlayUrl);
-            Logger.Debug("Playing " + result.PlayUrl + " in player.");
+        void PlayResult(SearchResult result) {
+            uiBrowser.Load(Utility.GetPlayUrl(result));
+            Logger.Debug("Playing {0} in player.", Utility.GetPlayUrl(result));
         }
 
         void OnToggleLogClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -329,11 +342,11 @@ namespace AutoTune.Gui {
             }));
         }
 
-        void AppendResults(Results results) {
-            if (results.Error != null) {
-                Logger.Error(results.Error, "Search error.");
+        void AppendResults(SearchResponse response) {
+            if (response.Error != null) {
+                Logger.Error(response.Error, "Search error.");
             } else
-                foreach (Result result in results.Items) {
+                foreach (SearchResult result in response.Results) {
                     BeginInvoke(new Action(() => {
                         var view = new ResultView();
                         ConnectResultViewEventHandlers(view);
@@ -348,9 +361,9 @@ namespace AutoTune.Gui {
 
         void ConnectResultViewEventHandlers(ResultView view) {
             view.PlayClicked += OnResultPlayClicked;
-            view.SimilarClicked += OnResultSimilarClicked;
+            view.RelatedClicked += OnResultRelatedClicked;
             view.DownloadClicked += OnResultDownloadClicked;
-            view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<Result>(((ResultView)s).Result));
+            view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<SearchResult>(((ResultView)s).Result));
         }
     }
 }

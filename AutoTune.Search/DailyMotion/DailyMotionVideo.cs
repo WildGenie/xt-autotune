@@ -1,4 +1,4 @@
-﻿namespace AutoTune.Drivers.DailyMotion {
+﻿namespace AutoTune.Search.DailyMotion {
 
     public class DailyMotionVideo {
 

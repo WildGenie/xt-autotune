@@ -9,15 +9,15 @@ using VimeoDotNet;
 using VimeoDotNet.Models;
 using VimeoDotNet.Net;
 
-namespace AutoTune.Drivers.Vimeo {
+namespace AutoTune.Search.Vimeo {
 
-    class VimeoVideoClient : VimeoClient {
+    internal class VimeoVideoClient : VimeoClient {
 
-        public VimeoVideoClient(string clientId, string clientSecret) :
+        internal VimeoVideoClient(string clientId, string clientSecret) :
             base(clientId, clientSecret) {
         }
 
-        public Paginated<Video> GetVideos(string query, string videoId, int? page, int? perPage) {
+        internal Paginated<Video> GetVideos(string query, string videoId, int? page, int? perPage) {
             try {
                 var result = GetVideosAsync(query, videoId, page, perPage);
                 result.Wait();
@@ -28,7 +28,7 @@ namespace AutoTune.Drivers.Vimeo {
             }
         }
 
-        public async Task<Paginated<Video>> GetVideosAsync(string query, string videoId, int? page, int? perPage) {
+        internal async Task<Paginated<Video>> GetVideosAsync(string query, string videoId, int? page, int? perPage) {
             try {
                 IApiRequest request = GenerateVideosRequest(query, videoId, page, perPage);
                 IRestResponse<Paginated<Video>> response = await request.ExecuteRequestAsync<Paginated<Video>>();
@@ -36,7 +36,7 @@ namespace AutoTune.Drivers.Vimeo {
                 CheckStatusCodeError(response, "Error retrieving videos.");
                 return response.Data;
             } catch (Exception ex) {
-                throw new DriverException("Error retrieving videos.", ex);
+                throw new SearchException("Error retrieving videos.", ex);
             }
         }
 
@@ -72,7 +72,7 @@ namespace AutoTune.Drivers.Vimeo {
                 return;
             string format = "{1}{0}Code: {2}{0}Message: {3}";
             string formatted = string.Format(format, Environment.NewLine, message, response.StatusCode, response.Content);
-            throw new DriverException(formatted);
+            throw new SearchException(formatted);
         }
     }
 }

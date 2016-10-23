@@ -1,4 +1,4 @@
-﻿using AutoTune.Queue;
+﻿using AutoTune.Processing;
 using AutoTune.Settings;
 using AutoTune.Shared;
 using System;
@@ -9,17 +9,17 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    public partial class QueueView : UserControl {
+    internal partial class QueueView : UserControl {
 
         IQueue queue;
-        public event EventHandler<EventArgs<Result>> Play;
+        internal event EventHandler<EventArgs<QueueItem>> Play;
 
-        public QueueView() {
+        internal QueueView() {
             InitializeComponent();
             InitializeColors();
         }
 
-        public void Initialize(IQueue queue) {
+        internal void Initialize(IQueue queue) {
             this.queue = queue;
             AddViews();
             ConnectEventHandlers();
@@ -45,20 +45,20 @@ namespace AutoTune.Gui {
         }
 
         void AddViews() {
-            foreach (Result result in queue.Items)
-                AddView(result);
+            foreach (QueueItem item in queue.Items)
+                AddView(item);
         }
 
-        public void Enqueue(Result result) {
-            queue.Enqueue(result, () => AddView(result));
+        public void Enqueue(QueueItem item) {
+            queue.Enqueue(item, () => AddView(item));
         }
 
-        void AddView(Result result) {
+        void AddView(QueueItem item) {
             QueueItemView view = new QueueItemView();
             view.Play += (s, e) => Play(this, e);
             ResizeView(view);
             uiItems.Controls.Add(view);
-            view.Initialize(result);
+            view.Initialize(item);
             uiItems.ScrollControlIntoView(view);
         }
 
@@ -79,32 +79,32 @@ namespace AutoTune.Gui {
                     uiItems.Controls.Remove(v);
         }
 
-        void OnCompleted(object sender, EventArgs<Result> e) {
+        void OnCompleted(object sender, EventArgs<QueueItem> e) {
             SetState(e.Data, QueueItemView.Done);
         }
 
-        void OnError(object sender, EventArgs<Result> e) {
+        void OnError(object sender, EventArgs<QueueItem> e) {
             SetState(e.Data, QueueItemView.Error);
         }
 
-        void OnNotFound(object sender, EventArgs<Result> e) {
+        void OnNotFound(object sender, EventArgs<QueueItem> e) {
             SetState(e.Data, QueueItemView.Missing);
         }
 
-        void OnStarted(object sender, EventArgs<Result> e) {
+        void OnStarted(object sender, EventArgs<QueueItem> e) {
             SetState(e.Data, QueueItemView.Started);
         }
 
-        void SetState(Result r, string state) {
-            var views = FindViews(r);
+        void SetState(QueueItem item, string state) {
+            var views = FindViews(item);
             foreach (var v in views)
                 v.SetState(state);
         }
 
-        List<QueueItemView> FindViews(Result r) {
+        List<QueueItemView> FindViews(QueueItem item) {
             return uiItems.Controls
                 .Cast<QueueItemView>()
-                .Where(v => v.result.Equals(r))
+                .Where(v => v.item.Equals(item))
                 .ToList();
         }
 

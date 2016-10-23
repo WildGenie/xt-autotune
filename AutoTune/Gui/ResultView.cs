@@ -1,25 +1,22 @@
-﻿using AutoTune.Settings;
+﻿using AutoTune.Search;
+using AutoTune.Settings;
 using AutoTune.Shared;
 using System;
 using System.Drawing;
-using System.IO;
-using System.Net;
 using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    public partial class ResultView : UserControl {
+    internal partial class ResultView : UserControl {
 
-        public event EventHandler<EventArgs<Result>> PlayClicked;
-        public event EventHandler<EventArgs<Result>> SimilarClicked;
-        public event EventHandler<EventArgs<Result>> DownloadClicked;
+        internal event EventHandler<EventArgs<SearchResult>> PlayClicked;
+        internal event EventHandler<EventArgs<SearchResult>> RelatedClicked;
+        internal event EventHandler<EventArgs<SearchResult>> DownloadClicked;
 
-        Result result;
-        public Result Result {
-            get { return result; }
-        }
+        SearchResult result;
+        internal SearchResult Result { get { return result; } }
 
-        public ResultView() {
+        internal ResultView() {
             InitializeComponent();
             InitializeColors();
             Resize += OnResize;
@@ -40,12 +37,12 @@ namespace AutoTune.Gui {
             uiDownload.BackColor = back2;
             uiDownload.LinkColor = fore2;
             uiDownload.ActiveLinkColor = fore2;
-            uiSimilar.BackColor = back2;
-            uiSimilar.LinkColor = fore2;
-            uiSimilar.ActiveLinkColor = fore2;
+            uiRelated.BackColor = back2;
+            uiRelated.LinkColor = fore2;
+            uiRelated.ActiveLinkColor = fore2;
         }
 
-        public void SetResult(Result result) {
+        public void SetResult(SearchResult result) {
             this.result = result;
             Utility.WhenImageDownloaded(result?.ThumbnailUrl, i => Invoke(new Action(() => InitializeResult(i))));
         }
@@ -53,7 +50,7 @@ namespace AutoTune.Gui {
         void InitializeResult(Image image) {
             uiText.Text = "";
             uiImage.Image = image;
-            uiType.Text = result == null ? "" : result.Type;
+            uiType.Text = result == null ? "" : result.TypeId;
             if (result != null) {
                 string text = "{\\rtf \\b " + result.Title + " \\b0 ";
                 text += " \\line " + result.Description + " }";
@@ -67,17 +64,17 @@ namespace AutoTune.Gui {
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (result != null)
-                PlayClicked(this, new EventArgs<Result>(result));
+                PlayClicked(this, new EventArgs<SearchResult>(result));
         }
 
-        void OnSimilarClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        void OnRelatedClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (result != null)
-                SimilarClicked(this, new EventArgs<Result>(result));
+                RelatedClicked(this, new EventArgs<SearchResult>(result));
         }
 
         void OnDownloadClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (result != null)
-                DownloadClicked(this, new EventArgs<Result>(result));
+                DownloadClicked(this, new EventArgs<SearchResult>(result));
         }
     }
 }

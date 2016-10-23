@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune", "AutoTune\AutoTu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune.Fetch", "AutoTune.Fetch\AutoTune.Fetch.csproj", "{C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune.Search", "AutoTune.Search\AutoTune.Search.csproj", "{4A050F28-B2A5-4FCA-85FF-4661F61A01D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoTune.Shared", "AutoTune.Shared\AutoTune.Shared.csproj", "{75D3EF23-C920-4F9A-89F4-62324E5461EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +28,14 @@ Global
 		{C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3FD6AB6-C1C1-4A38-A3BC-ABD0CF1D57D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A050F28-B2A5-4FCA-85FF-4661F61A01D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A050F28-B2A5-4FCA-85FF-4661F61A01D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A050F28-B2A5-4FCA-85FF-4661F61A01D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A050F28-B2A5-4FCA-85FF-4661F61A01D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75D3EF23-C920-4F9A-89F4-62324E5461EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75D3EF23-C920-4F9A-89F4-62324E5461EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75D3EF23-C920-4F9A-89F4-62324E5461EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75D3EF23-C920-4F9A-89F4-62324E5461EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

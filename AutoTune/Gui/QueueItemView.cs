@@ -1,4 +1,5 @@
-﻿using AutoTune.Settings;
+﻿using AutoTune.Processing;
+using AutoTune.Settings;
 using AutoTune.Shared;
 using System;
 using System.Drawing;
@@ -6,20 +7,20 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    public partial class QueueItemView : UserControl {
+    internal partial class QueueItemView : UserControl {
 
-        public const string Done = "Done";
-        public const string Error = "Error";
-        public const string Queued = "Queued";
-        public const string Missing = "Missing";
-        public const string Started = "Started";
+        internal const string Done = "Done";
+        internal const string Error = "Error";
+        internal const string Queued = "Queued";
+        internal const string Missing = "Missing";
+        internal const string Started = "Started";
 
-        public event EventHandler<EventArgs<Result>> Play;
+        internal event EventHandler<EventArgs<QueueItem>> Play;
 
-        public Result result;
-        public string State { get { return uiState.Text; } }
+        internal QueueItem item;
+        internal string State { get { return uiState.Text; } }
 
-        public QueueItemView() {
+        internal QueueItemView() {
             InitializeComponent();
             InitializeColors();
             uiState.Text = Queued;
@@ -29,17 +30,17 @@ namespace AutoTune.Gui {
             uiTitle.Width = width;
         }
 
-        public void SetState(string state) {
+        internal void SetState(string state) {
             Invoke(new Action(() => uiState.Text = state));
         }
 
-        public void Initialize(Result result) {
-            this.result = result;
-            Utility.WhenImageDownloaded(result?.ThumbnailUrl, i => Invoke(new Action(() => InitializeResult(i))));
+        internal void Initialize(QueueItem item) {
+            this.item = item;
+            Utility.WhenImageDownloaded(item.Search.ThumbnailUrl, i => Invoke(new Action(() => InitializeResult(i))));
         }
 
         void InitializeResult(Image image) {
-            uiTitle.Text = result.Title;
+            uiTitle.Text = item.Search.Title;
             uiImage.Image = image;
         }
 
@@ -56,7 +57,7 @@ namespace AutoTune.Gui {
         }
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            Play(this, new EventArgs<Result>(result));
+            Play(this, new EventArgs<QueueItem>(item));
         }
     }
 }

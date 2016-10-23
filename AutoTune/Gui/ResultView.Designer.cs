@@ -26,7 +26,7 @@
             this.components = new System.ComponentModel.Container();
             this.uiPlay = new System.Windows.Forms.LinkLabel();
             this.uiDownload = new System.Windows.Forms.LinkLabel();
-            this.uiSimilar = new System.Windows.Forms.LinkLabel();
+            this.uiRelated = new System.Windows.Forms.LinkLabel();
             this.uiImage = new System.Windows.Forms.PictureBox();
             this.uiText = new System.Windows.Forms.RichTextBox();
             this.uiType = new System.Windows.Forms.Label();
@@ -63,19 +63,19 @@
             this.uiTooltip.SetToolTip(this.uiDownload, "Send this track to the download queue.");
             this.uiDownload.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnDownloadClicked);
             // 
-            // uiSimilar
+            // uiRelated
             // 
-            this.uiSimilar.AutoSize = true;
-            this.uiSimilar.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiSimilar.Location = new System.Drawing.Point(149, 16);
-            this.uiSimilar.Margin = new System.Windows.Forms.Padding(0);
-            this.uiSimilar.Name = "uiSimilar";
-            this.uiSimilar.Size = new System.Drawing.Size(37, 13);
-            this.uiSimilar.TabIndex = 4;
-            this.uiSimilar.TabStop = true;
-            this.uiSimilar.Text = "Similar";
-            this.uiTooltip.SetToolTip(this.uiSimilar, "Search similar tracks.");
-            this.uiSimilar.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSimilarClicked);
+            this.uiRelated.AutoSize = true;
+            this.uiRelated.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiRelated.Location = new System.Drawing.Point(149, 16);
+            this.uiRelated.Margin = new System.Windows.Forms.Padding(0);
+            this.uiRelated.Name = "uiRelated";
+            this.uiRelated.Size = new System.Drawing.Size(37, 13);
+            this.uiRelated.TabIndex = 4;
+            this.uiRelated.TabStop = true;
+            this.uiRelated.Text = "Related";
+            this.uiTooltip.SetToolTip(this.uiRelated, "Search related tracks.");
+            this.uiRelated.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnRelatedClicked);
             // 
             // uiImage
             // 
@@ -112,7 +112,7 @@
             this.uiType.Name = "uiType";
             this.uiType.Size = new System.Drawing.Size(39, 13);
             this.uiType.TabIndex = 5;
-            this.uiType.Text = "YouTube";
+            this.uiType.Text = "";
             // 
             // ResultView
             // 
@@ -120,7 +120,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.uiType);
-            this.Controls.Add(this.uiSimilar);
+            this.Controls.Add(this.uiRelated);
             this.Controls.Add(this.uiDownload);
             this.Controls.Add(this.uiPlay);
             this.Controls.Add(this.uiText);
@@ -141,7 +141,7 @@
         private System.Windows.Forms.Label uiType;
         private System.Windows.Forms.LinkLabel uiPlay;
         private System.Windows.Forms.LinkLabel uiDownload;
-        private System.Windows.Forms.LinkLabel uiSimilar;
+        private System.Windows.Forms.LinkLabel uiRelated;
         private System.Windows.Forms.ToolTip uiTooltip;
     }
 }

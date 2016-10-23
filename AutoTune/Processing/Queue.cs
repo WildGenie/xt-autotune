@@ -1,22 +1,23 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Settings;
+using AutoTune.Shared;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace AutoTune.Queue {
+namespace AutoTune.Processing {
 
     public abstract class Queue<T> : SettingsBase<T>, IQueue where T : Queue<T>, new() {
 
         private readonly object Lock = new object();
-        private readonly List<Result> InProgress = new List<Result>();
+        private readonly List<QueueItem> InProgress = new List<QueueItem>();
 
-        public event EventHandler<EventArgs<Result>> Started;
-        public event EventHandler<EventArgs<Result>> NotFound;
-        public event EventHandler<EventArgs<Result>> Completed;
-        public event EventHandler<EventArgs<Result>> Error;
+        public event EventHandler<EventArgs<QueueItem>> Error;
+        public event EventHandler<EventArgs<QueueItem>> Started;
+        public event EventHandler<EventArgs<QueueItem>> NotFound;
+        public event EventHandler<EventArgs<QueueItem>> Completed;
 
-        public List<Result> Items { get; private set; } = new List<Result>();
         bool paused = false;
+        public List<QueueItem> Items { get; private set; } = new List<QueueItem>();
 
         public bool Paused {
             get {
@@ -31,11 +32,11 @@ namespace AutoTune.Queue {
             }
         }
 
-        protected abstract string GetAction();
-        protected abstract int GetThreadCount();
-        protected abstract void ProcessItem(Result result);
+        internal abstract string GetAction();
+        internal abstract int GetThreadCount();
+        internal abstract void ProcessItem(QueueItem item);
 
-        protected override void OnInitialized() {
+        internal override void OnInitialized() {
         }
 
         public void Clear() {
@@ -45,12 +46,12 @@ namespace AutoTune.Queue {
             }
         }
 
-        protected override void OnTerminating() {
+        internal override void OnTerminating() {
             lock (Instance.Lock)
                    Instance.Items.InsertRange(0, Instance.InProgress);
         }
 
-        public static void Start() {
+        internal static void Start() {
             int threads = Instance.GetThreadCount();
             threads = threads == 0 ? Environment.ProcessorCount : threads;
             for (int i = 0; i < threads; i++) {
@@ -60,10 +61,10 @@ namespace AutoTune.Queue {
             }
         }
 
-        public void Enqueue(Result result, Action ifQueued) {
+        public void Enqueue(QueueItem item, Action ifQueued) {
             lock (Lock)
-                if (!Items.Contains(result)) {
-                    Items.Add(result);
+                if (!Items.Contains(item)) {
+                    Items.Add(item);
                     ifQueued();
                     Monitor.Pulse(Lock);
                 }
@@ -72,28 +73,27 @@ namespace AutoTune.Queue {
         void Run() {
             var sender = typeof(DownloadQueue);
             while (true) {
-                Result result = null;
+                QueueItem item;
                 lock (Lock) {
                     while (Items.Count == 0 || paused)
                         Monitor.Wait(Lock);
-                    result = Items[0];
+                    item = Items[0];
                     Items.RemoveAt(0);
-                    InProgress.Add(result);
+                    InProgress.Add(item);
                 }
-                var args = new EventArgs<Result>(result);
-                Logger.Info("Starting {0} of {1}.", GetAction(), result.Title);
+                var args = new EventArgs<QueueItem>(item);
+                Logger.Info("Starting {0} of {1}.", GetAction(), item.Search.Title);
                 Started(sender, args);
                 try {
-                    ProcessItem(result);
-                    Logger.Info("Finished {0} of {1}.", GetAction(), result.Title);
+                    ProcessItem(item);
+                    Logger.Info("Finished {0} of {1}.", GetAction(), item.Search.Title);
                     Completed(sender, args);
                 } catch (Exception error) {
-                    Logger.Error(error, "Error during {0} of {1}.", GetAction(), result.Title);
-                    var data = new Tuple<Result, Exception>(result, error);
+                    Logger.Error(error, "Error during {0} of {1}.", GetAction(), item.Search.Title);
                     Error(sender, args);
                 }
                 lock (Lock)
-                    InProgress.Remove(result);
+                    InProgress.Remove(item);
             }
         }
     }
