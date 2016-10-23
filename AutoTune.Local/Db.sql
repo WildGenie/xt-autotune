@@ -14,9 +14,19 @@ create table artist (
 create index i_artist_name
 on artist (name);
 
+create table album (
+  id integer primary key,
+  name text not null unique
+);
+
+create index i_album_name
+on album (name);
+
 create table track (
   id integer primary key,
   title text,
+  image blob,
+  album_id integer,
   genre_id integer,
   artist_id integer,
   path text not null unique,

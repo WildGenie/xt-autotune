@@ -1,6 +1,8 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 
 namespace AutoTune.Local {
 
@@ -18,6 +20,7 @@ namespace AutoTune.Local {
 
         public DbSet<Track> Tracks { get; set; }
         public DbSet<Genre> Genres { get; set; }
+        public DbSet<Album> Albums { get; set; }
         public DbSet<Artist> Artists { get; set; }
 
         public Database() : base(GetConnection(), true) {
@@ -39,6 +42,19 @@ namespace AutoTune.Local {
                     command.CommandText = statements[i];
                     command.ExecuteNonQuery();
                 }
+        }
+
+        public static List<Track> Search(string query, int page, int pageSize) {
+            string q = query.ToLower();
+            using (var db = new Database()) {
+                db.Configuration.LazyLoadingEnabled = false;
+                return db.Tracks
+                    .Where(t => t.Title != null && t.Title.ToLower().Contains(q) ||
+                    t.Artist != null && t.Artist.Name.ToLower().Contains(q))
+                    .Include(t => t.Genre)
+                    .Include(t => t.Artist)
+                    .ToList();
+            }
         }
     }
 }

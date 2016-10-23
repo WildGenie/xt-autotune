@@ -57,6 +57,11 @@ namespace AutoTune.Settings {
         [YAXComment("Search provider settings.")]
         [YAXDictionary(EachPairName = "Provider", KeyName = "Id", ValueName = "Settings", SerializeKeyAs = YAXNodeTypes.Attribute)]
         internal Dictionary<string, ProviderSettings> Providers { get; set; } = new Dictionary<string, ProviderSettings> {
+             { SearchEngine.LocalTypeId, new ProviderSettings {
+                FetchFile = null,
+                DownloadUrlPattern = "{0}",
+                UrlPattern = "{0}",
+                PlayUrlPattern = "{0}" } },
             { SearchEngine.VimeoTypeId, new ProviderSettings {
                 FetchFile = "FetchCatchVideo.html",
                 DownloadUrlPattern = "https://vimeo.com/{0}",
@@ -82,7 +87,8 @@ namespace AutoTune.Settings {
             InitializeResource(FetchFilePath, "AutoTune.Fetch.js");
             InitializeResource(StartupFilePath, "AutoTune.Startup.html");
             foreach (var entry in Providers)
-                InitializeResource(Path.Combine(GetFolderPath(), entry.Value.FetchFile), "AutoTune." + entry.Value.FetchFile);
+                if (!string.IsNullOrEmpty(entry.Value.FetchFile))
+                    InitializeResource(Path.Combine(GetFolderPath(), entry.Value.FetchFile), "AutoTune." + entry.Value.FetchFile);
         }
 
         static void InitializeResource(string path, string resourceName) {

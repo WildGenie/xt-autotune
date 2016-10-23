@@ -1,7 +1,9 @@
 ﻿using AutoTune.Shared;
 using System;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using TagLib;
 
@@ -43,13 +45,17 @@ namespace AutoTune.Local {
 
             string path;
             string title;
+            byte[] image;
             double progress;
             string genreName;
+            string albumName;
             string artistName;
             int addedGenres = 0;
             int addedTracks = 0;
+            int addedAlbums = 0;
             int addedArtists = 0;
             double previousProgress = 0.0;
+
             var paths = Directory.GetFiles(libraryFolder, "*.*", SearchOption.AllDirectories);
             Logger.Info("Scanning new tracks...");
             for (int i = 0; i < paths.Length; i++) {
@@ -58,16 +64,20 @@ namespace AutoTune.Local {
                     try {
                         using (var file = TagLib.File.Create(path)) {
                             title = file.Tag.Title;
+                            albumName = file.Tag.Album;
                             genreName = file.Tag.FirstGenre;
                             artistName = file.Tag.FirstPerformer;
+                            image = file.Tag.Pictures.Length == 0 ? null : file.Tag.Pictures[0].Data.Data;
                         }
                     } catch (UnsupportedFormatException) {
                         Logger.Debug("Unsupported file: {0}.", path);
                         continue;
                     }
-                    Genre genre = FindOrCreateGenre(db, genreName, ref addedGenres);
-                    Artist artist = FindOrCreateArtist(db, artistName, ref addedArtists);
-                    db.Tracks.Add(new Track(paths[i], title, genre, artist));
+                    Genre genre = FindOrCreate(db, db.Genres, genreName, ref addedGenres, n => new Genre(n), g => g.Name.Equals(genreName));
+                    Album album = FindOrCreate(db, db.Albums, albumName, ref addedAlbums, n => new Album(n), a => a.Name.Equals(albumName));
+                    Artist artist = FindOrCreate(db, db.Artists, artistName, ref addedArtists, n => new Artist(n), a => a.Name.Equals(artistName));
+                    db.Tracks.Add(new Track(paths[i], title, image, genre, album, artist));
+                    db.SaveChanges();
                     addedTracks++;
                     progress = i / (double)paths.Length;
                     if (progress > previousProgress + ProgressInterval) {
@@ -76,52 +86,43 @@ namespace AutoTune.Local {
                     }
                 }
             }
-            string format = "Finished scanning new tracks. Inserted {0} genres, {1} artists and {2} tracks.";
-            Logger.Info(format, addedGenres, addedArtists, addedTracks);
+            string format = "Finished scanning new tracks. Inserted {0} genres, {1} albums, {2} artists and {3} tracks.";
+            Logger.Info(format, addedGenres, addedAlbums, addedArtists, addedTracks);
         }
 
         static void CleanOldTracks(Database db) {
 
             int removedTracks = 0;
             Logger.Info("Cleaning old tracks...");
-            foreach(Track track in db.Tracks)
-                if(!System.IO.File.Exists(track.Path)) {
+            foreach (Track track in db.Tracks)
+                if (!System.IO.File.Exists(track.Path)) {
                     db.Tracks.Remove(track);
                     db.SaveChanges();
                     removedTracks++;
                 }
             var oldGenres = db.Genres.Where(g => !db.Tracks.Any(t => t.Genre.Equals(g))).ToList();
+            var oldAlbums = db.Albums.Where(a => !db.Tracks.Any(t => t.Album.Equals(a))).ToList();
             var oldArtists = db.Artists.Where(a => !db.Tracks.Any(t => t.Artist.Equals(a))).ToList();
+            db.Albums.RemoveRange(oldAlbums);
             db.Genres.RemoveRange(oldGenres);
             db.Artists.RemoveRange(oldArtists);
             db.SaveChanges();
-            string format = "Finished cleaning old tracks. Removed {0} genres, {1} artists and {2} tracks.";
-            Logger.Info(format, oldGenres.Count, oldArtists.Count, removedTracks);
+            string format = "Finished cleaning old tracks. Removed {0} genres, {1} albums, {2} artists and {2} tracks.";
+            Logger.Info(format, oldGenres.Count, oldAlbums.Count, oldArtists.Count, removedTracks);
         }
 
-        static Genre FindOrCreateGenre(Database db, string name, ref int addedGenres) {
-            if (name == null)
-                return null;
-            Genre result = db.Genres.SingleOrDefault(g => g.Name.Equals(name));
-            if (result != null)
-                return result;
-            result = new Genre(name);
-            db.Genres.Add(result);
-            db.SaveChanges();
-            addedGenres++;
-            return result;
-        }
+        static T FindOrCreate<T>(Database db, DbSet<T> set, string name, ref int added,
+            Func<string, T> create, Expression<Func<T, bool>> predicate) where T : class {
 
-        static Artist FindOrCreateArtist(Database db, string name, ref int addedArtists) {
             if (name == null)
-                return null;
-            Artist result = db.Artists.SingleOrDefault(g => g.Name.Equals(name));
+                return default(T);
+            T result = set.SingleOrDefault(predicate);
             if (result != null)
                 return result;
-            result = new Artist(name);
-            db.Artists.Add(result);
+            result = create(name);
+            set.Add(result);
             db.SaveChanges();
-            addedArtists++;
+            added++;
             return result;
         }
     }

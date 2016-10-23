@@ -69,7 +69,6 @@ namespace AutoTune.Gui {
             InitializeControls();
             InitializeSettings();
             InitializeColors();
-            InitializeLog();
             initializing = false;
         }
 
@@ -145,6 +144,7 @@ namespace AutoTune.Gui {
         }
 
         void OnMainWindowShown(object sender, EventArgs e) {
+            InitializeLog();
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();
             Database.Initialize(AppSettings.GetFolderPath());
