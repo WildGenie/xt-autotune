@@ -20,10 +20,9 @@ namespace AutoTune.Local {
         }
 
         public static void Terminate() {
-            lock (Lock) {
-                running = 0;
+            Interlocked.CompareExchange(ref running, 0, 1);
+            lock (Lock)
                 Monitor.Pulse(Lock);
-            }
         }
 
         static void Run(string libraryFolder, int interval) {

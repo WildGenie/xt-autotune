@@ -163,7 +163,7 @@ namespace AutoTune.Gui {
         }
 
         void WriteLog(LogLevel level, string text) {
-            Invoke(new Action(() => {
+            BeginInvoke(new Action(() => {
                 if (level < (LogLevel)uiLogLevel.SelectedItem)
                     return;
                 var line = DateTime.Now.ToLongTimeString() + ": ";
