@@ -16,17 +16,20 @@ namespace AutoTune.Fetch {
         static bool finished = false;
         static bool pathLoad = false;
         static bool blankLoad = false;
+
+        static readonly object LoadLock = new object();
+        static readonly object ResultLock = new object();
+        static readonly object FinishLock = new object();
+        static readonly object InitializedLock = new object();
+
         const string AboutBlank = "about:blank";
         const string AppTimeout = "app-timeout";
         const string ScriptError = "script-error";
         const string UserDataDir = "user-data-dir";
         const string ScriptTimeout = "script-timeout";
-        static readonly object LoadLock = new object();
-        static readonly object ResultLock = new object();
-        static readonly object FinishLock = new object();
-        static readonly object InitializedLock = new object();
         const string DisableWebSecurity = "disable-web-security";
         const string BrowserSubProcess = "CefSharp.BrowserSubprocess.exe";
+
         static readonly string Arch = Environment.Is64BitProcess ? "x64" : "x86";
         static readonly string AppBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
@@ -41,49 +44,64 @@ namespace AutoTune.Fetch {
 
         [STAThread]
         public static void Main(string[] args) {
-            int delay;
-            int retries;
-            int timeout;
+            var settings = new Settings();
             AppDomain.CurrentDomain.AssemblyResolve += ResolveCef;
             if (args.Length != 6)
                 Error("Expected arguments: path url delimiter timeout delay poll retries.");
-            if (!File.Exists(args[0]))
+            if (!File.Exists(settings.path = args[0]))
                 Error("Path '" + args[0] + "'does not exist.");
-            if (string.IsNullOrEmpty(args[1]))
+            if (string.IsNullOrEmpty(settings.url = args[1]))
                 Error("No url specified.");
-            if (string.IsNullOrEmpty(args[2]))
+            if (string.IsNullOrEmpty(settings.delimiter = args[2]))
                 Error("No delimiter specified.");
-            if (!int.TryParse(args[3], out timeout) || timeout < 1)
+            if (!int.TryParse(args[3], out settings.timeout) || settings.timeout < 1)
                 Error("Invalid timeout specified.");
-            if (!int.TryParse(args[4], out delay) || delay < 1)
+            if (!int.TryParse(args[4], out settings.delay) || settings.delay < 1)
                 Error("Invalid delay specified.");
-            if (!int.TryParse(args[5], out retries) || retries < 1)
+            if (!int.TryParse(args[5], out settings.retries) || settings.retries < 1)
                 Error("Invalid retries specified.");
-            Run(args[0], args[1], args[2], timeout, delay, retries);
+            Run(settings);
+        }
+
+        static ChromiumWebBrowser CreateBrowser(Settings settings) {
+            var result = new ChromiumWebBrowser(AboutBlank);
+            result.ConsoleMessage += OnConsoleMessage;
+            result.RegisterJsObject("callback", new Callback());
+            result.IsBrowserInitializedChanged += OnBrowserInitialized;
+            result.FrameLoadEnd += (s, e) => OnFrameLoadEnd(settings, result, e);
+            return result;
+        }
+
+        static CefSettings CreateCefSettings() {
+            var result = new CefSettings();
+            result.CefCommandLineArgs.Add(UserDataDir, UserDataDir);
+            result.CefCommandLineArgs.Add(DisableWebSecurity, DisableWebSecurity);
+            result.BrowserSubprocessPath = Path.Combine(AppBase, Arch, BrowserSubProcess);
+            return result;
+        }
+
+        static Form CreateForm(Settings settings, ChromiumWebBrowser browser) {
+            Form result = new Form();
+            result.Shown += OnShown;
+            result.ShowInTaskbar = false;
+            result.Controls.Add(browser);
+            result.WindowState = FormWindowState.Minimized;
+            return result;
+        }
+
+        static void StartPollThread(Settings settings, ChromiumWebBrowser browser) {
+            Thread thread = new Thread(() => Poll(settings, browser));
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.IsBackground = true;
+            thread.Start();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static void Run(string path, string url, string delimiter, int timeout, int delay, int retries) {
-            var settings = new CefSettings();
-            settings.CefCommandLineArgs.Add(UserDataDir, UserDataDir);
-            settings.CefCommandLineArgs.Add(DisableWebSecurity, DisableWebSecurity);
-            settings.BrowserSubprocessPath = Path.Combine(AppBase, Arch, BrowserSubProcess);
-            Cef.Initialize(settings);
-            Form form = new Form();
-            form.Shown += OnShown;
-            form.ShowInTaskbar = false;
-            form.WindowState = FormWindowState.Minimized;
-            ChromiumWebBrowser browser = new ChromiumWebBrowser(AboutBlank);
-            browser.ConsoleMessage += OnConsoleMessage;
-            browser.RegisterJsObject("callback", new Callback());
-            browser.IsBrowserInitializedChanged += OnBrowserInitialized;
-            browser.FrameLoadEnd += (s, e) => OnFrameLoadEnd(browser, path, url, delay, retries, e);
-            form.Controls.Add(browser);
-            Thread finish = new Thread(() => Finish(browser, delimiter, timeout));
-            finish.SetApartmentState(ApartmentState.STA);
-            finish.IsBackground = true;
-            finish.Start();
-            Application.Run(form);
+        static void Run(Settings settings) {
+            Cef.Initialize(CreateCefSettings());
+            var browser = CreateBrowser(settings);
+            StartPollThread(settings, browser);
+            Application.Run(CreateForm(settings, browser));
             Cef.Shutdown();
             Environment.Exit(ScriptError.Equals(result) || ScriptTimeout.Equals(result) || AppTimeout.Equals(result) ? 1 : 0);
         }
@@ -122,33 +140,33 @@ namespace AutoTune.Fetch {
                     Monitor.Pulse(InitializedLock);
         }
 
-        static void Finish(ChromiumWebBrowser browser, string delimiter, int timeout) {
+        static void Poll(Settings settings, ChromiumWebBrowser browser) {
             long startTicks = Environment.TickCount;
             lock (InitializedLock) {
                 while (!shown || !browser.IsBrowserInitialized) {
-                    Monitor.Wait(InitializedLock, timeout);
-                    if (!shown && Environment.TickCount - startTicks >= timeout)
+                    Monitor.Wait(InitializedLock, settings.timeout);
+                    if (!shown && Environment.TickCount - startTicks >= settings.timeout)
                         result = AppTimeout;
                 }
             }
             lock (ResultLock) {
                 while (result == null) {
-                    Monitor.Wait(ResultLock, timeout);
-                    if (result == null && Environment.TickCount - startTicks >= timeout)
+                    Monitor.Wait(ResultLock, settings.timeout);
+                    if (result == null && Environment.TickCount - startTicks >= settings.timeout)
                         result = AppTimeout;
                 }
             }
             lock (FinishLock)
                 finished = true;
-            Console.WriteLine(delimiter + result + delimiter);
+            Console.WriteLine(settings.delimiter + result + settings.delimiter);
             Application.Exit();
         }
 
-        static void OnFrameLoadEnd(ChromiumWebBrowser browser, string path, string url, int delay, int retries, FrameLoadEndEventArgs e) {
+        static void OnFrameLoadEnd(Settings settings, ChromiumWebBrowser browser, FrameLoadEndEventArgs e) {
             bool wasPathLoad = false;
             bool wasBlankLoad = false;
-            string script = string.Format("fetchLink('{0}', {1}, {2})", url, delay, retries);
-            lock (LoadLock) {
+            string script = string.Format("fetchLink('{0}', {1}, {2})", settings.url, settings.delay, settings.retries);
+            lock (LoadLock)
                 if (!blankLoad) {
                     blankLoad = true;
                     wasBlankLoad = true;
@@ -156,15 +174,13 @@ namespace AutoTune.Fetch {
                     pathLoad = true;
                     wasPathLoad = true;
                 }
-            }
-            lock (FinishLock) {
+            lock (FinishLock)
                 if (finished)
                     return;
-                if (wasBlankLoad) {
-                    browser.Load(path);
-                } else if (wasPathLoad)
+                else if (wasBlankLoad)
+                    browser.Load(settings.path);
+                else if (wasPathLoad)
                     e.Browser.MainFrame.ExecuteJavaScriptAsync(script);
-            }
         }
     }
 }
