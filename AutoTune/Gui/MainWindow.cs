@@ -143,59 +143,6 @@ namespace AutoTune.Gui {
             uiLoadMore.ActiveLinkColor = fore2;
         }
 
-        void OnMainWindowShown(object sender, EventArgs e) {
-            InitializeLog();
-            DownloadQueue.Initialize();
-            PostProcessingQueue.Initialize();
-            Database.Initialize(AppSettings.GetFolderPath());
-            uiDownloadQueue.Initialize(DownloadQueue.Instance);
-            uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
-            DownloadQueue.Instance.Completed += (s, evt) => Invoke(new Action(() => uiPostProcessingQueue.Enqueue(evt.Data.NewId())));
-            DownloadQueue.Start();
-            PostProcessingQueue.Start();
-            Scanner.Start(UserSettings.Instance.LibraryFolder);
-            StartSearch();
-            uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
-        }
-
-        void OnMainWindowClosed(object sender, FormClosedEventArgs e) {
-            Cef.Shutdown();
-            logger.Flush();
-            logger.Dispose();
-            Scanner.Terminate();
-            UiSettings.Terminate();
-            AppSettings.Terminate();
-            UserSettings.Terminate();
-            ThemeSettings.Terminate();
-            DownloadQueue.Terminate();
-            PostProcessingQueue.Terminate();
-        }
-
-        void OnLogLevelSelectionChanged(object sender, EventArgs e) {
-            if (!initializing)
-                UiSettings.Instance.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
-        }
-
-        void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {
-            uiDownloadQueue.Enqueue(new QueueItem(e.Data));
-        }
-
-        void OnQueryKeyPress(object sender, KeyPressEventArgs e) {
-            if (e.KeyChar != (char)Keys.Return)
-                return;
-            StartSearch();
-        }
-
-        void OnResultRelatedClicked(object sender, EventArgs<SearchResult> e) {
-            searchQuery = null;
-            searchRelated = e.Data;
-            uiResults.Controls.Clear();
-            var pageSize = AppSettings.Instance.SearchPageSize;
-            var credentials = Utility.GetSearchCredentials()[e.Data.TypeId];
-            var query = new SearchQuery(e.Data.TypeId, credentials, e.Data.VideoId, pageSize);
-            searchState = SearchEngine.Start(query, AppendResults);
-        }
-
         void StartSearch() {
             if (uiQuery.Text.Trim().Length == 0)
                 return;
@@ -204,56 +151,23 @@ namespace AutoTune.Gui {
             searchQuery = uiQuery.Text.Trim();
             UiSettings.Instance.LastSearch = searchQuery;
             var pageSize = AppSettings.Instance.SearchPageSize;
-            var query = new SearchQuery(Utility.GetSearchCredentials(), searchQuery, pageSize);
+            var credentials = UserSettings.Instance.Credentials;
+            var query = new SearchQuery(credentials, searchQuery, pageSize);
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
         void LoadMore() {
             var typeId = searchRelated?.TypeId;
-            var credentials = Utility.GetSearchCredentials();
             var pageSize = AppSettings.Instance.SearchPageSize;
+            var credentials = UserSettings.Instance.Credentials;
             SearchQuery q = searchRelated == null ? 
                 new SearchQuery(credentials, searchQuery, pageSize) :
                 new SearchQuery(typeId, credentials[typeId], searchRelated.VideoId, pageSize);
             SearchEngine.Continue(q, searchState, AppendResults);
         }
-
-        void OnMainWindowResized(object sender, EventArgs e) {
-            ToggleLog(UiSettings.Instance.LogCollapsed);
-            uiToggleLog.Visible = Width >= ShowLogMinWidth;
-        }
-
-        void OnLoadMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            if (searchQuery != null || searchRelated != null)
-                LoadMore();
-        }
-
-        void OnUiResultsScroll(object sender, ScrollEventArgs e) {
-            var autoLoad = AppSettings.Instance.AutoLoadMoreSearchResults;
-            if (searchState == null || appendingResult || !autoLoad)
-                return;
-            VScrollProperties properties = uiResults.VerticalScroll;
-            if (e.NewValue != properties.Maximum - properties.LargeChange + 1)
-                return;
-            LoadMore();
-        }
-
-        void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
-            PlayResult(e.Data);
-            UiSettings.Instance.CurrentTrack = e.Data;
-            uiCurrentResult.SetResult(e.Data);
-        }
-
         void PlayResult(SearchResult result) {
             uiBrowser.Load(Utility.GetPlayUrl(result));
             Logger.Debug("Playing {0} in player.", Utility.GetPlayUrl(result));
-        }
-
-        void OnToggleLogClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            if (Width < ShowLogMinWidth)
-                return;
-            UiSettings.Instance.LogCollapsed = !UiSettings.Instance.LogCollapsed;
-            ToggleLog(UiSettings.Instance.LogCollapsed);
         }
 
         void ToggleLog(bool collapsed) {
@@ -262,10 +176,6 @@ namespace AutoTune.Gui {
             uiSplitNotificationsLog.Panel2Collapsed = realCollapsed;
         }
 
-        void OnToggleFullScreenClick(object sender, LinkLabelLinkClickedEventArgs e) {
-            UiSettings.Instance.FullScreen = !UiSettings.Instance.FullScreen;
-            ToggleFullScreen(UiSettings.Instance.FullScreen);
-        }
 
         void ToggleFullScreen(bool fullScreen) {
             if (fullScreen) {
@@ -282,20 +192,10 @@ namespace AutoTune.Gui {
             }
         }
 
-        void ToggleSearchClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            ToggleSearch(!UiSettings.Instance.SearchCollapsed);
-            UiSettings.Instance.SearchCollapsed = !UiSettings.Instance.SearchCollapsed;
-        }
-
         void ToggleSearch(bool collapsed) {
             bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
             uiToggleSearch.Text = realCollapsed ? UnicodeBlackRightPointingTriangle : UnicodeBlackLeftPointingTriangle;
             uiSplitSearch.Panel1Collapsed = realCollapsed;
-        }
-
-        void ToggleNotificationsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            ToggleNotifications(!UiSettings.Instance.NotificationsCollapsed);
-            UiSettings.Instance.NotificationsCollapsed = uiSplitNotifications.Panel2Collapsed;
         }
 
         void ToggleNotifications(bool collapsed) {
@@ -304,21 +204,10 @@ namespace AutoTune.Gui {
             uiSplitNotifications.Panel2Collapsed = realCollapsed;
         }
 
-        void OnToggleCurrentControlsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            ToggleCurrentControls(!UiSettings.Instance.CurrentControlsCollapsed);
-            UiSettings.Instance.CurrentControlsCollapsed = uiSplitBrowserCurrentControls.Panel1Collapsed;
-        }
-
         void ToggleCurrentControls(bool collapsed) {
             bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
             uiToggleCurrentControls.Text = realCollapsed ? UnicodeBlackDownPointingTriangle : UnicodeBlackUpPointingTriangle;
             uiSplitBrowserCurrentControls.Panel1Collapsed = realCollapsed;
-        }
-
-        void OnTogglePlayerFullClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            var ui = UiSettings.Instance;
-            ui.PlayerFull = !ui.PlayerFull;
-            TogglePlayerFull(ui.PlayerFull);
         }
 
         void TogglePlayerFull(bool full) {

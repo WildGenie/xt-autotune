@@ -38,15 +38,12 @@
             this.uiSplitBrowserCurrentControls = new System.Windows.Forms.SplitContainer();
             this.uiPadCurrentControls = new System.Windows.Forms.Panel();
             this.uiCurrentGroup = new System.Windows.Forms.GroupBox();
-            this.uiCurrentResult = new AutoTune.Gui.ResultView();
             this.uiBrowserCurrentControlsContainer = new System.Windows.Forms.TableLayoutPanel();
             this.uiBrowserContainer = new System.Windows.Forms.Panel();
             this.uiToggleCurrentControls = new System.Windows.Forms.LinkLabel();
             this.uiToggleNotifications = new System.Windows.Forms.LinkLabel();
             this.uiDownloadGroup = new System.Windows.Forms.GroupBox();
-            this.uiDownloadQueue = new AutoTune.Gui.QueueView();
             this.uiPostProcessingGroup = new System.Windows.Forms.GroupBox();
-            this.uiPostProcessingQueue = new AutoTune.Gui.QueueView();
             this.uiToggleLog = new System.Windows.Forms.LinkLabel();
             this.uiLog = new System.Windows.Forms.TextBox();
             this.uiLogLevel = new System.Windows.Forms.ComboBox();

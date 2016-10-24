@@ -31,7 +31,7 @@ namespace AutoTune.Search.YouTube {
         internal override SearchResults Execute(SearchQuery query, string currentPage) {
             using (var service = new YouTubeService(new BaseClientService.Initializer() {
                 ApiKey = query.Credentials[YouTubeTypeId].Key,
-                ApplicationName = query.Credentials[YouTubeTypeId].AppName
+                ApplicationName = query.Credentials[YouTubeTypeId].ApplicationName
             })) {
                 var request = CreateRequest(service, query, currentPage);
                 var response = request.Execute();

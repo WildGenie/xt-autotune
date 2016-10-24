@@ -86,7 +86,7 @@
     <Compile Include="Track.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Db.sql" />
+    <EmbeddedResource Include="db.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoTune.Shared\AutoTune.Shared.csproj">

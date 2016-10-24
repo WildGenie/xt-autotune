@@ -8,7 +8,7 @@ using YAXLib;
 namespace AutoTune.Processing {
 
     [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
-    internal abstract class Queue<T> : SettingsBase<T>, IQueue where T : Queue<T>, new() {
+    abstract class Queue<T> : SettingsBase<T>, IQueue where T : Queue<T>, new() {
 
         private readonly object Lock = new object();
         private readonly List<QueueItem> InProgress = new List<QueueItem>();
@@ -22,10 +22,7 @@ namespace AutoTune.Processing {
         public List<QueueItem> Items { get; set; } = new List<QueueItem>();
 
         public bool Paused {
-            get {
-                lock (Lock)
-                return paused;
-            }
+            get { lock (Lock) return paused; }
             set {
                 lock (Lock) {
                     paused = value;
@@ -48,9 +45,29 @@ namespace AutoTune.Processing {
             }
         }
 
+        QueueItem Dequeue() {
+            lock (Lock) {
+                while (Items.Count == 0 || paused)
+                    Monitor.Wait(Lock);
+                QueueItem result = Items[0];
+                Items.RemoveAt(0);
+                InProgress.Add(result);
+                return result;
+            }
+        }
+
         internal override void OnTerminating() {
             lock (Instance.Lock)
                    Instance.Items.InsertRange(0, Instance.InProgress);
+        }
+
+        public void Enqueue(QueueItem item, Action ifQueued) {
+            lock (Lock)
+                if (!Items.Contains(item)) {
+                    Items.Add(item);
+                    ifQueued();
+                    Monitor.Pulse(Lock);
+                }
         }
 
         internal static void Start() {
@@ -63,36 +80,20 @@ namespace AutoTune.Processing {
             }
         }
 
-        public void Enqueue(QueueItem item, Action ifQueued) {
-            lock (Lock)
-                if (!Items.Contains(item)) {
-                    Items.Add(item);
-                    ifQueued();
-                    Monitor.Pulse(Lock);
-                }
-        }
-
         void Run() {
             var sender = typeof(DownloadQueue);
             while (true) {
-                QueueItem item;
-                lock (Lock) {
-                    while (Items.Count == 0 || paused)
-                        Monitor.Wait(Lock);
-                    item = Items[0];
-                    Items.RemoveAt(0);
-                    InProgress.Add(item);
-                }
-                var args = new EventArgs<QueueItem>(item);
-                Logger.Info("Starting {0} of {1}.", GetAction(), item.Search.Title);
-                Started(sender, args);
+                var item = Dequeue();
+                string title = item.Search.Title;
+                Logger.Info("Starting {0} of {1}.", GetAction(), title);
+                Started(sender, new EventArgs<QueueItem>(item));
                 try {
                     ProcessItem(item);
-                    Logger.Info("Finished {0} of {1}.", GetAction(), item.Search.Title);
-                    Completed(sender, args);
+                    Completed(sender, new EventArgs<QueueItem>(item));
+                    Logger.Info("Finished {0} of {1}.", GetAction(), title);
                 } catch (Exception error) {
-                    Logger.Error(error, "Error during {0} of {1}.", GetAction(), item.Search.Title);
-                    Error(sender, args);
+                    Error(sender, new EventArgs<QueueItem>(item));
+                    Logger.Error(error, "Error during {0} of {1}.", GetAction(), title);
                 }
                 lock (Lock)
                     InProgress.Remove(item);

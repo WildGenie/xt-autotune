@@ -6,7 +6,7 @@ using YAXLib;
 
 namespace AutoTune.Processing {
 
-    [YAXComment("Do not modify! Changes will be overwritten by the application.")]
+    [YAXComment("Do not edit!")]
     internal class PostProcessingQueue : Queue<PostProcessingQueue> {
 
         internal override string GetAction() {

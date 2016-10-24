@@ -105,7 +105,6 @@
     <Compile Include="DailyMotion\DailyMotionVideo.cs" />
     <Compile Include="Local\LocalEngine.cs" />
     <Compile Include="SearchException.cs" />
-    <Compile Include="SearchCredentials.cs" />
     <Compile Include="SearchQuery.cs" />
     <Compile Include="SearchResponse.cs" />
     <Compile Include="SearchEngine.cs" />

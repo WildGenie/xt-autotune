@@ -9,7 +9,7 @@ namespace AutoTune.Local {
     public class Database : DbContext {
 
         static string dbPath;
-        const string FileName = "Db.sqlite";
+        const string FileName = "db.sqlite";
         const string ConnectionString = "Data Source=\"{0}\";Version=3;";
 
         static SQLiteConnection GetConnection() {
@@ -33,7 +33,7 @@ namespace AutoTune.Local {
             if (File.Exists(dbPath))
                 return;
             SQLiteConnection.CreateFile(dbPath);
-            using (var stream = typeof(Database).Assembly.GetManifestResourceStream("AutoTune.Local.Db.sql"))
+            using (var stream = typeof(Database).Assembly.GetManifestResourceStream("AutoTune.Local.db.sql"))
             using (var reader = new StreamReader(stream))
                 statements = reader.ReadToEnd().Split(';');
             using (var conn = GetConnection())

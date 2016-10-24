@@ -26,6 +26,11 @@ namespace AutoTune.Gui {
             uiState.Text = Queued;
         }
 
+        void InitializeResult(Image image) {
+            uiTitle.Text = item.Search.Title;
+            uiImage.Image = image;
+        }
+
         internal void SetTitleWidth(int width) {
             uiTitle.Width = width;
         }
@@ -34,30 +39,22 @@ namespace AutoTune.Gui {
             Invoke(new Action(() => uiState.Text = state));
         }
 
-        internal void Initialize(QueueItem item) {
-            this.item = item;
-            Utility.WhenImageDownloaded(item.Search.ThumbnailUrl, i => Invoke(new Action(() => InitializeResult(i))));
-        }
-
-        void InitializeResult(Image image) {
-            uiTitle.Text = item.Search.Title;
-            uiImage.Image = image;
-        }
-
         void InitializeColors() {
+            Utility.SetLinkForeColors(uiPlay);
             var theme = ThemeSettings.Instance;
-            var back2 = ColorTranslator.FromHtml(theme.BackColor2);
-            var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
-            var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);
-            BackColor = back2;
-            uiTitle.ForeColor = fore1;
-            uiState.ForeColor = fore1;
-            uiPlay.LinkColor = fore2;
-            uiPlay.ActiveLinkColor = fore2;
+            BackColor = ColorTranslator.FromHtml(theme.BackColor2);
+            uiTitle.ForeColor = ColorTranslator.FromHtml(theme.ForeColor1);
+            uiState.ForeColor = ColorTranslator.FromHtml(theme.ForeColor1);
         }
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Play(this, new EventArgs<QueueItem>(item));
+        }
+
+        internal void Initialize(QueueItem item) {
+            this.item = item;
+            Action<Image> init = i => Invoke(new Action(() => InitializeResult(i)));
+            Utility.WhenImageDownloaded(item.Search.ThumbnailUrl, init);
         }
     }
 }

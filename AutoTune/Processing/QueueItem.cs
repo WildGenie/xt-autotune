@@ -5,7 +5,7 @@ using YAXLib;
 namespace AutoTune.Processing {
 
     [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
-    internal class QueueItem {
+    class QueueItem {
 
         internal SearchResult Search { get; set; }
         internal string DownloadPath { get; set; }

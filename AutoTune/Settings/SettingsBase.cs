@@ -4,7 +4,7 @@ using YAXLib;
 
 namespace AutoTune.Settings {
 
-    internal abstract class SettingsBase<T> where T : SettingsBase<T>, new() {
+    abstract class SettingsBase<T> where T : SettingsBase<T>, new() {
 
         internal static T Instance { get; private set; } = new T();
         internal abstract void OnTerminating();

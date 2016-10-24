@@ -1,9 +1,7 @@
 ﻿using AutoTune.Processing;
-using AutoTune.Settings;
 using AutoTune.Shared;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -34,14 +32,9 @@ namespace AutoTune.Gui {
         }
 
         void InitializeColors() {
-            var theme = ThemeSettings.Instance;
-            var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);
-            uiPause.LinkColor = fore2;
-            uiPause.ActiveLinkColor = fore2;
-            uiHideCompleted.LinkColor = fore2;
-            uiHideCompleted.ActiveLinkColor = fore2;
-            uiClearQueue.LinkColor = fore2;
-            uiClearQueue.ActiveLinkColor = fore2;
+            Utility.SetLinkForeColors(uiPause);
+            Utility.SetLinkForeColors(uiClearQueue);
+            Utility.SetLinkForeColors(uiHideCompleted);
         }
 
         void AddViews() {
@@ -62,14 +55,14 @@ namespace AutoTune.Gui {
             uiItems.ScrollControlIntoView(view);
         }
 
-        void OnClearQueueClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            queue.Clear();
-            uiItems.Controls.Clear();
-        }
-
         void OnPauseClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             uiPause.Text = queue.Paused ? "Pause" : "Resume";
             queue.Paused = !queue.Paused;
+        }
+
+        void OnClearQueueClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            queue.Clear();
+            uiItems.Controls.Clear();
         }
 
         void OnHideCompletedClick(object sender, LinkLabelLinkClickedEventArgs e) {

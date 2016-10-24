@@ -1,12 +1,7 @@
-<html><head><script src="Fetch.js"></script><script>
+<html><head><script src="fetch.js"></script><script>
 "use strict";
 const matches = ['hd', '720', '360', 'flac'];
 
-/* Produce an actual download link for a given video url.
- * The fetch application callback is defined as callback.accept(string).
- * If we can produce a download link within N retries, give it to the application callback.
- * Otherwise invoke the callback with a timeout or error value, see Fetch.js.
- */
 function fetchLink(url, delay, retries) {
   var grab = iFrameDoc().getElementById('grab1');
   var input = iFrameDoc().getElementById('input1');

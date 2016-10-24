@@ -10,7 +10,7 @@ using YAXLib;
 
 namespace AutoTune.Processing {
 
-    [YAXComment("Do not modify! Changes will be overwritten by the application.")]
+    [YAXComment("Do not edit!")]
     internal class DownloadQueue : Queue<DownloadQueue> {
 
         const string AppTimeout = "app-timeout";

@@ -2,7 +2,7 @@
 
 namespace AutoTune.Processing {
 
-    internal class ProcessingException : Exception {
+    class ProcessingException : Exception {
 
         internal ProcessingException(string message) :
             base(message) {

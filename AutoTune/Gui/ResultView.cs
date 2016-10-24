@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    internal partial class ResultView : UserControl {
+    partial class ResultView : UserControl {
 
         internal event EventHandler<EventArgs<SearchResult>> PlayClicked;
         internal event EventHandler<EventArgs<SearchResult>> RelatedClicked;
@@ -26,25 +26,20 @@ namespace AutoTune.Gui {
             var theme = ThemeSettings.Instance;
             var back2 = ColorTranslator.FromHtml(theme.BackColor2);
             var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
-            var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);
             BackColor = back2;
             uiType.ForeColor = fore1;
             uiText.BackColor = back2;
             uiText.ForeColor = fore1;
             uiPlay.BackColor = back2;
-            uiPlay.LinkColor = fore2;
-            uiPlay.ActiveLinkColor = fore2;
-            uiDownload.BackColor = back2;
-            uiDownload.LinkColor = fore2;
-            uiDownload.ActiveLinkColor = fore2;
             uiRelated.BackColor = back2;
-            uiRelated.LinkColor = fore2;
-            uiRelated.ActiveLinkColor = fore2;
+            uiDownload.BackColor = back2;
+            Utility.SetLinkForeColors(uiPlay);
+            Utility.SetLinkForeColors(uiRelated);
+            Utility.SetLinkForeColors(uiDownload);
         }
 
-        public void SetResult(SearchResult result) {
-            this.result = result;
-            Utility.WhenImageDownloaded(result?.ThumbnailUrl, i => Invoke(new Action(() => InitializeResult(i))));
+        void OnResize(object sender, EventArgs e) {
+            uiText.Width = Width - uiText.Left;
         }
 
         void InitializeResult(Image image) {
@@ -58,8 +53,10 @@ namespace AutoTune.Gui {
             }
         }
 
-        void OnResize(object sender, EventArgs e) {
-            uiText.Width = Width - uiText.Left;
+        internal void SetResult(SearchResult result) {
+            this.result = result;
+            Action<Image> init = i => Invoke(new Action(() => InitializeResult(i)));
+            Utility.WhenImageDownloaded(result?.ThumbnailUrl, init);
         }
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {

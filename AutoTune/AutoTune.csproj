@@ -100,9 +100,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gui\MainWindowEvents.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Processing\ProcessingException.cs" />
     <Compile Include="Processing\QueueItem.cs" />
     <Compile Include="Settings\AppSettings.cs" />
+    <Compile Include="Settings\ProviderSettings.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\ThemeSettings.cs" />
     <Compile Include="Settings\UiSettings.cs" />
@@ -162,16 +166,16 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FetchCatchVideo.html" />
+    <EmbeddedResource Include="fetch-catchvideo.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Startup.html" />
+    <EmbeddedResource Include="startup.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FetchConvert2Mp3.html" />
+    <EmbeddedResource Include="fetch-convert2mp3.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Fetch.js" />
+    <EmbeddedResource Include="fetch.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoTune.Local\AutoTune.Local.csproj">

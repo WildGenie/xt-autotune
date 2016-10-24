@@ -4,20 +4,21 @@ using YAXLib;
 
 namespace AutoTune.Settings {
 
-    [YAXComment("Do not modify! Changes will be overwritten by the application.")]
+    [YAXComment("Do not edit!")]
     [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
-    internal class UiSettings : SettingsBase<UiSettings> {
+    class UiSettings : SettingsBase<UiSettings> {
 
-        internal string LastSearch { get; set; } = "";
-        internal bool FullScreen { get; set; } = false;
-        internal bool PlayerFull { get; set; } = false;
-        internal SearchResult CurrentTrack { get; set; }
+        internal bool SearchCollapsed { get; set; }
         internal bool LogCollapsed { get; set; } = true;
-        internal bool SearchCollapsed { get; set; } = false;
-        internal bool NotificationsCollapsed { get; set; } = false;
-        internal bool CurrentControlsCollapsed { get; set; } = false;
+        internal bool NotificationsCollapsed { get; set; }
+        internal bool CurrentControlsCollapsed { get; set; }
+
+        internal bool FullScreen { get; set; }
+        internal bool PlayerFull { get; set; }
+        internal string LastSearch { get; set; }
+        internal SearchResult CurrentTrack { get; set; }
         internal LogLevel TraceLevel { get; set; } = LogLevel.Info;
-        
+
         internal override void OnTerminating() {
         }
 
