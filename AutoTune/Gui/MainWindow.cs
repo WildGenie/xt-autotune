@@ -1,6 +1,4 @@
-﻿using AutoTune.Local;
-using AutoTune.Processing;
-using AutoTune.Search;
+﻿using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
 using CefSharp;
@@ -14,7 +12,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    internal partial class MainWindow : Form {
+    public partial class MainWindow : Form {
 
         const int ShowLogMinWidth = 1250;
         static readonly string UnicodeBlackLowerLeftTriangle = "\u25e3";
@@ -64,8 +62,10 @@ namespace AutoTune.Gui {
         private SearchResult searchRelated = null;
         private readonly ChromiumWebBrowser uiBrowser = new ChromiumWebBrowser(AppSettings.StartupFilePath);
 
-        MainWindow() {
+        public MainWindow() {
             InitializeComponent();
+            if (DesignMode)
+                return;
             InitializeControls();
             InitializeSettings();
             InitializeColors();

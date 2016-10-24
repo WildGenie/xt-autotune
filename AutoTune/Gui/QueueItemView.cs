@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    internal partial class QueueItemView : UserControl {
+    public partial class QueueItemView : UserControl {
 
         internal const string Done = "Done";
         internal const string Error = "Error";
@@ -20,8 +20,10 @@ namespace AutoTune.Gui {
         internal QueueItem item;
         internal string State { get { return uiState.Text; } }
 
-        internal QueueItemView() {
+        public QueueItemView() {
             InitializeComponent();
+            if (DesignMode)
+                return;
             InitializeColors();
             uiState.Text = Queued;
         }

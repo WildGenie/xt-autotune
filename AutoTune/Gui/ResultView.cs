@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    internal partial class ResultView : UserControl {
+    public partial class ResultView : UserControl {
 
         internal event EventHandler<EventArgs<SearchResult>> PlayClicked;
         internal event EventHandler<EventArgs<SearchResult>> RelatedClicked;
@@ -16,8 +16,10 @@ namespace AutoTune.Gui {
         SearchResult result;
         internal SearchResult Result { get { return result; } }
 
-        internal ResultView() {
+        public ResultView() {
             InitializeComponent();
+            if (DesignMode)
+                return;
             InitializeColors();
             Resize += OnResize;
         }

@@ -7,13 +7,15 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    internal partial class QueueView : UserControl {
+    public partial class QueueView : UserControl {
 
         IQueue queue;
         internal event EventHandler<EventArgs<QueueItem>> Play;
 
-        internal QueueView() {
+        public QueueView() {
             InitializeComponent();
+            if (DesignMode)
+                return;
             InitializeColors();
         }
 
@@ -42,7 +44,7 @@ namespace AutoTune.Gui {
                 AddView(item);
         }
 
-        public void Enqueue(QueueItem item) {
+        internal void Enqueue(QueueItem item) {
             queue.Enqueue(item, () => AddView(item));
         }
 

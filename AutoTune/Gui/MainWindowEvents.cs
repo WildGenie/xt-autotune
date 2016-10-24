@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    internal partial class MainWindow : Form {
+    partial class MainWindow : Form {
 
         void OnMainWindowClosed(object sender, FormClosedEventArgs e) {
             Cef.Shutdown();
@@ -25,6 +25,8 @@ namespace AutoTune.Gui {
         }
 
         void OnMainWindowShown(object sender, EventArgs e) {
+            if (DesignMode)
+                return;
             InitializeLog();
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();
