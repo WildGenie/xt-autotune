@@ -80,10 +80,13 @@
   <ItemGroup>
     <Compile Include="Album.cs" />
     <Compile Include="Artist.cs" />
-    <Compile Include="Database.cs" />
+    <Compile Include="Counters.cs" />
+    <Compile Include="Library.cs" />
     <Compile Include="Genre.cs" />
+    <Compile Include="INamed.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="Track.cs" />
+    <Compile Include="TrackInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="db.sql" />

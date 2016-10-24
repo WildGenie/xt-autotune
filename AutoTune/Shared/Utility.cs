@@ -9,6 +9,12 @@ using System.Windows.Forms;
 namespace AutoTune.Shared {
 
     static class Utility {
+        
+        internal static void SetToggleForeColors(LinkLabel link) {
+            var theme = ThemeSettings.Instance;
+            link.LinkColor = ColorTranslator.FromHtml(theme.ForeColor1);
+            link.ActiveLinkColor = ColorTranslator.FromHtml(theme.ForeColor1);
+        }
 
         internal static void SetLinkForeColors(LinkLabel link) {
             var theme = ThemeSettings.Instance;

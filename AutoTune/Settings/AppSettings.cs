@@ -10,9 +10,9 @@ namespace AutoTune.Settings {
     class AppSettings : SettingsBase<AppSettings> {
 
         internal static string FetchFilePath = Path.Combine(GetFolderPath(), "fetch.js");
-        internal static string LogFilePath = Path.Combine(GetFolderPath(), "AutoTune.log");
+        internal static string LogFilePath = Path.Combine(GetFolderPath(), "autotune.log");
         internal static string StartupFilePath = Path.Combine(GetFolderPath(), "startup.html");
-        internal static string FetchExecutablePath = Path.Combine("Fetch", "AutoTune.Fetch.exe");
+        internal static string FetchExecutablePath = Path.Combine("fetch", "AutoTune.Fetch.exe");
         internal static ProviderSettings GetProvider(string typeId) => Instance.Providers.Single(p => p.Key.Equals(typeId)).Value;
 
         internal int FetchRetries { get; set; } = 55;
@@ -22,6 +22,7 @@ namespace AutoTune.Settings {
         internal int SearchPageSize { get; set; } = 10;
         internal int DownloadThreadCount { get; set; } = 0;
         internal bool LoadMoreResultsOnScrollEnd { get; set; } = true;
+        internal int ScanLibraryInterval { get; set; } = 60 * 60 * 1000;
 
         internal bool PostProcessingEnabled { get; set; } = true;
         internal int PostProcessingThreadCount { get; set; } = 0;
@@ -30,7 +31,6 @@ namespace AutoTune.Settings {
         internal bool PostProcessingKeepOriginal { get; set; } = false;
         internal string PostProcessingArguments { get; set; } = "-i \"{0}\" -y \"{1}.{2}\" -quality good -cpu-used 0";
 
-        [YAXComment("Search provider settings.")]
         [YAXDictionary(EachPairName = "Provider", KeyName = "Id", ValueName = "Settings", SerializeKeyAs = YAXNodeTypes.Attribute)]
         internal Dictionary<string, ProviderSettings> Providers { get; set; } = new Dictionary<string, ProviderSettings> {
              { SearchEngine.LocalTypeId, new ProviderSettings {

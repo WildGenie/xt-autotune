@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using YAXLib;
 
 namespace AutoTune.Settings {
@@ -10,14 +11,18 @@ namespace AutoTune.Settings {
         internal abstract void OnTerminating();
         internal abstract void OnInitialized();
 
+        static string GetFileName() {
+            return Regex.Replace(typeof(T).Name, @"([a-z])([A-Z])", "$1-$2").ToLower() + ".xml";
+        }
+
         internal static void Terminate() {
             Instance.OnTerminating();
-            var filePath = Path.Combine(GetFolderPath(), typeof(T).Name + ".xml");
+            var filePath = Path.Combine(GetFolderPath(), GetFileName());
             File.WriteAllText(filePath, new YAXSerializer(typeof(T)).Serialize(Instance));
         }
 
         internal static void Initialize() {
-            var filePath = Path.Combine(GetFolderPath(), typeof(T).Name + ".xml");
+            var filePath = Path.Combine(GetFolderPath(), GetFileName());
             Directory.CreateDirectory(GetFolderPath());
             if (File.Exists(filePath))
                 Instance = (T)new YAXSerializer(typeof(T)).Deserialize(File.ReadAllText(filePath));

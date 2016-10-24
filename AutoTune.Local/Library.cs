@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AutoTune.Local {
 
-    public class Database : DbContext {
+    public class Library : DbContext {
 
         static string dbPath;
         const string FileName = "db.sqlite";
@@ -23,7 +23,7 @@ namespace AutoTune.Local {
         public DbSet<Album> Albums { get; set; }
         public DbSet<Artist> Artists { get; set; }
 
-        public Database() : base(GetConnection(), true) {
+        internal Library() : base(GetConnection(), true) {
             Configuration.AutoDetectChangesEnabled = false;
         }
 
@@ -33,7 +33,7 @@ namespace AutoTune.Local {
             if (File.Exists(dbPath))
                 return;
             SQLiteConnection.CreateFile(dbPath);
-            using (var stream = typeof(Database).Assembly.GetManifestResourceStream("AutoTune.Local.db.sql"))
+            using (var stream = typeof(Library).Assembly.GetManifestResourceStream("AutoTune.Local.db.sql"))
             using (var reader = new StreamReader(stream))
                 statements = reader.ReadToEnd().Split(';');
             using (var conn = GetConnection())
@@ -46,9 +46,9 @@ namespace AutoTune.Local {
 
         public static List<Track> Search(string query, int page, int pageSize) {
             string q = query.ToLower();
-            using (var db = new Database()) {
-                db.Configuration.LazyLoadingEnabled = false;
-                return db.Tracks
+            using (var library = new Library()) {
+                library.Configuration.LazyLoadingEnabled = false;
+                return library.Tracks
                     .Where(t => t.Title != null && t.Title.ToLower().Contains(q) ||
                     t.Artist != null && t.Artist.Name.ToLower().Contains(q))
                     .Include(t => t.Genre)

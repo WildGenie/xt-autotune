@@ -16,8 +16,8 @@ namespace AutoTune.Gui {
 
         const int ShowLogMinWidth = 1250;
         static readonly string UnicodeBlackLowerLeftTriangle = "\u25e3";
-        static readonly string UnicodeBlackUpperRightTriangle = "\u25e5";
         static readonly string UnicodeWhiteLowerLeftTriangle = "\u25fa";
+        static readonly string UnicodeBlackUpperRightTriangle = "\u25e5";
         static readonly string UnicodeWhiteUpperRightTriangle = "\u25f9";
         static readonly string UnicodeBlackUpPointingTriangle = "\u25b2";
         static readonly string UnicodeBlackDownPointingTriangle = "\u25bc";
@@ -32,16 +32,24 @@ namespace AutoTune.Gui {
             Run();
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        static void Run() {
+        static void LoadSettings() {
             UiSettings.Initialize();
             AppSettings.Initialize();
             UserSettings.Initialize();
             ThemeSettings.Initialize();
-            var cef = new CefSettings();
+        }
+
+        static CefSettings CreateCefSettings() {
+            var result = new CefSettings();
             var proc = "CefSharp.BrowserSubprocess.exe";
-            cef.BrowserSubprocessPath = Path.Combine(AppBase, Arch, proc);
-            Cef.Initialize(cef);
+            result.BrowserSubprocessPath = Path.Combine(AppBase, Arch, proc);
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static void Run() {
+            LoadSettings();
+            Cef.Initialize(CreateCefSettings());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainWindow());
@@ -60,16 +68,44 @@ namespace AutoTune.Gui {
         private object searchState = null;
         private string searchQuery = null;
         private SearchResult searchRelated = null;
-        private readonly ChromiumWebBrowser uiBrowser = new ChromiumWebBrowser(AppSettings.StartupFilePath);
+        private readonly ChromiumWebBrowser uiBrowser;
 
         public MainWindow() {
             InitializeComponent();
             if (DesignMode)
                 return;
+            uiBrowser = new ChromiumWebBrowser(AppSettings.StartupFilePath);
             InitializeControls();
             InitializeSettings();
             InitializeColors();
             initializing = false;
+        }
+
+        void InitializeColors() {
+            var theme = ThemeSettings.Instance;
+            var back1 = ColorTranslator.FromHtml(theme.BackColor1);
+            var back2 = ColorTranslator.FromHtml(theme.BackColor2);
+            var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
+            BackColor = back1;
+            uiLog.ForeColor = fore1;
+            uiLog.BackColor = back1;
+            uiLogLevel.BackColor = back2;
+            uiLogLevel.ForeColor = fore1;
+            uiLogLevelLabel.ForeColor = fore1;
+            uiQuery.ForeColor = fore1;
+            uiQuery.BackColor = back2;
+            uiLogGroup.ForeColor = fore1;
+            uiCurrentGroup.ForeColor = fore1;
+            uiGroupSearch.ForeColor = fore1;
+            uiDownloadGroup.ForeColor = fore1;
+            uiPostProcessingGroup.ForeColor = fore1;
+            Utility.SetLinkForeColors(uiLoadMore);
+            Utility.SetToggleForeColors(uiToggleLog);
+            Utility.SetToggleForeColors(uiToggleSearch);
+            Utility.SetToggleForeColors(uiToggleFullScreen);
+            Utility.SetToggleForeColors(uiTogglePlayerFull);
+            Utility.SetToggleForeColors(uiToggleNotifications);
+            Utility.SetToggleForeColors(uiToggleCurrentControls);
         }
 
         void InitializeControls() {
@@ -102,138 +138,11 @@ namespace AutoTune.Gui {
             logger = new StreamWriter(AppSettings.LogFilePath, false);
             Logger.Trace += (s, e) => WriteLog(e.Level, e.Message);
             Logger.Trace += (s, e) => {
-                logger.WriteLine(string.Format("{0}: {1}: {2}.", DateTime.Now.ToLongTimeString(), e.Level, e.Message));
+                string now = DateTime.Now.ToLongTimeString();
+                logger.WriteLine(string.Format("{0}: {1}: {2}.", now, e.Level, e.Message));
                 if (e.Level == LogLevel.Error)
                     logger.Flush();
             };
-        }
-
-        void InitializeColors() {
-            var theme = ThemeSettings.Instance;
-            var back1 = ColorTranslator.FromHtml(theme.BackColor1);
-            var back2 = ColorTranslator.FromHtml(theme.BackColor2);
-            var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
-            var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);
-            BackColor = back1;
-            uiLog.ForeColor = fore1;
-            uiLog.BackColor = back1;
-            uiLogLevel.BackColor = back2;
-            uiLogLevel.ForeColor = fore1;
-            uiLogLevelLabel.ForeColor = fore1;
-            uiQuery.ForeColor = fore1;
-            uiQuery.BackColor = back2;
-            uiLogGroup.ForeColor = fore1;
-            uiCurrentGroup.ForeColor = fore1;
-            uiGroupSearch.ForeColor = fore1;
-            uiDownloadGroup.ForeColor = fore1;
-            uiPostProcessingGroup.ForeColor = fore1;
-            uiToggleLog.LinkColor = fore1;
-            uiToggleLog.ActiveLinkColor = fore1;
-            uiToggleSearch.LinkColor = fore1;
-            uiToggleSearch.ActiveLinkColor = fore1;
-            uiToggleNotifications.LinkColor = fore1;
-            uiToggleNotifications.ActiveLinkColor = fore1;
-            uiToggleCurrentControls.LinkColor = fore1;
-            uiToggleFullScreen.LinkColor = fore1;
-            uiToggleFullScreen.ActiveLinkColor = fore1;
-            uiTogglePlayerFull.LinkColor = fore1;
-            uiTogglePlayerFull.ActiveLinkColor = fore1;
-            uiToggleCurrentControls.ActiveLinkColor = fore1;
-            uiLoadMore.LinkColor = fore2;
-            uiLoadMore.ActiveLinkColor = fore2;
-        }
-
-        void StartSearch() {
-            if (uiQuery.Text.Trim().Length == 0)
-                return;
-            uiResults.Controls.Clear();
-            searchRelated = null;
-            searchQuery = uiQuery.Text.Trim();
-            UiSettings.Instance.LastSearch = searchQuery;
-            var pageSize = AppSettings.Instance.SearchPageSize;
-            var credentials = UserSettings.Instance.Credentials;
-            var query = new SearchQuery(credentials, searchQuery, pageSize);
-            searchState = SearchEngine.Start(query, AppendResults);
-        }
-
-        void LoadMore() {
-            var typeId = searchRelated?.TypeId;
-            var pageSize = AppSettings.Instance.SearchPageSize;
-            var credentials = UserSettings.Instance.Credentials;
-            SearchQuery q = searchRelated == null ? 
-                new SearchQuery(credentials, searchQuery, pageSize) :
-                new SearchQuery(typeId, credentials[typeId], searchRelated.VideoId, pageSize);
-            SearchEngine.Continue(q, searchState, AppendResults);
-        }
-        void PlayResult(SearchResult result) {
-            uiBrowser.Load(Utility.GetPlayUrl(result));
-            Logger.Debug("Playing {0} in player.", Utility.GetPlayUrl(result));
-        }
-
-        void ToggleLog(bool collapsed) {
-            bool realCollapsed = collapsed || Width < ShowLogMinWidth;
-            uiToggleLog.Text = realCollapsed ? UnicodeBlackLeftPointingTriangle : UnicodeBlackRightPointingTriangle;
-            uiSplitNotificationsLog.Panel2Collapsed = realCollapsed;
-        }
-
-
-        void ToggleFullScreen(bool fullScreen) {
-            if (fullScreen) {
-                TopMost = true;
-                WindowState = FormWindowState.Normal;
-                FormBorderStyle = FormBorderStyle.None;
-                WindowState = FormWindowState.Maximized;
-                uiToggleFullScreen.Text = UnicodeBlackLowerLeftTriangle;
-            } else {
-                TopMost = false;
-                WindowState = FormWindowState.Maximized;
-                FormBorderStyle = FormBorderStyle.Sizable;
-                uiToggleFullScreen.Text = UnicodeBlackUpperRightTriangle;
-            }
-        }
-
-        void ToggleSearch(bool collapsed) {
-            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
-            uiToggleSearch.Text = realCollapsed ? UnicodeBlackRightPointingTriangle : UnicodeBlackLeftPointingTriangle;
-            uiSplitSearch.Panel1Collapsed = realCollapsed;
-        }
-
-        void ToggleNotifications(bool collapsed) {
-            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
-            uiToggleNotifications.Text = realCollapsed ? UnicodeBlackUpPointingTriangle : UnicodeBlackDownPointingTriangle;
-            uiSplitNotifications.Panel2Collapsed = realCollapsed;
-        }
-
-        void ToggleCurrentControls(bool collapsed) {
-            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
-            uiToggleCurrentControls.Text = realCollapsed ? UnicodeBlackDownPointingTriangle : UnicodeBlackUpPointingTriangle;
-            uiSplitBrowserCurrentControls.Panel1Collapsed = realCollapsed;
-        }
-
-        void TogglePlayerFull(bool full) {
-            var ui = UiSettings.Instance;
-            ToggleSearch(ui.SearchCollapsed);
-            ToggleNotifications(ui.NotificationsCollapsed);
-            ToggleCurrentControls(ui.CurrentControlsCollapsed);
-            uiToggleSearch.Visible = !full;
-            uiToggleNotifications.Visible = !full;
-            uiToggleCurrentControls.Visible = !full;
-            uiTogglePlayerFull.Text = full ? UnicodeWhiteLowerLeftTriangle : UnicodeWhiteUpperRightTriangle;
-        }
-
-        void WriteLog(LogLevel level, string text) {
-            Invoke(new Action(() => {
-                if (level < (LogLevel)uiLogLevel.SelectedItem)
-                    return;
-                var line = DateTime.Now.ToLongTimeString() + ": ";
-                line += level + ": " + text + Environment.NewLine;
-                var newText = uiLog.Text + line;
-                if (newText.Length > 10000)
-                    newText = newText.Substring(newText.Length - 10000);
-                uiLog.Text = newText;
-                uiLog.SelectionStart = uiLog.TextLength;
-                uiLog.ScrollToCaret();
-            }));
         }
 
         void AppendResults(SearchResponse response) {
@@ -253,11 +162,104 @@ namespace AutoTune.Gui {
                 }
         }
 
+        void WriteLog(LogLevel level, string text) {
+            Invoke(new Action(() => {
+                if (level < (LogLevel)uiLogLevel.SelectedItem)
+                    return;
+                var line = DateTime.Now.ToLongTimeString() + ": ";
+                line += level + ": " + text + Environment.NewLine;
+                var newText = uiLog.Text + line;
+                if (newText.Length > 10000)
+                    newText = newText.Substring(newText.Length - 10000);
+                uiLog.Text = newText;
+                uiLog.SelectionStart = uiLog.TextLength;
+                uiLog.ScrollToCaret();
+            }));
+        }
+
+        void StartSearch() {
+            if (uiQuery.Text.Trim().Length == 0)
+                return;
+            uiResults.Controls.Clear();
+            searchRelated = null;
+            searchQuery = uiQuery.Text.Trim();
+            UiSettings.Instance.LastSearch = searchQuery;
+            var pageSize = AppSettings.Instance.SearchPageSize;
+            var credentials = UserSettings.Instance.Credentials;
+            var query = new SearchQuery(credentials, searchQuery, pageSize);
+            searchState = SearchEngine.Start(query, AppendResults);
+        }
+
+        void PlayResult(SearchResult result) {
+            uiBrowser.Load(Utility.GetPlayUrl(result));
+            Logger.Debug("Playing {0} in player.", Utility.GetPlayUrl(result));
+        }
+
+        void LoadMoreResults() {
+            var typeId = searchRelated?.TypeId;
+            var pageSize = AppSettings.Instance.SearchPageSize;
+            var credentials = UserSettings.Instance.Credentials;
+            SearchQuery q = searchRelated == null ?
+                new SearchQuery(credentials, searchQuery, pageSize) :
+                new SearchQuery(typeId, credentials[typeId], searchRelated.VideoId, pageSize);
+            SearchEngine.Continue(q, searchState, AppendResults);
+        }
+
         void ConnectResultViewEventHandlers(ResultView view) {
             view.PlayClicked += OnResultPlayClicked;
             view.RelatedClicked += OnResultRelatedClicked;
             view.DownloadClicked += OnResultDownloadClicked;
             view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<SearchResult>(((ResultView)s).Result));
+        }
+
+        void ToggleFullScreen(bool fullScreen) {
+            if (fullScreen) {
+                TopMost = true;
+                WindowState = FormWindowState.Normal;
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+                uiToggleFullScreen.Text = UnicodeBlackLowerLeftTriangle;
+            } else {
+                TopMost = false;
+                WindowState = FormWindowState.Maximized;
+                FormBorderStyle = FormBorderStyle.Sizable;
+                uiToggleFullScreen.Text = UnicodeBlackUpperRightTriangle;
+            }
+        }
+
+        void TogglePlayerFull(bool full) {
+            var ui = UiSettings.Instance;
+            ToggleSearch(ui.SearchCollapsed);
+            ToggleNotifications(ui.NotificationsCollapsed);
+            ToggleCurrentControls(ui.CurrentControlsCollapsed);
+            uiToggleSearch.Visible = !full;
+            uiToggleNotifications.Visible = !full;
+            uiToggleCurrentControls.Visible = !full;
+            uiTogglePlayerFull.Text = full ? UnicodeWhiteLowerLeftTriangle : UnicodeWhiteUpperRightTriangle;
+        }
+
+        void ToggleLog(bool collapsed) {
+            bool realCollapsed = collapsed || Width < ShowLogMinWidth;
+            uiToggleLog.Text = realCollapsed ? UnicodeBlackLeftPointingTriangle : UnicodeBlackRightPointingTriangle;
+            uiSplitNotificationsLog.Panel2Collapsed = realCollapsed;
+        }
+
+        void ToggleSearch(bool collapsed) {
+            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
+            uiToggleSearch.Text = realCollapsed ? UnicodeBlackRightPointingTriangle : UnicodeBlackLeftPointingTriangle;
+            uiSplitSearch.Panel1Collapsed = realCollapsed;
+        }
+
+        void ToggleNotifications(bool collapsed) {
+            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
+            uiToggleNotifications.Text = realCollapsed ? UnicodeBlackUpPointingTriangle : UnicodeBlackDownPointingTriangle;
+            uiSplitNotifications.Panel2Collapsed = realCollapsed;
+        }
+
+        void ToggleCurrentControls(bool collapsed) {
+            bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
+            uiToggleCurrentControls.Text = realCollapsed ? UnicodeBlackDownPointingTriangle : UnicodeBlackUpPointingTriangle;
+            uiSplitBrowserCurrentControls.Panel1Collapsed = realCollapsed;
         }
     }
 }

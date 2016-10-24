@@ -4,19 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace AutoTune.Local {
 
     [Table("genre")]
-    public class Genre {
+    public class Genre : INamed {
 
         [Key]
         [Column("id")]
         public long Id { get; set; }
         [Column("name")]
         public string Name { get; set; }
-
-        public Genre() {
-        }
-
-        public Genre(string name) {
-            Name = name;
-        }
     }
 }

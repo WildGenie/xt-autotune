@@ -30,16 +30,16 @@ namespace AutoTune.Gui {
             InitializeLog();
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();
-            Database.Initialize(AppSettings.GetFolderPath());
+            Library.Initialize(AppSettings.GetFolderPath());
             uiDownloadQueue.Initialize(DownloadQueue.Instance);
             uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
             Action<QueueItem> enqueue = r => uiPostProcessingQueue.Enqueue(r.NewId());
             DownloadQueue.Instance.Completed += (s, evt) => Invoke(new Action(() => enqueue(evt.Data)));
+            uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
+            StartSearch();
             DownloadQueue.Start();
             PostProcessingQueue.Start();
-            Scanner.Start(UserSettings.Instance.LibraryFolder);
-            StartSearch();
-            uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
+            Scanner.Start(UserSettings.Instance.LibraryFolder, AppSettings.Instance.ScanLibraryInterval);
         }
 
         void OnMainWindowResized(object sender, EventArgs e) {
@@ -65,7 +65,7 @@ namespace AutoTune.Gui {
 
         void OnLoadMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (searchQuery != null || searchRelated != null)
-                LoadMore();
+                LoadMoreResults();
         }
 
         void OnLogLevelSelectionChanged(object sender, EventArgs e) {
@@ -80,7 +80,7 @@ namespace AutoTune.Gui {
             VScrollProperties properties = uiResults.VerticalScroll;
             if (e.NewValue != properties.Maximum - properties.LargeChange + 1)
                 return;
-            LoadMore();
+            LoadMoreResults();
         }
 
         void OnResultRelatedClicked(object sender, EventArgs<SearchResult> e) {

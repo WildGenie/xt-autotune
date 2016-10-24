@@ -12,16 +12,15 @@ namespace AutoTune.Settings {
     class UserSettings : SettingsBase<UserSettings> {
 
         [YAXDontSerialize]
-        internal string ProcessFolder => Path.Combine(TempFolder, "Process");
+        internal string ProcessFolder => Path.Combine(TempFolder, "process");
         [YAXDontSerialize]
-        internal string DownloadFolder => Path.Combine(TempFolder, "Download");
+        internal string DownloadFolder => Path.Combine(TempFolder, "download");
 
         internal static SearchCredentials GetCredentials(string typeId) {
             return Instance.Credentials.Single(c => c.Key.Equals(typeId)).Value;
         }
 
-        internal string ApplicationName { get; set; }
-        internal string TempFolder { get; set; } = Path.Combine(GetFolderPath(), "Temp");
+        internal string TempFolder { get; set; } = Path.Combine(GetFolderPath(), "temp");
         internal string TargetFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
         internal string LibraryFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
 
