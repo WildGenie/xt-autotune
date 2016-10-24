@@ -65,7 +65,7 @@ namespace AutoTune.Gui {
             uiItems.Controls.Clear();
         }
 
-        void OnHideCompletedClick(object sender, LinkLabelLinkClickedEventArgs e) {
+        void OnHideCompletedClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             var controls = uiItems.Controls.Cast<QueueItemView>().ToList();
             foreach (var v in controls)
                 if (QueueItemView.Done.Equals(v.State))

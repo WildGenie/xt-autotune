@@ -38,12 +38,15 @@
             this.uiSplitBrowserCurrentControls = new System.Windows.Forms.SplitContainer();
             this.uiPadCurrentControls = new System.Windows.Forms.Panel();
             this.uiCurrentGroup = new System.Windows.Forms.GroupBox();
+            this.uiCurrentResult = new AutoTune.Gui.ResultView();
             this.uiBrowserCurrentControlsContainer = new System.Windows.Forms.TableLayoutPanel();
             this.uiBrowserContainer = new System.Windows.Forms.Panel();
             this.uiToggleCurrentControls = new System.Windows.Forms.LinkLabel();
             this.uiToggleNotifications = new System.Windows.Forms.LinkLabel();
             this.uiDownloadGroup = new System.Windows.Forms.GroupBox();
+            this.uiDownloadQueue = new AutoTune.Gui.QueueView();
             this.uiPostProcessingGroup = new System.Windows.Forms.GroupBox();
+            this.uiPostProcessingQueue = new AutoTune.Gui.QueueView();
             this.uiToggleLog = new System.Windows.Forms.LinkLabel();
             this.uiLog = new System.Windows.Forms.TextBox();
             this.uiLogLevel = new System.Windows.Forms.ComboBox();
@@ -157,7 +160,7 @@
             this.uiToggleFullScreen.Text = "<";
             this.uiToggleFullScreen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.uiTooltip.SetToolTip(this.uiToggleFullScreen, "Toggle full-screen mode.");
-            this.uiToggleFullScreen.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleFullScreenClick);
+            this.uiToggleFullScreen.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleFullScreenClicked);
             // 
             // uiToggleSearch
             // 
@@ -173,7 +176,7 @@
             this.uiToggleSearch.Text = "<";
             this.uiToggleSearch.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.uiTooltip.SetToolTip(this.uiToggleSearch, "Toggle search window.");
-            this.uiToggleSearch.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ToggleSearchClicked);
+            this.uiToggleSearch.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleSearchClicked);
             // 
             // uiSplitPlayerToggleNotications
             // 
@@ -304,7 +307,7 @@
             this.uiToggleNotifications.TabStop = true;
             this.uiToggleNotifications.Text = "<";
             this.uiTooltip.SetToolTip(this.uiToggleNotifications, "Toggle notifications window.");
-            this.uiToggleNotifications.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ToggleNotificationsClicked);
+            this.uiToggleNotifications.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleNotificationsClicked);
             // 
             // uiNotificationsPanel
             // 
@@ -501,7 +504,7 @@
             this.uiResults.Size = new System.Drawing.Size(391, 589);
             this.uiResults.TabIndex = 2;
             this.uiResults.WrapContents = false;
-            this.uiResults.Scroll += new System.Windows.Forms.ScrollEventHandler(this.OnUiResultsScroll);
+            this.uiResults.Scroll += new System.Windows.Forms.ScrollEventHandler(this.OnResultsScroll);
             // 
             // uiLoadMore
             // 

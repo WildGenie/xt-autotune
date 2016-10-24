@@ -89,7 +89,7 @@
             this.uiHideCompleted.TabStop = true;
             this.uiHideCompleted.Text = "Hide completed";
             this.uiTooltip.SetToolTip(this.uiHideCompleted, "Hide successfully completed tracks from the queue.");
-            this.uiHideCompleted.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnHideCompletedClick);
+            this.uiHideCompleted.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnHideCompletedClicked);
             // 
             // uiPause
             // 

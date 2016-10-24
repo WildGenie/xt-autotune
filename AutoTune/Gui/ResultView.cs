@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
-    partial class ResultView : UserControl {
+    internal partial class ResultView : UserControl {
 
         internal event EventHandler<EventArgs<SearchResult>> PlayClicked;
         internal event EventHandler<EventArgs<SearchResult>> RelatedClicked;

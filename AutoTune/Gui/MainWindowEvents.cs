@@ -31,7 +31,8 @@ namespace AutoTune.Gui {
             Database.Initialize(AppSettings.GetFolderPath());
             uiDownloadQueue.Initialize(DownloadQueue.Instance);
             uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
-            DownloadQueue.Instance.Completed += (s, evt) => Invoke(new Action(() => uiPostProcessingQueue.Enqueue(evt.Data.NewId())));
+            Action<QueueItem> enqueue = r => uiPostProcessingQueue.Enqueue(r.NewId());
+            DownloadQueue.Instance.Completed += (s, evt) => Invoke(new Action(() => enqueue(evt.Data)));
             DownloadQueue.Start();
             PostProcessingQueue.Start();
             Scanner.Start(UserSettings.Instance.LibraryFolder);
@@ -39,19 +40,45 @@ namespace AutoTune.Gui {
             uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
         }
 
-        void OnLogLevelSelectionChanged(object sender, EventArgs e) {
-            if (!initializing)
-                UiSettings.Instance.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
-        }
-
-        void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {
-            uiDownloadQueue.Enqueue(new QueueItem(e.Data));
+        void OnMainWindowResized(object sender, EventArgs e) {
+            ToggleLog(UiSettings.Instance.LogCollapsed);
+            uiToggleLog.Visible = Width >= ShowLogMinWidth;
         }
 
         void OnQueryKeyPress(object sender, KeyPressEventArgs e) {
             if (e.KeyChar != (char)Keys.Return)
                 return;
             StartSearch();
+        }
+
+        void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
+            PlayResult(e.Data);
+            UiSettings.Instance.CurrentTrack = e.Data;
+            uiCurrentResult.SetResult(e.Data);
+        }
+
+        void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {
+            uiDownloadQueue.Enqueue(new QueueItem(e.Data));
+        }
+
+        void OnLoadMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            if (searchQuery != null || searchRelated != null)
+                LoadMore();
+        }
+
+        void OnLogLevelSelectionChanged(object sender, EventArgs e) {
+            if (!initializing)
+                UiSettings.Instance.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
+        }
+
+        void OnResultsScroll(object sender, ScrollEventArgs e) {
+            var autoLoad = AppSettings.Instance.LoadMoreResultsOnScrollEnd;
+            if (searchState == null || appendingResult || !autoLoad)
+                return;
+            VScrollProperties properties = uiResults.VerticalScroll;
+            if (e.NewValue != properties.Maximum - properties.LargeChange + 1)
+                return;
+            LoadMore();
         }
 
         void OnResultRelatedClicked(object sender, EventArgs<SearchResult> e) {
@@ -64,32 +91,6 @@ namespace AutoTune.Gui {
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
-        void OnMainWindowResized(object sender, EventArgs e) {
-            ToggleLog(UiSettings.Instance.LogCollapsed);
-            uiToggleLog.Visible = Width >= ShowLogMinWidth;
-        }
-
-        void OnLoadMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            if (searchQuery != null || searchRelated != null)
-                LoadMore();
-        }
-
-        void OnUiResultsScroll(object sender, ScrollEventArgs e) {
-            var autoLoad = AppSettings.Instance.LoadMoreResultsOnScrollEnd;
-            if (searchState == null || appendingResult || !autoLoad)
-                return;
-            VScrollProperties properties = uiResults.VerticalScroll;
-            if (e.NewValue != properties.Maximum - properties.LargeChange + 1)
-                return;
-            LoadMore();
-        }
-
-        void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
-            PlayResult(e.Data);
-            UiSettings.Instance.CurrentTrack = e.Data;
-            uiCurrentResult.SetResult(e.Data);
-        }
-
         void OnToggleLogClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (Width < ShowLogMinWidth)
                 return;
@@ -97,18 +98,23 @@ namespace AutoTune.Gui {
             ToggleLog(UiSettings.Instance.LogCollapsed);
         }
 
-        void OnToggleFullScreenClick(object sender, LinkLabelLinkClickedEventArgs e) {
-            UiSettings.Instance.FullScreen = !UiSettings.Instance.FullScreen;
-            ToggleFullScreen(UiSettings.Instance.FullScreen);
-        }
-
-
-        void ToggleSearchClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        void OnToggleSearchClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             ToggleSearch(!UiSettings.Instance.SearchCollapsed);
             UiSettings.Instance.SearchCollapsed = !UiSettings.Instance.SearchCollapsed;
         }
 
-        void ToggleNotificationsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        void OnTogglePlayerFullClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            var ui = UiSettings.Instance;
+            ui.PlayerFull = !ui.PlayerFull;
+            TogglePlayerFull(ui.PlayerFull);
+        }
+
+        void OnToggleFullScreenClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            UiSettings.Instance.FullScreen = !UiSettings.Instance.FullScreen;
+            ToggleFullScreen(UiSettings.Instance.FullScreen);
+        }
+
+        void OnToggleNotificationsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             ToggleNotifications(!UiSettings.Instance.NotificationsCollapsed);
             UiSettings.Instance.NotificationsCollapsed = uiSplitNotifications.Panel2Collapsed;
         }
@@ -116,12 +122,6 @@ namespace AutoTune.Gui {
         void OnToggleCurrentControlsClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             ToggleCurrentControls(!UiSettings.Instance.CurrentControlsCollapsed);
             UiSettings.Instance.CurrentControlsCollapsed = uiSplitBrowserCurrentControls.Panel1Collapsed;
-        }
-
-        void OnTogglePlayerFullClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            var ui = UiSettings.Instance;
-            ui.PlayerFull = !ui.PlayerFull;
-            TogglePlayerFull(ui.PlayerFull);
         }
     }
 }
