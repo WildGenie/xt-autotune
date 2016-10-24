@@ -2,14 +2,14 @@
 
 namespace AutoTune.Search {
 
-    internal class SearchResults {
+    class SearchResults {
 
-        internal SearchState State { get; }
+        internal string NextPage { get; }
         internal List<SearchResult> Results { get; }
 
-        internal SearchResults(SearchState state, List<SearchResult> results) {
-            State = state;
+        internal SearchResults(string nextPage, List<SearchResult> results) {           
             Results = results;
+            NextPage = nextPage;
         }
     }
 }

@@ -24,37 +24,34 @@ namespace AutoTune.Search {
             { DailyMotionTypeId, new DailyMotionEngine() }
         };
 
-        internal abstract SearchResults Execute(SearchQuery query, SearchState state);
-
-        public static void Continue(SearchQuery query, object state, Action<SearchResponse> callback) {
-            DoSearch(query, state, callback);
-        }
+        internal abstract SearchResults Execute(SearchQuery query, string currentPage);
 
         public static object Start(SearchQuery query, Action<SearchResponse> callback) {
-            IDictionary<string, SearchState> state = new ConcurrentDictionary<string, SearchState>();
-            DoSearch(query, state, callback);
-            return state;
+            var paging = new ConcurrentDictionary<string, string>();
+            DoSearch(query, paging, callback);
+            return paging;
         }
 
-        static void DoSearch(SearchQuery query, object s, Action<SearchResponse> callback) {
-            var states = (IDictionary<string, SearchState>)s;
+        public static void Continue(SearchQuery query, object paging, Action<SearchResponse> callback) {
+            DoSearch(query, paging, callback);
+        }
+
+        static void DoSearch(SearchQuery query, object p, Action<SearchResponse> callback) {
+            var paging = (IDictionary<string, string>)p;
             if (query.RelatedId != null)
-                DoSearch(query.Credentials.Keys.Single(), query, states, callback);
-            else {
+                DoSearch(query.Credentials.Keys.Single(), query, paging, callback);
+            else
                 foreach (string typeId in Engines.Keys)
-                    DoSearch(typeId, query, states, callback);
-            }
+                    DoSearch(typeId, query, paging, callback);
         }
 
-        static void DoSearch(string typeId, SearchQuery query, IDictionary<string, SearchState> states, Action<SearchResponse> callback) {
+        static void DoSearch(string typeId, SearchQuery query, IDictionary<string, string> paging, Action<SearchResponse> callback) {
             ThreadPool.QueueUserWorkItem(_ => {
                 try {
-                    SearchState state;
-                    if (!states.TryGetValue(typeId, out state))
-                        state = new SearchState();
-                    SearchEngine engine = Engines[typeId];
-                    var results = engine.Execute(query, state);
-                    states[typeId] = results.State;
+                    string nextPage = null;
+                    paging.TryGetValue(typeId, out nextPage);
+                    var results = Engines[typeId].Execute(query, nextPage);
+                    paging[typeId] = results.NextPage;
                     callback(new SearchResponse(null, results.Results));
                 } catch (Exception e) {
                     callback(new SearchResponse(e, null));

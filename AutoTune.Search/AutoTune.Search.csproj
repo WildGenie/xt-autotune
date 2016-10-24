@@ -111,7 +111,6 @@
     <Compile Include="SearchEngine.cs" />
     <Compile Include="SearchResult.cs" />
     <Compile Include="SearchResults.cs" />
-    <Compile Include="SearchState.cs" />
     <Compile Include="Vimeo\VimeoEngine.cs" />
     <Compile Include="Vimeo\VimeoVideoClient.cs" />
     <Compile Include="YouTube\YouTubeEngine.cs" />

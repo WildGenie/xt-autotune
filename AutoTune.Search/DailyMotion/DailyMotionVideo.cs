@@ -1,12 +1,20 @@
-﻿namespace AutoTune.Search.DailyMotion {
+﻿using Newtonsoft.Json;
 
-    public class DailyMotionVideo {
+namespace AutoTune.Search.DailyMotion {
 
-        public string id;
-        public string url;
-        public string title;
-        public string embed_url;
-        public string description;
-        public string thumbnail_120_url;
+    class DailyMotionVideo {
+
+        [JsonProperty]
+        internal string id;
+        [JsonProperty]
+        internal string url;
+        [JsonProperty]
+        internal string title;
+        [JsonProperty]
+        internal string embed_url;
+        [JsonProperty]
+        internal string description;
+        [JsonProperty]
+        internal string thumbnail_120_url;
     }
 }

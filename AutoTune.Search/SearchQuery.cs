@@ -9,16 +9,16 @@ namespace AutoTune.Search {
         public string RelatedId { get; }
         public IDictionary<string, SearchCredentials> Credentials { get;  }
 
-        public SearchQuery(IDictionary<string, SearchCredentials> credentials, string query, int pageSize) {
-            Query = query;
-            PageSize = pageSize;
-            Credentials = credentials;
-        }
-
         public SearchQuery(string typeId, SearchCredentials credentials, string relatedId, int pageSize) {
             PageSize = pageSize;
             RelatedId = relatedId;
             Credentials = new Dictionary<string, SearchCredentials> { { typeId, credentials } };
+        }
+
+        public SearchQuery(IDictionary<string, SearchCredentials> credentials, string query, int pageSize) {
+            Query = query;
+            PageSize = pageSize;
+            Credentials = credentials;
         }
     }
 }

@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace AutoTune.Search.DailyMotion {
 
-    public class DailyMotionResponse {
+    class DailyMotionResponse {
 
-        public int page;
-        public int total;
-        public List<DailyMotionVideo> list;
+        [JsonProperty]
+        internal int page;
+        [JsonProperty]
+        internal int total;
+        [JsonProperty]
+        internal List<DailyMotionVideo> list;
     }
 }

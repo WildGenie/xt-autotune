@@ -3,46 +3,36 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
 using VimeoDotNet;
 using VimeoDotNet.Models;
 using VimeoDotNet.Net;
 
 namespace AutoTune.Search.Vimeo {
 
-    internal class VimeoVideoClient : VimeoClient {
+    class VimeoVideoClient : VimeoClient {
 
         internal VimeoVideoClient(string clientId, string clientSecret) :
             base(clientId, clientSecret) {
         }
 
-        internal Paginated<Video> GetVideos(string query, string videoId, int? page, int? perPage) {
-            try {
-                var result = GetVideosAsync(query, videoId, page, perPage);
-                result.Wait();
-                return result.Result;
-            } catch (AggregateException ex) {
-                ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-                return null;
-            }
-        }
-
-        internal async Task<Paginated<Video>> GetVideosAsync(string query, string videoId, int? page, int? perPage) {
-            try {
-                IApiRequest request = GenerateVideosRequest(query, videoId, page, perPage);
-                IRestResponse<Paginated<Video>> response = await request.ExecuteRequestAsync<Paginated<Video>>();
-                UpdateRateLimit(response);
-                CheckStatusCodeError(response, "Error retrieving videos.");
-                return response.Data;
-            } catch (Exception ex) {
-                throw new SearchException("Error retrieving videos.", ex);
-            }
+        internal Paginated<Video> GetVideos(SearchQuery query, string currentPage) {
+            var request = currentPage != null ? GenerateVideosRequest(currentPage) : GenerateVideosRequest(query);
+            var response = request.ExecuteRequest<Paginated<Video>>();
+            UpdateRateLimit(response);
+            CheckStatusCodeError(response, "Error retrieving videos.");
+            return response.Data;
         }
 
         bool IsSuccessStatusCode(HttpStatusCode statusCode) {
-            var code = (int)statusCode;
+            int code = (int)statusCode;
             return code >= 200 && code < 300;
+        }
+
+        IApiRequest GenerateVideosRequest(string path) {
+            var result = ApiRequestFactory.GetApiRequest(ClientId, ClientSecret);
+            result.Method = Method.GET;
+            result.Path = path;
+            return result;
         }
 
         void UpdateRateLimit(IRestResponse response) {
@@ -50,17 +40,13 @@ namespace AutoTune.Search.Vimeo {
             typeof(VimeoClient).GetField("_headers", flags).SetValue(this, response.Headers);
         }
 
-        IApiRequest GenerateVideosRequest(string query, string videoId, int? page, int? perPage) {
-            IApiRequest request = ApiRequestFactory.GetApiRequest(ClientId, ClientSecret);
-            request.Method = Method.GET;
-            request.Path = query != null ? "/videos" : "/videos/" + videoId + "/videos";
-            if (page.HasValue)
-                request.Query.Add("page", page.ToString());
-            if (perPage.HasValue)
-                request.Query.Add("per_page", perPage.ToString());
-            if (query != null)
-                request.Query.Add("query", query);
-            if (videoId != null)
+        IApiRequest GenerateVideosRequest(SearchQuery query) {
+            string path = query.Query != null ? "/videos" : "/videos/" + query.RelatedId + "/videos";
+            var request = GenerateVideosRequest(path);
+            request.Query.Add("per_page", query.PageSize.ToString());
+            if (query.Query != null)
+                request.Query.Add("query", query.Query);
+            else
                 request.Query.Add("filter", "related");
             return request;
         }
