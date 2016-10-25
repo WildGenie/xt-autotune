@@ -54,7 +54,7 @@ namespace AutoTune.Local {
                         album = file.Tag.Album,
                         genre = file.Tag.FirstGenre,
                         artist = file.Tag.FirstPerformer,
-                        image = file.Tag.Pictures.Length == 0 ? null : file.Tag.Pictures[0].Data.Data
+                        imageBase64 = file.Tag.Pictures.Length == 0 ? null : Convert.ToBase64String(file.Tag.Pictures[0].Data.Data)
                     };
             } catch (UnsupportedFormatException) {
                 Logger.Debug("Unsupported file: {0}.", path);
@@ -82,7 +82,7 @@ namespace AutoTune.Local {
             Genre genre = FindOrCreate(library, library.Genres, info.genre, ref counters.genres);
             Album album = FindOrCreate(library, library.Albums, info.album, ref counters.albums);
             Artist artist = FindOrCreate(library, library.Artists, info.artist, ref counters.artists);
-            library.Tracks.Add(new Track(info.path, info.title, info.image, genre, album, artist));
+            library.Tracks.Add(new Track(info.path, info.title, info.imageBase64, genre, album, artist));
             library.SaveChanges();
             counters.tracks++;
         }

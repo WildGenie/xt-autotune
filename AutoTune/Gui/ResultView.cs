@@ -44,21 +44,16 @@ namespace AutoTune.Gui {
             uiText.Width = Width - uiText.Left;
         }
 
-        void InitializeResult(Image image) {
+        internal void SetResult(SearchResult result) {
+            this.result = result;
             uiText.Text = "";
-            uiImage.Image = image;
             uiType.Text = result == null ? "" : result.TypeId;
             if (result != null) {
                 string text = "{\\rtf \\b " + result.Title + " \\b0 ";
                 text += " \\line " + result.Description + " }";
                 uiText.Rtf = text;
             }
-        }
-
-        internal void SetResult(SearchResult result) {
-            this.result = result;
-            Action<Image> init = i => Invoke(new Action(() => InitializeResult(i)));
-            Utility.WhenImageDownloaded(result?.ThumbnailUrl, init);
+            uiImage.Image = Utility.ImageFromBase64(result?.ThumbnailBase64);
         }
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {

@@ -1,4 +1,5 @@
 ﻿using AutoTune.Local;
+using System;
 using System.Linq;
 
 namespace AutoTune.Search.Local {
@@ -10,7 +11,8 @@ namespace AutoTune.Search.Local {
                 VideoId = t.Path,
                 TypeId = LocalTypeId,
                 Description = t.Album?.Name,
-                Title = string.Format("{0} - {1}", t.Artist?.Name ?? "?", t.Title ?? "?"),
+                ThumbnailBase64 = t.ImageBase64,
+                Title = string.Format("{0} - {1}", t.Artist?.Name ?? "?", t.Title ?? "?")
             }).ToList();
             return new SearchResults(null, results);
         }

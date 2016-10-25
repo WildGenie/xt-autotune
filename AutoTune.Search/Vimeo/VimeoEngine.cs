@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AutoTune.Shared;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using VimeoDotNet.Models;
 
@@ -14,7 +16,7 @@ namespace AutoTune.Search.Vimeo {
                 TypeId = VimeoTypeId,
                 VideoId = v.id?.ToString(),
                 Description = v.description,
-                ThumbnailUrl = v.pictures.SelectMany(p => p.sizes).Select(s => s.link).FirstOrDefault()
+                ThumbnailBase64 = Convert.ToBase64String(Utility.Download(v.pictures.SelectMany(p => p.sizes).Select(s => s.link).FirstOrDefault()))
             }).ToList();
         }
 

@@ -28,11 +28,6 @@ namespace AutoTune.Gui {
             uiState.Text = Queued;
         }
 
-        void InitializeResult(Image image) {
-            uiTitle.Text = item.Search.Title;
-            uiImage.Image = image;
-        }
-
         internal void SetTitleWidth(int width) {
             uiTitle.Width = width;
         }
@@ -55,8 +50,8 @@ namespace AutoTune.Gui {
 
         internal void Initialize(QueueItem item) {
             this.item = item;
-            Action<Image> init = i => Invoke(new Action(() => InitializeResult(i)));
-            Utility.WhenImageDownloaded(item.Search.ThumbnailUrl, init);
+            uiTitle.Text = item.Search.Title;
+            uiImage.Image = Utility.ImageFromBase64(item.Search.ThumbnailBase64);
         }
     }
 }

@@ -3,13 +3,12 @@ using AutoTune.Settings;
 using System;
 using System.Drawing;
 using System.IO;
-using System.Net;
 using System.Windows.Forms;
 
 namespace AutoTune.Shared {
 
     static class Utility {
-        
+
         internal static void SetToggleForeColors(LinkLabel link) {
             var theme = ThemeSettings.Instance;
             link.LinkColor = ColorTranslator.FromHtml(theme.ForeColor1);
@@ -22,21 +21,11 @@ namespace AutoTune.Shared {
             link.ActiveLinkColor = ColorTranslator.FromHtml(theme.ForeColor2);
         }
 
-        static void WhenImageDownloadedAsync(string imageUrl, Action<Image> continue_) {
-            using (WebClient client = new WebClient()) {
-                client.DownloadDataCompleted += (s, evt) => {
-                    using (MemoryStream stream = new MemoryStream(evt.Result))
-                        continue_(Image.FromStream(stream));
-                };
-                client.DownloadDataAsync(new Uri(imageUrl));
-            }
-        }
-
-        internal static void WhenImageDownloaded(string imageUrl, Action<Image> continue_) {
-            if (imageUrl == null)
-                continue_(null);
-            else
-                WhenImageDownloadedAsync(imageUrl, continue_);
+        internal static Image ImageFromBase64(string base64) {
+            if (base64 == null)
+                return null;
+            using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(base64)))
+                return Image.FromStream(stream);
         }
 
         internal static string GetUrl(SearchResult result) {

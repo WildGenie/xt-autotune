@@ -2,10 +2,12 @@
 using AutoTune.Search.Local;
 using AutoTune.Search.Vimeo;
 using AutoTune.Search.YouTube;
+using AutoTune.Shared;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 
 namespace AutoTune.Search {

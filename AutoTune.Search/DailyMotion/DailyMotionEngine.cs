@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AutoTune.Shared;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace AutoTune.Search.DailyMotion {
                 Title = v.title,
                 TypeId = DailyMotionTypeId,
                 Description = v.description,
-                ThumbnailUrl = v.thumbnail_120_url
+                ThumbnailBase64 = Convert.ToBase64String(Utility.Download(v.thumbnail_120_url))
             }).ToList();
         }
 

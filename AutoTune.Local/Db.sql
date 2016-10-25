@@ -25,10 +25,10 @@ on album (name);
 create table track (
   id integer primary key,
   title text,
-  image blob,
   album_id integer,
   genre_id integer,
   artist_id integer,
+  image_base64 text,
   path text not null unique,
   favourite integer not null,
   foreign key (artist_id) references artist (id)

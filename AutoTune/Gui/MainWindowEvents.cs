@@ -55,8 +55,6 @@ namespace AutoTune.Gui {
 
         void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
             PlayResult(e.Data);
-            UiSettings.Instance.CurrentTrack = e.Data;
-            uiCurrentResult.SetResult(e.Data);
         }
 
         void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {

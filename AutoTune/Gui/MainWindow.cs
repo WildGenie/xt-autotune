@@ -191,6 +191,8 @@ namespace AutoTune.Gui {
         }
 
         void PlayResult(SearchResult result) {
+            uiCurrentResult.SetResult(result);
+            UiSettings.Instance.CurrentTrack = result;
             uiBrowser.Load(Utility.GetPlayUrl(result));
             Logger.Debug("Playing {0} in player.", Utility.GetPlayUrl(result));
         }

@@ -6,7 +6,7 @@
         internal string title;
         internal string album;
         internal string genre;
-        internal byte[] image;
         internal string artist;
+        internal string imageBase64;
     }
 }

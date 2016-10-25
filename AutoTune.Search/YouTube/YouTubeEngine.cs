@@ -1,6 +1,8 @@
-﻿using Google.Apis.Services;
+﻿using AutoTune.Shared;
+using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +16,7 @@ namespace AutoTune.Search.YouTube {
                 VideoId = i.Id.VideoId,
                 Title = i.Snippet.Title,
                 Description = i.Snippet.Description,
-                ThumbnailUrl = i.Snippet.Thumbnails.Default__.Url
+                ThumbnailBase64 = Convert.ToBase64String(Utility.Download(i.Snippet.Thumbnails.Default__.Url))
             }).ToList();
         }
 
