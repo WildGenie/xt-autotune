@@ -36,6 +36,7 @@ namespace AutoTune.Settings {
         internal override void OnInitialized() {
             Directory.CreateDirectory(Instance.TempFolder);
             Directory.CreateDirectory(Instance.TargetFolder);
+            Directory.CreateDirectory(Instance.LibraryFolder);
             Directory.CreateDirectory(Instance.ProcessFolder);
             Directory.CreateDirectory(Instance.DownloadFolder);
         }

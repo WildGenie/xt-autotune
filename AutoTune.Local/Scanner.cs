@@ -31,7 +31,7 @@ namespace AutoTune.Local {
                     try {
                         using (Library library = new Library()) {
                             ScanNewTracks(library, libraryFolder);
-                            CleanOldTracks(library);
+                            CleanOldTracks(library, libraryFolder);
                         }
                     } catch (Exception e) {
                         Logger.Error(e, "Scanning library failed.");
@@ -115,14 +115,22 @@ namespace AutoTune.Local {
             Logger.Info(format, counters.genres, counters.albums, counters.artists, counters.tracks);
         }
 
-        static void CleanOldTracks(Library library) {
+        static void CleanOldTracks(Library library, string libraryFolder) {
 
             int removedTracks = 0;
             Logger.Info("Cleaning old tracks...");
-            foreach (Track track in library.Tracks) {
+            var libraryDirectory = new DirectoryInfo(libraryFolder);
+            foreach (var track in library.Tracks) {
                 if (Interlocked.CompareExchange(ref running, 0, 0) == 0)
                     return;
-                if (!System.IO.File.Exists(track.Path)) {
+                bool inLibrary = System.IO.File.Exists(track.Path);
+                if (inLibrary) {
+                    var trackDirectory = new FileInfo(track.Path).Directory;
+                    while (trackDirectory != null && !trackDirectory.FullName.Equals(libraryDirectory.FullName))
+                        trackDirectory = trackDirectory.Parent;
+                    inLibrary = trackDirectory != null;
+                }
+                if (!inLibrary) {
                     library.Tracks.Remove(track);
                     library.SaveChanges();
                     removedTracks++;
@@ -135,7 +143,7 @@ namespace AutoTune.Local {
             library.Genres.RemoveRange(oldGenres);
             library.Artists.RemoveRange(oldArtists);
             library.SaveChanges();
-            string format = "Finished cleaning old tracks. Removed {0} genres, {1} albums, {2} artists and {2} tracks.";
+            string format = "Finished cleaning old tracks. Removed {0} genres, {1} albums, {2} artists and {3} tracks.";
             Logger.Info(format, oldGenres.Count, oldAlbums.Count, oldArtists.Count, removedTracks);
         }
     }
