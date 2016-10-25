@@ -62,6 +62,7 @@ namespace AutoTune.Gui {
             return Assembly.LoadFile(Path.Combine(AppBase, Arch, name));
         }
 
+        private bool shutdown;
         private TextWriter logger;
         private bool appendingResult;
         private bool initializing = true;
@@ -69,6 +70,7 @@ namespace AutoTune.Gui {
         private string searchQuery = null;
         private SearchResult searchRelated = null;
         private readonly ChromiumWebBrowser uiBrowser;
+        private readonly object shutdownLock = new object();
 
         public MainWindow() {
             InitializeComponent();
@@ -138,10 +140,14 @@ namespace AutoTune.Gui {
             logger = new StreamWriter(AppSettings.LogFilePath, false);
             Logger.Trace += (s, e) => WriteLog(e.Level, e.Message);
             Logger.Trace += (s, e) => {
-                string now = DateTime.Now.ToLongTimeString();
-                logger.WriteLine(string.Format("{0}: {1}: {2}.", now, e.Level, e.Message));
-                if (e.Level == LogLevel.Error)
-                    logger.Flush();
+                lock (shutdownLock) {
+                    string now = DateTime.Now.ToLongTimeString();
+                    if (!shutdown) {
+                        logger.WriteLine(string.Format("{0}: {1}: {2}.", now, e.Level, e.Message));
+                        if (e.Level == LogLevel.Error)
+                            logger.Flush();
+                    }
+                }
             };
         }
 

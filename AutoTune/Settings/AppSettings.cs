@@ -19,15 +19,18 @@ namespace AutoTune.Settings {
         internal int FetchDelay { get; set; } = 1000;
         internal int FetchTimeout { get; set; } = 60000;
 
+        internal char TagSeparator = '-';
         internal int SearchPageSize { get; set; } = 10;
         internal int DownloadThreadCount { get; set; } = 0;
         internal bool LoadMoreResultsOnScrollEnd { get; set; } = true;
         internal int ScanLibraryInterval { get; set; } = 60 * 60 * 1000;
+        internal bool EmbedThumbnailAfterPostProcessing { get; set; } = true;
+        internal bool EmbedDescriptionAfterPostProcessing { get; set; } = true;
 
         internal bool PostProcessingEnabled { get; set; } = true;
         internal int PostProcessingThreadCount { get; set; } = 0;
-        internal string PostProcessingCommand { get; set; } = "ffmpeg";
         internal string PostProcessingExtension { get; set; } = "mp3";
+        internal string PostProcessingCommand { get; set; } = "ffmpeg";
         internal bool PostProcessingKeepOriginal { get; set; } = false;
         internal string PostProcessingArguments { get; set; } = "-i \"{0}\" -y \"{1}.{2}\" -quality good -cpu-used 0";
 

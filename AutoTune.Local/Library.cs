@@ -49,8 +49,9 @@ namespace AutoTune.Local {
             using (var library = new Library()) {
                 library.Configuration.LazyLoadingEnabled = false;
                 return library.Tracks
-                    .Where(t => t.Title != null && t.Title.ToLower().Contains(q) ||
-                    t.Artist != null && t.Artist.Name.ToLower().Contains(q))
+                    .Where(t => t.Title != null && (t.Title.ToLower().Contains(q) || q.Contains(t.Title.ToLower())) ||
+                    t.Album != null && (t.Album.Name.ToLower().Contains(q) || q.Contains(t.Album.Name.ToLower())) ||
+                    t.Artist != null && (t.Artist.Name.ToLower().Contains(q)) || q.Contains(t.Artist.Name.ToLower()))
                     .Include(t => t.Genre)
                     .Include(t => t.Artist)
                     .ToList();

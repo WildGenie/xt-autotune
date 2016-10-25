@@ -13,6 +13,8 @@ namespace AutoTune.Local {
         public string Path { get; set; }
         [Column("title")]
         public string Title { get; set; }
+        [Column("comment")]
+        public string Comment { get; set; }
         [Column("favourite")]
         public bool Favourite { get; set; }
         [Column("image_base64")]
@@ -27,12 +29,13 @@ namespace AutoTune.Local {
         public Track() {
         }
 
-        public Track(string path, string title, string imageBase64, Genre genre, Album album, Artist artist) {
+        public Track(string path, string title, string comment, string imageBase64, Genre genre, Album album, Artist artist) {
             Path = path;
             Title = title;
             Genre = genre;
             Album = album;
             Artist = artist;
+            Comment = comment;
             ImageBase64 = imageBase64;
         }
     }

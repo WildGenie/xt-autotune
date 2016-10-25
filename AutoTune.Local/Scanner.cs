@@ -14,9 +14,9 @@ namespace AutoTune.Local {
         const double ProgressInterval = 0.05;
         static readonly object Lock = new object();
 
-        public static void Start(string libraryFolder, int interval) {
+        public static void Start(string libraryFolder, char tagSeparator, int interval) {
             Interlocked.CompareExchange(ref running, 1, 0);
-            new Thread(() => Run(libraryFolder, interval)).Start();
+            new Thread(() => Run(libraryFolder, tagSeparator, interval)).Start();
         }
 
         public static void Terminate() {
@@ -25,12 +25,12 @@ namespace AutoTune.Local {
                 Monitor.Pulse(Lock);
         }
 
-        static void Run(string libraryFolder, int interval) {
+        static void Run(string libraryFolder, char tagSeparator, int interval) {
             lock (Lock)
                 while (running != 0) {
                     try {
                         using (Library library = new Library()) {
-                            ScanNewTracks(library, libraryFolder);
+                            ScanNewTracks(library, libraryFolder, tagSeparator);
                             CleanOldTracks(library, libraryFolder);
                         }
                     } catch (Exception e) {
@@ -45,17 +45,27 @@ namespace AutoTune.Local {
                 }
         }
 
-        static TrackInfo ParseTrack(string path) {
+        static TrackInfo ParseTrack(string path, char tagSeparator) {
             try {
-                using (var file = TagLib.File.Create(path))
+                using (var file = TagLib.File.Create(path)) {
+                    string title = file.Tag.Title;
+                    string artist = file.Tag.FirstPerformer;
+                    string fileName = Path.GetFileNameWithoutExtension(path);
+                    if (title == null && fileName.Count(c => c == tagSeparator) == 1) {
+                        string[] parts = fileName.Split(tagSeparator);
+                        artist = parts[0].Trim();
+                        title = parts[1].Trim();
+                    }
                     return new TrackInfo {
                         path = path,
-                        title = file.Tag.Title,
+                        title = title,
+                        artist = artist,
                         album = file.Tag.Album,
+                        comment = file.Tag.Comment,
                         genre = file.Tag.FirstGenre,
-                        artist = file.Tag.FirstPerformer,
                         imageBase64 = file.Tag.Pictures.Length == 0 ? null : Convert.ToBase64String(file.Tag.Pictures[0].Data.Data)
                     };
+                }
             } catch (UnsupportedFormatException) {
                 Logger.Debug("Unsupported file: {0}.", path);
                 return null;
@@ -82,12 +92,12 @@ namespace AutoTune.Local {
             Genre genre = FindOrCreate(library, library.Genres, info.genre, ref counters.genres);
             Album album = FindOrCreate(library, library.Albums, info.album, ref counters.albums);
             Artist artist = FindOrCreate(library, library.Artists, info.artist, ref counters.artists);
-            library.Tracks.Add(new Track(info.path, info.title, info.imageBase64, genre, album, artist));
+            library.Tracks.Add(new Track(info.path, info.title, info.comment, info.imageBase64, genre, album, artist));
             library.SaveChanges();
             counters.tracks++;
         }
 
-        static void ScanNewTracks(Library library, string libraryFolder) {
+        static void ScanNewTracks(Library library, string libraryFolder, char tagSeparator) {
 
             string path;
             double progress;
@@ -102,7 +112,7 @@ namespace AutoTune.Local {
                 path = paths[i];
                 if (library.Tracks.Where(t => t.Path.Equals(path)).Any())
                     continue;
-                var track = ParseTrack(path);
+                var track = ParseTrack(path, tagSeparator);
                 if (track != null)
                     ImportTrack(library, track, counters);
                 progress = i / (double)paths.Length;

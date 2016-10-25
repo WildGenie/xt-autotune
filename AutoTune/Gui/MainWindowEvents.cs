@@ -12,6 +12,8 @@ namespace AutoTune.Gui {
     partial class MainWindow : Form {
 
         void OnMainWindowClosed(object sender, FormClosedEventArgs e) {
+            lock (shutdownLock)
+                shutdown = true;
             Cef.Shutdown();
             logger.Flush();
             logger.Dispose();
@@ -27,6 +29,7 @@ namespace AutoTune.Gui {
         void OnMainWindowShown(object sender, EventArgs e) {
             if (DesignMode)
                 return;
+            var app = AppSettings.Instance;
             InitializeLog();
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();
@@ -34,12 +37,12 @@ namespace AutoTune.Gui {
             uiDownloadQueue.Initialize(DownloadQueue.Instance);
             uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
             Action<QueueItem> enqueue = r => uiPostProcessingQueue.Enqueue(r.NewId());
-            DownloadQueue.Instance.Completed += (s, evt) => Invoke(new Action(() => enqueue(evt.Data)));
+            DownloadQueue.Instance.Completed += (s, evt) => BeginInvoke(new Action(() => enqueue(evt.Data)));
             uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
             StartSearch();
             DownloadQueue.Start();
             PostProcessingQueue.Start();
-            Scanner.Start(UserSettings.Instance.LibraryFolder, AppSettings.Instance.ScanLibraryInterval);
+            Scanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.ScanLibraryInterval);
         }
 
         void OnMainWindowResized(object sender, EventArgs e) {

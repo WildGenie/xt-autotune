@@ -10,7 +10,7 @@ namespace AutoTune.Search.Local {
             var results = Library.Search(query.Query, 0, 0).Select(t => new SearchResult {
                 VideoId = t.Path,
                 TypeId = LocalTypeId,
-                Description = t.Album?.Name,
+                Description = t.Comment,
                 ThumbnailBase64 = t.ImageBase64,
                 Title = string.Format("{0} - {1}", t.Artist?.Name ?? "?", t.Title ?? "?")
             }).ToList();

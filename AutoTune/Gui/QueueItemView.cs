@@ -33,7 +33,7 @@ namespace AutoTune.Gui {
         }
 
         internal void SetState(string state) {
-            Invoke(new Action(() => uiState.Text = state));
+            BeginInvoke(new Action(() => uiState.Text = state));
         }
 
         void InitializeColors() {
