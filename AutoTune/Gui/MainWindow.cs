@@ -101,6 +101,7 @@ namespace AutoTune.Gui {
             uiGroupSearch.ForeColor = fore1;
             uiDownloadGroup.ForeColor = fore1;
             uiPostProcessingGroup.ForeColor = fore1;
+            uiBrowserPlayerContainer.ForeColor = fore1;
             Utility.SetLinkForeColors(uiLoadMore);
             Utility.SetToggleForeColors(uiToggleLog);
             Utility.SetToggleForeColors(uiToggleSearch);
@@ -113,7 +114,7 @@ namespace AutoTune.Gui {
         void InitializeControls() {
             uiSplitBrowserPlayer.Panel1Collapsed = true;
             uiSplitBrowserPlayer.Panel2Collapsed = true;
-            uiBrowser = new ChromiumWebBrowser(AboutBlank);
+            uiBrowser = new ChromiumWebBrowser("");
             uiSplitBrowserPlayer.Panel1.Controls.Add(uiBrowser);
             uiBrowser.Dock = DockStyle.Fill;
             uiPlayer = new AxWindowsMediaPlayer();
@@ -270,6 +271,7 @@ namespace AutoTune.Gui {
             uiToggleSearch.Visible = !full;
             uiToggleNotifications.Visible = !full;
             uiToggleCurrentControls.Visible = !full;
+            uiBrowserPlayerContainer.BorderStyle = full ? BorderStyle.None : BorderStyle.FixedSingle;
             uiTogglePlayerFull.Text = full ? UnicodeWhiteLowerLeftTriangle : UnicodeWhiteUpperRightTriangle;
         }
 

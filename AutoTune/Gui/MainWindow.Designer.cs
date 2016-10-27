@@ -40,6 +40,7 @@
             this.uiCurrentGroup = new System.Windows.Forms.GroupBox();
             this.uiBrowserCurrentControlsContainer = new System.Windows.Forms.TableLayoutPanel();
             this.uiBrowserPlayerContainer = new System.Windows.Forms.Panel();
+            this.uiSplitBrowserPlayer = new System.Windows.Forms.SplitContainer();
             this.uiToggleCurrentControls = new System.Windows.Forms.LinkLabel();
             this.uiToggleNotifications = new System.Windows.Forms.LinkLabel();
             this.uiDownloadGroup = new System.Windows.Forms.GroupBox();
@@ -60,7 +61,6 @@
             this.uiCurrentResult = new AutoTune.Gui.ResultView();
             this.uiDownloadQueue = new AutoTune.Gui.QueueView();
             this.uiPostProcessingQueue = new AutoTune.Gui.QueueView();
-            this.uiSplitBrowserPlayer = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -85,6 +85,8 @@
             this.uiCurrentGroup.SuspendLayout();
             this.uiBrowserCurrentControlsContainer.SuspendLayout();
             this.uiBrowserPlayerContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.uiSplitBrowserPlayer)).BeginInit();
+            this.uiSplitBrowserPlayer.SuspendLayout();
             uiNotificationsPanel.SuspendLayout();
             this.uiDownloadGroup.SuspendLayout();
             this.uiPostProcessingGroup.SuspendLayout();
@@ -107,8 +109,6 @@
             this.uiSplitSearch.Panel1.SuspendLayout();
             this.uiSplitSearch.Panel2.SuspendLayout();
             this.uiSplitSearch.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uiSplitBrowserPlayer)).BeginInit();
-            this.uiSplitBrowserPlayer.SuspendLayout();
             this.SuspendLayout();
             // 
             // uiSplitPlayerToggleSearch
@@ -265,14 +265,27 @@
             // 
             // uiBrowserPlayerContainer
             // 
+            this.uiBrowserPlayerContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.uiBrowserPlayerContainer.Controls.Add(this.uiSplitBrowserPlayer);
             this.uiBrowserPlayerContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiBrowserPlayerContainer.Location = new System.Drawing.Point(0, 15);
-            this.uiBrowserPlayerContainer.Margin = new System.Windows.Forms.Padding(0);
+            this.uiBrowserPlayerContainer.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.uiBrowserPlayerContainer.Name = "uiBrowserPlayerContainer";
-            this.uiBrowserPlayerContainer.Padding = new System.Windows.Forms.Padding(0, 6, 3, 0);
-            this.uiBrowserPlayerContainer.Size = new System.Drawing.Size(496, 281);
+            this.uiBrowserPlayerContainer.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.uiBrowserPlayerContainer.Size = new System.Drawing.Size(493, 281);
             this.uiBrowserPlayerContainer.TabIndex = 5;
+            // 
+            // uiSplitBrowserPlayer
+            // 
+            this.uiSplitBrowserPlayer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiSplitBrowserPlayer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.uiSplitBrowserPlayer.IsSplitterFixed = true;
+            this.uiSplitBrowserPlayer.Location = new System.Drawing.Point(0, 6);
+            this.uiSplitBrowserPlayer.Margin = new System.Windows.Forms.Padding(0);
+            this.uiSplitBrowserPlayer.Name = "uiSplitBrowserPlayer";
+            this.uiSplitBrowserPlayer.Size = new System.Drawing.Size(491, 273);
+            this.uiSplitBrowserPlayer.SplitterDistance = 200;
+            this.uiSplitBrowserPlayer.TabIndex = 0;
             // 
             // uiToggleCurrentControls
             // 
@@ -622,18 +635,6 @@
             this.uiPostProcessingQueue.Size = new System.Drawing.Size(200, 228);
             this.uiPostProcessingQueue.TabIndex = 0;
             // 
-            // uiSplitBrowserPlayer
-            // 
-            this.uiSplitBrowserPlayer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiSplitBrowserPlayer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.uiSplitBrowserPlayer.IsSplitterFixed = true;
-            this.uiSplitBrowserPlayer.Location = new System.Drawing.Point(0, 6);
-            this.uiSplitBrowserPlayer.Margin = new System.Windows.Forms.Padding(0);
-            this.uiSplitBrowserPlayer.Name = "uiSplitBrowserPlayer";
-            this.uiSplitBrowserPlayer.Size = new System.Drawing.Size(493, 275);
-            this.uiSplitBrowserPlayer.SplitterDistance = 200;
-            this.uiSplitBrowserPlayer.TabIndex = 0;
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -665,6 +666,8 @@
             this.uiBrowserCurrentControlsContainer.ResumeLayout(false);
             this.uiBrowserCurrentControlsContainer.PerformLayout();
             this.uiBrowserPlayerContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.uiSplitBrowserPlayer)).EndInit();
+            this.uiSplitBrowserPlayer.ResumeLayout(false);
             uiNotificationsPanel.ResumeLayout(false);
             uiNotificationsPanel.PerformLayout();
             this.uiDownloadGroup.ResumeLayout(false);
@@ -693,8 +696,6 @@
             this.uiSplitSearch.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitSearch)).EndInit();
             this.uiSplitSearch.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.uiSplitBrowserPlayer)).EndInit();
-            this.uiSplitBrowserPlayer.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
