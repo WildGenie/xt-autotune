@@ -44,21 +44,41 @@ namespace AutoTune.Local {
                 }
         }
 
-        public static List<Track> Search(string query, int page, int pageSize) {
+        public static List<Track> FindRelated(string path, int page, int pageSize) {
+            using (var library = new Library()) {
+                library.Configuration.LazyLoadingEnabled = false;
+                var track = library.Tracks
+                    .Include(t => t.Album)
+                    .Include(t => t.Artist)
+                    .SingleOrDefault(t => t.Path.Equals(path));
+                if (track == null)
+                    return new List<Track>();
+                var albumId = track?.Album?.Id;
+                var artistId = track?.Artist?.Id;
+                return ExecuteQuery(library.Tracks
+                    .Where(t => t.Album != null && t.Album.Id == albumId ||
+                      t.Artist != null && t.Artist.Id == artistId), page, pageSize);
+            }
+        }
+
+        public static List<Track> Find(string query, int page, int pageSize) {
             string q = query.ToLower();
             using (var library = new Library()) {
                 library.Configuration.LazyLoadingEnabled = false;
-                return library.Tracks
+                return ExecuteQuery(library.Tracks
                     .Where(t => t.Title != null && (t.Title.ToLower().Contains(q) || q.Contains(t.Title.ToLower())) ||
                     t.Album != null && (t.Album.Name.ToLower().Contains(q) || q.Contains(t.Album.Name.ToLower())) ||
-                    t.Artist != null && (t.Artist.Name.ToLower().Contains(q)) || q.Contains(t.Artist.Name.ToLower()))
-                    .OrderBy(t => t.Title)
+                    t.Artist != null && (t.Artist.Name.ToLower().Contains(q)) || q.Contains(t.Artist.Name.ToLower())), page, pageSize);
+            }
+        }
+
+        static List<Track> ExecuteQuery(IQueryable<Track> query, int page, int pageSize) {
+            return query.OrderBy(t => t.Title)
                     .Skip(page * pageSize)
                     .Take(pageSize)
                     .Include(t => t.Genre)
                     .Include(t => t.Artist)
                     .ToList();
-            }
         }
     }
 }

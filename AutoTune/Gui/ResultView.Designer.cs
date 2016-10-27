@@ -53,7 +53,7 @@
             // 
             this.uiDownload.AutoSize = true;
             this.uiDownload.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiDownload.Location = new System.Drawing.Point(94, 16);
+            this.uiDownload.Location = new System.Drawing.Point(138, 16);
             this.uiDownload.Margin = new System.Windows.Forms.Padding(0);
             this.uiDownload.Name = "uiDownload";
             this.uiDownload.Size = new System.Drawing.Size(55, 13);
@@ -67,10 +67,10 @@
             // 
             this.uiRelated.AutoSize = true;
             this.uiRelated.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiRelated.Location = new System.Drawing.Point(149, 16);
+            this.uiRelated.Location = new System.Drawing.Point(94, 16);
             this.uiRelated.Margin = new System.Windows.Forms.Padding(0);
             this.uiRelated.Name = "uiRelated";
-            this.uiRelated.Size = new System.Drawing.Size(37, 13);
+            this.uiRelated.Size = new System.Drawing.Size(44, 13);
             this.uiRelated.TabIndex = 4;
             this.uiRelated.TabStop = true;
             this.uiRelated.Text = "Related";
@@ -110,9 +110,8 @@
             this.uiType.Location = new System.Drawing.Point(67, 3);
             this.uiType.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.uiType.Name = "uiType";
-            this.uiType.Size = new System.Drawing.Size(39, 13);
+            this.uiType.Size = new System.Drawing.Size(0, 13);
             this.uiType.TabIndex = 5;
-            this.uiType.Text = "";
             // 
             // ResultView
             // 

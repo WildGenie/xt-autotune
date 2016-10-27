@@ -47,6 +47,7 @@ namespace AutoTune.Gui {
         internal void SetResult(SearchResult result) {
             this.result = result;
             uiText.Text = "";
+            uiDownload.Visible = !result?.Local ?? false;
             uiType.Text = result == null ? "" : result.TypeId;
             if (result != null) {
                 string text = "{\\rtf \\b " + result.Title + " \\b0 ";

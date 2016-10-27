@@ -93,9 +93,11 @@ namespace AutoTune.Gui {
             searchQuery = null;
             searchRelated = e.Data;
             uiResults.Controls.Clear();
+            SearchCredentials searchCredentials;
             var pageSize = AppSettings.Instance.SearchPageSize;
             var credentials = UserSettings.Instance.Credentials;
-            var query = new SearchQuery(e.Data.TypeId, credentials[e.Data.TypeId], e.Data.VideoId, pageSize);
+            credentials.TryGetValue(e.Data.TypeId, out searchCredentials);
+            var query = new SearchQuery(e.Data.TypeId, searchCredentials, e.Data.VideoId, pageSize);
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
