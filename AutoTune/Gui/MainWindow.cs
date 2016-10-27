@@ -233,10 +233,11 @@ namespace AutoTune.Gui {
 
         void LoadMoreResults() {
             var typeId = searchRelated?.TypeId;
-            SearchCredentials searchCredentials;
+            SearchCredentials searchCredentials = null;
             var pageSize = AppSettings.Instance.SearchPageSize;
             var credentials = UserSettings.Instance.Credentials;
-            credentials.TryGetValue(typeId, out searchCredentials);
+            if (typeId != null)
+                credentials.TryGetValue(typeId, out searchCredentials);
             SearchQuery q = searchRelated == null ?
                 new SearchQuery(credentials, searchQuery, pageSize) :
                 new SearchQuery(typeId, searchCredentials, searchRelated.VideoId, pageSize);
