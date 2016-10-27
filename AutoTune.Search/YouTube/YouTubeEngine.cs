@@ -12,6 +12,7 @@ namespace AutoTune.Search.YouTube {
 
         static List<SearchResult> TransformResponse(SearchListResponse response) {
             return response.Items.Select(i => new SearchResult {
+                Local = false,
                 TypeId = YouTubeTypeId,
                 VideoId = i.Id.VideoId,
                 Title = i.Snippet.Title,

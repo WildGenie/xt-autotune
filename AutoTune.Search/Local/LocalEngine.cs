@@ -9,6 +9,7 @@ namespace AutoTune.Search.Local {
         internal override SearchResults Execute(SearchQuery query, string currentPage) {
             int page = currentPage == null ? 0 : int.Parse(currentPage);
             var results = Library.Search(query.Query, page, query.PageSize).Select(t => new SearchResult {
+                Local = true,
                 VideoId = t.Path,
                 TypeId = LocalTypeId,
                 Description = t.Comment,

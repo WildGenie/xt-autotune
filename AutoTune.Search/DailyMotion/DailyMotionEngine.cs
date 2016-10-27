@@ -15,6 +15,7 @@ namespace AutoTune.Search.DailyMotion {
 
         static List<SearchResult> TransformResponse(DailyMotionResponse response) {
             return response.list.Select(v => new SearchResult {
+                Local = false,
                 VideoId = v.id,
                 Title = v.title,
                 TypeId = DailyMotionTypeId,

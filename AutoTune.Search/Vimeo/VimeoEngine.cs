@@ -12,6 +12,7 @@ namespace AutoTune.Search.Vimeo {
 
         static List<SearchResult> TransformResponse(Paginated<Video> response) {
             return response.data.Select(v => new SearchResult {
+                Local = false,
                 Title = v.name,
                 TypeId = VimeoTypeId,
                 VideoId = v.id?.ToString(),

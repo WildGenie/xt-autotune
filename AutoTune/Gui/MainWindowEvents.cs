@@ -12,8 +12,11 @@ namespace AutoTune.Gui {
     partial class MainWindow : Form {
 
         void OnMainWindowClosed(object sender, FormClosedEventArgs e) {
-            lock (shutdownLock)
+            lock (shutdownLock) {
+                if (shutdown)
+                    return;
                 shutdown = true;
+            }
             Cef.Shutdown();
             logger.Flush();
             logger.Dispose();
@@ -31,6 +34,7 @@ namespace AutoTune.Gui {
                 return;
             var app = AppSettings.Instance;
             InitializeLog();
+            InitializeSettings();
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();
             Library.Initialize(AppSettings.GetFolderPath());
@@ -43,6 +47,7 @@ namespace AutoTune.Gui {
             DownloadQueue.Start();
             PostProcessingQueue.Start();
             Scanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.ScanLibraryInterval);
+            initializing = false;
         }
 
         void OnMainWindowResized(object sender, EventArgs e) {
@@ -57,7 +62,7 @@ namespace AutoTune.Gui {
         }
 
         void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
-            PlayResult(e.Data);
+            LoadResult(e.Data, true);
         }
 
         void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {
@@ -75,7 +80,7 @@ namespace AutoTune.Gui {
         }
 
         void OnResultsScroll(object sender, ScrollEventArgs e) {
-            var autoLoad = AppSettings.Instance.LoadMoreResultsOnScrollEnd;
+            var autoLoad = AppSettings.Instance.LoadMoreResultsOnScrollToEnd;
             if (searchState == null || appendingResult || !autoLoad)
                 return;
             VScrollProperties properties = uiResults.VerticalScroll;

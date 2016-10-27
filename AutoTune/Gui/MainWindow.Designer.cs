@@ -38,15 +38,12 @@
             this.uiSplitBrowserCurrentControls = new System.Windows.Forms.SplitContainer();
             this.uiPadCurrentControls = new System.Windows.Forms.Panel();
             this.uiCurrentGroup = new System.Windows.Forms.GroupBox();
-            this.uiCurrentResult = new AutoTune.Gui.ResultView();
             this.uiBrowserCurrentControlsContainer = new System.Windows.Forms.TableLayoutPanel();
-            this.uiBrowserContainer = new System.Windows.Forms.Panel();
+            this.uiBrowserPlayerContainer = new System.Windows.Forms.Panel();
             this.uiToggleCurrentControls = new System.Windows.Forms.LinkLabel();
             this.uiToggleNotifications = new System.Windows.Forms.LinkLabel();
             this.uiDownloadGroup = new System.Windows.Forms.GroupBox();
-            this.uiDownloadQueue = new AutoTune.Gui.QueueView();
             this.uiPostProcessingGroup = new System.Windows.Forms.GroupBox();
-            this.uiPostProcessingQueue = new AutoTune.Gui.QueueView();
             this.uiToggleLog = new System.Windows.Forms.LinkLabel();
             this.uiLog = new System.Windows.Forms.TextBox();
             this.uiLogLevel = new System.Windows.Forms.ComboBox();
@@ -60,6 +57,10 @@
             this.uiGroupSearch = new System.Windows.Forms.GroupBox();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.uiCurrentResult = new AutoTune.Gui.ResultView();
+            this.uiDownloadQueue = new AutoTune.Gui.QueueView();
+            this.uiPostProcessingQueue = new AutoTune.Gui.QueueView();
+            this.uiSplitBrowserPlayer = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -83,6 +84,7 @@
             this.uiPadCurrentControls.SuspendLayout();
             this.uiCurrentGroup.SuspendLayout();
             this.uiBrowserCurrentControlsContainer.SuspendLayout();
+            this.uiBrowserPlayerContainer.SuspendLayout();
             uiNotificationsPanel.SuspendLayout();
             this.uiDownloadGroup.SuspendLayout();
             this.uiPostProcessingGroup.SuspendLayout();
@@ -105,6 +107,8 @@
             this.uiSplitSearch.Panel1.SuspendLayout();
             this.uiSplitSearch.Panel2.SuspendLayout();
             this.uiSplitSearch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.uiSplitBrowserPlayer)).BeginInit();
+            this.uiSplitBrowserPlayer.SuspendLayout();
             this.SuspendLayout();
             // 
             // uiSplitPlayerToggleSearch
@@ -244,21 +248,11 @@
             this.uiCurrentGroup.TabStop = false;
             this.uiCurrentGroup.Text = "Current track";
             // 
-            // uiCurrentResult
-            // 
-            this.uiCurrentResult.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.uiCurrentResult.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiCurrentResult.Location = new System.Drawing.Point(3, 16);
-            this.uiCurrentResult.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.uiCurrentResult.Name = "uiCurrentResult";
-            this.uiCurrentResult.Size = new System.Drawing.Size(487, 64);
-            this.uiCurrentResult.TabIndex = 0;
-            // 
             // uiBrowserCurrentControlsContainer
             // 
             this.uiBrowserCurrentControlsContainer.ColumnCount = 1;
             this.uiBrowserCurrentControlsContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.uiBrowserCurrentControlsContainer.Controls.Add(this.uiBrowserContainer, 0, 1);
+            this.uiBrowserCurrentControlsContainer.Controls.Add(this.uiBrowserPlayerContainer, 0, 1);
             this.uiBrowserCurrentControlsContainer.Controls.Add(this.uiToggleCurrentControls, 0, 0);
             this.uiBrowserCurrentControlsContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiBrowserCurrentControlsContainer.Location = new System.Drawing.Point(0, 0);
@@ -269,15 +263,16 @@
             this.uiBrowserCurrentControlsContainer.Size = new System.Drawing.Size(496, 296);
             this.uiBrowserCurrentControlsContainer.TabIndex = 0;
             // 
-            // uiBrowserContainer
+            // uiBrowserPlayerContainer
             // 
-            this.uiBrowserContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiBrowserContainer.Location = new System.Drawing.Point(0, 15);
-            this.uiBrowserContainer.Margin = new System.Windows.Forms.Padding(0);
-            this.uiBrowserContainer.Name = "uiBrowserContainer";
-            this.uiBrowserContainer.Padding = new System.Windows.Forms.Padding(0, 6, 3, 0);
-            this.uiBrowserContainer.Size = new System.Drawing.Size(496, 281);
-            this.uiBrowserContainer.TabIndex = 5;
+            this.uiBrowserPlayerContainer.Controls.Add(this.uiSplitBrowserPlayer);
+            this.uiBrowserPlayerContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiBrowserPlayerContainer.Location = new System.Drawing.Point(0, 15);
+            this.uiBrowserPlayerContainer.Margin = new System.Windows.Forms.Padding(0);
+            this.uiBrowserPlayerContainer.Name = "uiBrowserPlayerContainer";
+            this.uiBrowserPlayerContainer.Padding = new System.Windows.Forms.Padding(0, 6, 3, 0);
+            this.uiBrowserPlayerContainer.Size = new System.Drawing.Size(496, 281);
+            this.uiBrowserPlayerContainer.TabIndex = 5;
             // 
             // uiToggleCurrentControls
             // 
@@ -342,15 +337,6 @@
             this.uiDownloadGroup.TabStop = false;
             this.uiDownloadGroup.Text = "Downloads";
             // 
-            // uiDownloadQueue
-            // 
-            this.uiDownloadQueue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiDownloadQueue.Location = new System.Drawing.Point(5, 18);
-            this.uiDownloadQueue.MinimumSize = new System.Drawing.Size(200, 100);
-            this.uiDownloadQueue.Name = "uiDownloadQueue";
-            this.uiDownloadQueue.Size = new System.Drawing.Size(200, 228);
-            this.uiDownloadQueue.TabIndex = 0;
-            // 
             // uiPostProcessingGroup
             // 
             this.uiPostProcessingGroup.Controls.Add(this.uiPostProcessingQueue);
@@ -363,18 +349,6 @@
             this.uiPostProcessingGroup.TabIndex = 1;
             this.uiPostProcessingGroup.TabStop = false;
             this.uiPostProcessingGroup.Text = "Post processing";
-            // 
-            // uiPostProcessingQueue
-            // 
-            this.uiPostProcessingQueue.AutoScroll = true;
-            this.uiPostProcessingQueue.AutoSize = true;
-            this.uiPostProcessingQueue.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.uiPostProcessingQueue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiPostProcessingQueue.Location = new System.Drawing.Point(5, 18);
-            this.uiPostProcessingQueue.MinimumSize = new System.Drawing.Size(200, 100);
-            this.uiPostProcessingQueue.Name = "uiPostProcessingQueue";
-            this.uiPostProcessingQueue.Size = new System.Drawing.Size(200, 228);
-            this.uiPostProcessingQueue.TabIndex = 0;
             // 
             // uiToggleLog
             // 
@@ -617,6 +591,49 @@
             this.uiSplitSearch.SplitterDistance = 415;
             this.uiSplitSearch.TabIndex = 6;
             // 
+            // uiCurrentResult
+            // 
+            this.uiCurrentResult.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.uiCurrentResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiCurrentResult.Location = new System.Drawing.Point(3, 16);
+            this.uiCurrentResult.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.uiCurrentResult.Name = "uiCurrentResult";
+            this.uiCurrentResult.Size = new System.Drawing.Size(487, 64);
+            this.uiCurrentResult.TabIndex = 0;
+            // 
+            // uiDownloadQueue
+            // 
+            this.uiDownloadQueue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiDownloadQueue.Location = new System.Drawing.Point(5, 18);
+            this.uiDownloadQueue.MinimumSize = new System.Drawing.Size(200, 100);
+            this.uiDownloadQueue.Name = "uiDownloadQueue";
+            this.uiDownloadQueue.Size = new System.Drawing.Size(200, 228);
+            this.uiDownloadQueue.TabIndex = 0;
+            // 
+            // uiPostProcessingQueue
+            // 
+            this.uiPostProcessingQueue.AutoScroll = true;
+            this.uiPostProcessingQueue.AutoSize = true;
+            this.uiPostProcessingQueue.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.uiPostProcessingQueue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiPostProcessingQueue.Location = new System.Drawing.Point(5, 18);
+            this.uiPostProcessingQueue.MinimumSize = new System.Drawing.Size(200, 100);
+            this.uiPostProcessingQueue.Name = "uiPostProcessingQueue";
+            this.uiPostProcessingQueue.Size = new System.Drawing.Size(200, 228);
+            this.uiPostProcessingQueue.TabIndex = 0;
+            // 
+            // uiSplitBrowserPlayer
+            // 
+            this.uiSplitBrowserPlayer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiSplitBrowserPlayer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.uiSplitBrowserPlayer.IsSplitterFixed = true;
+            this.uiSplitBrowserPlayer.Location = new System.Drawing.Point(0, 6);
+            this.uiSplitBrowserPlayer.Margin = new System.Windows.Forms.Padding(0);
+            this.uiSplitBrowserPlayer.Name = "uiSplitBrowserPlayer";
+            this.uiSplitBrowserPlayer.Size = new System.Drawing.Size(493, 275);
+            this.uiSplitBrowserPlayer.SplitterDistance = 200;
+            this.uiSplitBrowserPlayer.TabIndex = 0;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -647,6 +664,7 @@
             this.uiCurrentGroup.ResumeLayout(false);
             this.uiBrowserCurrentControlsContainer.ResumeLayout(false);
             this.uiBrowserCurrentControlsContainer.PerformLayout();
+            this.uiBrowserPlayerContainer.ResumeLayout(false);
             uiNotificationsPanel.ResumeLayout(false);
             uiNotificationsPanel.PerformLayout();
             this.uiDownloadGroup.ResumeLayout(false);
@@ -675,6 +693,8 @@
             this.uiSplitSearch.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitSearch)).EndInit();
             this.uiSplitSearch.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.uiSplitBrowserPlayer)).EndInit();
+            this.uiSplitBrowserPlayer.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -682,7 +702,7 @@
         #endregion
 
         private System.Windows.Forms.TextBox uiQuery;
-        private System.Windows.Forms.Panel uiBrowserContainer;
+        private System.Windows.Forms.Panel uiBrowserPlayerContainer;
         private System.Windows.Forms.FlowLayoutPanel uiResults;
         private System.Windows.Forms.SplitContainer uiSplitSearch;
         private System.Windows.Forms.LinkLabel uiToggleSearch;
@@ -709,6 +729,7 @@
         private System.Windows.Forms.LinkLabel uiToggleFullScreen;
         private System.Windows.Forms.ToolTip uiTooltip;
         private System.Windows.Forms.LinkLabel uiTogglePlayerFull;
+        private System.Windows.Forms.SplitContainer uiSplitBrowserPlayer;
     }
 }
 

@@ -11,7 +11,6 @@ namespace AutoTune.Settings {
 
         internal static string FetchFilePath = Path.Combine(GetFolderPath(), "fetch.js");
         internal static string LogFilePath = Path.Combine(GetFolderPath(), "autotune.log");
-        internal static string StartupFilePath = Path.Combine(GetFolderPath(), "startup.html");
         internal static string FetchExecutablePath = Path.Combine("fetch", "AutoTune.Fetch.exe");
         internal static ProviderSettings GetProvider(string typeId) => Instance.Providers.Single(p => p.Key.Equals(typeId)).Value;
 
@@ -22,7 +21,8 @@ namespace AutoTune.Settings {
         internal char TagSeparator = '-';
         internal int SearchPageSize { get; set; } = 10;
         internal int DownloadThreadCount { get; set; } = 0;
-        internal bool LoadMoreResultsOnScrollEnd { get; set; } = true;
+        internal bool ScrollToEndOnMoreResults { get; set; } = false;
+        internal bool LoadMoreResultsOnScrollToEnd { get; set; } = true;
         internal int ScanLibraryInterval { get; set; } = 60 * 60 * 1000;
         internal bool EmbedThumbnailAfterPostProcessing { get; set; } = true;
         internal bool EmbedDescriptionAfterPostProcessing { get; set; } = true;
@@ -64,7 +64,6 @@ namespace AutoTune.Settings {
 
         internal override void OnInitialized() {
             InitializeResource(FetchFilePath, "AutoTune.fetch.js");
-            InitializeResource(StartupFilePath, "AutoTune.startup.html");
             foreach (var entry in Providers)
                 if (!string.IsNullOrEmpty(entry.Value.FetchFile))
                     InitializeResource(Path.Combine(GetFolderPath(), entry.Value.FetchFile), "AutoTune." + entry.Value.FetchFile);

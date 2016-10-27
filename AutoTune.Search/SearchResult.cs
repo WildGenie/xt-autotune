@@ -2,6 +2,7 @@
 
     public class SearchResult {
 
+        public bool Local { get; set; }
         public string Title { get; set; }
         public string TypeId { get; set; }
         public string VideoId { get; set; }

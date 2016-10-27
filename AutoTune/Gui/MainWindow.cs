@@ -1,6 +1,7 @@
 ﻿using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
+using AxWMPLib;
 using CefSharp;
 using CefSharp.WinForms;
 using System;
@@ -15,14 +16,15 @@ namespace AutoTune.Gui {
     public partial class MainWindow : Form {
 
         const int ShowLogMinWidth = 1250;
-        static readonly string UnicodeBlackLowerLeftTriangle = "\u25e3";
-        static readonly string UnicodeWhiteLowerLeftTriangle = "\u25fa";
-        static readonly string UnicodeBlackUpperRightTriangle = "\u25e5";
-        static readonly string UnicodeWhiteUpperRightTriangle = "\u25f9";
-        static readonly string UnicodeBlackUpPointingTriangle = "\u25b2";
-        static readonly string UnicodeBlackDownPointingTriangle = "\u25bc";
-        static readonly string UnicodeBlackLeftPointingTriangle = "\u25c0";
-        static readonly string UnicodeBlackRightPointingTriangle = "\u25b6";
+        const string AboutBlank = "about:blank";
+        const string UnicodeBlackLowerLeftTriangle = "\u25e3";
+        const string UnicodeWhiteLowerLeftTriangle = "\u25fa";
+        const string UnicodeBlackUpperRightTriangle = "\u25e5";
+        const string UnicodeWhiteUpperRightTriangle = "\u25f9";
+        const string UnicodeBlackUpPointingTriangle = "\u25b2";
+        const string UnicodeBlackDownPointingTriangle = "\u25bc";
+        const string UnicodeBlackLeftPointingTriangle = "\u25c0";
+        const string UnicodeBlackRightPointingTriangle = "\u25b6";
         static readonly string Arch = Environment.Is64BitProcess ? "x64" : "x86";
         static readonly string AppBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
@@ -69,18 +71,16 @@ namespace AutoTune.Gui {
         private object searchState = null;
         private string searchQuery = null;
         private SearchResult searchRelated = null;
-        private readonly ChromiumWebBrowser uiBrowser;
+        private ChromiumWebBrowser uiBrowser;
+        private AxWindowsMediaPlayer uiPlayer;
         private readonly object shutdownLock = new object();
 
         public MainWindow() {
             InitializeComponent();
             if (DesignMode)
                 return;
-            uiBrowser = new ChromiumWebBrowser(AppSettings.StartupFilePath);
             InitializeControls();
-            InitializeSettings();
             InitializeColors();
-            initializing = false;
         }
 
         void InitializeColors() {
@@ -111,12 +111,19 @@ namespace AutoTune.Gui {
         }
 
         void InitializeControls() {
+            uiSplitBrowserPlayer.Panel1Collapsed = true;
+            uiSplitBrowserPlayer.Panel2Collapsed = true;
+            uiBrowser = new ChromiumWebBrowser(AboutBlank);
+            uiSplitBrowserPlayer.Panel1.Controls.Add(uiBrowser);
             uiBrowser.Dock = DockStyle.Fill;
-            uiBrowserContainer.Controls.Add(uiBrowser);
+            uiPlayer = new AxWindowsMediaPlayer();
+            uiSplitBrowserPlayer.Panel2.Controls.Add(uiPlayer);
+            uiPlayer.CreateControl();
+            uiPlayer.Dock = DockStyle.Fill;
             ConnectResultViewEventHandlers(uiCurrentResult);
             uiLogLevel.DataSource = Enum.GetValues(typeof(LogLevel));
-            uiDownloadQueue.Play += (s, e) => PlayResult(e.Data.Search);
-            uiPostProcessingQueue.Play += (s, e) => PlayResult(e.Data.Search);
+            uiDownloadQueue.Play += (s, e) => LoadResult(e.Data.Search, true);
+            uiPostProcessingQueue.Play += (s, e) => LoadResult(e.Data.Search, true);
         }
 
         void InitializeSettings() {
@@ -129,11 +136,8 @@ namespace AutoTune.Gui {
             ToggleSearch(UiSettings.Instance.SearchCollapsed);
             ToggleNotifications(UiSettings.Instance.NotificationsCollapsed);
             ToggleCurrentControls(UiSettings.Instance.CurrentControlsCollapsed);
-            if (ui.CurrentTrack != null) {
-                var url = Utility.GetUrl(ui.CurrentTrack);
-                Logger.Debug("Opening {0} in player.", url);
-                uiBrowser.Load(url);
-            }
+            if (ui.CurrentTrack != null)
+                LoadResult(ui.CurrentTrack, false);
         }
 
         void InitializeLog() {
@@ -161,9 +165,11 @@ namespace AutoTune.Gui {
                         ConnectResultViewEventHandlers(view);
                         uiResults.Controls.Add(view);
                         view.SetResult(result);
-                        appendingResult = true;
-                        uiResults.ScrollControlIntoView(view);
-                        appendingResult = false;
+                        if (AppSettings.Instance.ScrollToEndOnMoreResults) {
+                            appendingResult = true;
+                            uiResults.ScrollControlIntoView(view);
+                            appendingResult = false;
+                        }
                     }));
                 }
         }
@@ -196,11 +202,32 @@ namespace AutoTune.Gui {
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
-        void PlayResult(SearchResult result) {
+        void LoadResult(SearchResult result, bool start) {
+            try {
+                uiPlayer.Ctlcontrols.stop();
+            } catch (AxHost.InvalidActiveXStateException) {
+
+            }
+            uiBrowser.Load(AboutBlank);
             uiCurrentResult.SetResult(result);
             UiSettings.Instance.CurrentTrack = result;
-            uiBrowser.Load(Utility.GetPlayUrl(result));
-            Logger.Debug("Playing {0} in player.", Utility.GetPlayUrl(result));
+            uiSplitBrowserPlayer.Panel1Collapsed = false;
+            uiSplitBrowserPlayer.Panel2Collapsed = false;
+            Logger.Debug("Playing {0} in player.", result.Local ? result.VideoId : Utility.GetPlayUrl(result));
+            if (result.Local) {
+                uiSplitBrowserPlayer.Panel1Collapsed = true;
+                uiPlayer.URL = result.VideoId;
+                if (start)
+                    uiPlayer.Ctlcontrols.play();
+                else
+                    uiPlayer.Ctlcontrols.stop();
+            } else {
+                uiSplitBrowserPlayer.Panel2Collapsed = true;
+                if (start)
+                    uiBrowser.Load(Utility.GetPlayUrl(result));
+                else
+                    uiBrowser.Load(Utility.GetUrl(result));
+            }
         }
 
         void LoadMoreResults() {
