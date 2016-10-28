@@ -1,4 +1,5 @@
-﻿using AutoTune.Search;
+﻿using AutoTune.Local;
+using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
 using System;
@@ -28,16 +29,13 @@ namespace AutoTune.Gui {
             var theme = ThemeSettings.Instance;
             var back2 = ColorTranslator.FromHtml(theme.BackColor2);
             var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
-            BackColor = back2;
             uiType.ForeColor = fore1;
-            uiText.BackColor = back2;
             uiText.ForeColor = fore1;
-            uiPlay.BackColor = back2;
-            uiRelated.BackColor = back2;
-            uiDownload.BackColor = back2;
+            SetFavouriteState(false);
             Utility.SetLinkForeColors(uiPlay);
             Utility.SetLinkForeColors(uiRelated);
             Utility.SetLinkForeColors(uiDownload);
+            Utility.SetLinkForeColors(uiToggleFavourite);
         }
 
         void OnResize(object sender, EventArgs e) {
@@ -45,6 +43,7 @@ namespace AutoTune.Gui {
         }
 
         internal void SetResult(SearchResult result) {
+            var theme = ThemeSettings.Instance;
             this.result = result;
             uiText.Text = "";
             uiDownload.Visible = !result?.Local ?? false;
@@ -55,6 +54,8 @@ namespace AutoTune.Gui {
                 uiText.Rtf = text;
             }
             uiImage.Image = Utility.ImageFromBase64(result?.ThumbnailBase64);
+            bool isFavourite = Library.IsFavourite(result?.TypeId, result?.VideoId);
+            SetFavouriteState(isFavourite);
         }
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -70,6 +71,24 @@ namespace AutoTune.Gui {
         void OnDownloadClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (result != null)
                 DownloadClicked(this, new EventArgs<SearchResult>(result));
+        }
+
+        void OnToggleFavouriteClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            bool isFavourite = Library.IsFavourite(result?.TypeId, result?.VideoId);
+            Library.SetFavourite(result?.TypeId, result?.VideoId, !isFavourite);
+            SetFavouriteState(!isFavourite);
+        }
+
+        void SetFavouriteState(bool favourite) {
+            var theme = ThemeSettings.Instance;
+            var back = ColorTranslator.FromHtml(favourite ? theme.BackColor3 : theme.BackColor2);
+            BackColor = back;
+            uiPlay.BackColor = back;
+            uiText.BackColor = back;
+            uiRelated.BackColor = back;
+            uiDownload.BackColor = back;
+            uiToggleFavourite.BackColor = back;
+            uiToggleFavourite.Text = favourite ? "Unfavourite" : "Favourite";
         }
     }
 }

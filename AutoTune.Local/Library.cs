@@ -22,8 +22,10 @@ namespace AutoTune.Local {
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Album> Albums { get; set; }
         public DbSet<Artist> Artists { get; set; }
+        public DbSet<Favourite> Favourites { get; set; }
 
         internal Library() : base(GetConnection(), true) {
+            Configuration.LazyLoadingEnabled = false;
             Configuration.AutoDetectChangesEnabled = false;
         }
 
@@ -44,9 +46,27 @@ namespace AutoTune.Local {
                 }
         }
 
+        public static bool IsFavourite(string typeId, string videoId) {
+            using(var library = new Library()) {
+                return library.Favourites.Any(f => f.TypeId.Equals(typeId) && f.VideoId.Equals(videoId));
+            }
+        }
+
+        public static void SetFavourite(string typeId, string videoId, bool isFavourite) {
+            using (var library = new Library()) {
+                var favourite = library.Favourites.FirstOrDefault(f => f.TypeId.Equals(typeId) && f.VideoId.Equals(videoId));
+                if ((favourite == null) == (!isFavourite))
+                    return;
+                if (!isFavourite)
+                    library.Favourites.Remove(favourite);
+                else
+                    library.Favourites.Add(new Favourite(typeId, videoId));
+                library.SaveChanges();
+            }
+        }
+
         public static List<Track> FindRelated(string path, int page, int pageSize) {
             using (var library = new Library()) {
-                library.Configuration.LazyLoadingEnabled = false;
                 var track = library.Tracks
                     .Include(t => t.Album)
                     .Include(t => t.Artist)
@@ -62,13 +82,12 @@ namespace AutoTune.Local {
         }
 
         public static List<Track> Find(string query, int page, int pageSize) {
-            string q = query.ToLower();
+            var terms = query.Split(' ').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
             using (var library = new Library()) {
-                library.Configuration.LazyLoadingEnabled = false;
-                return ExecuteQuery(library.Tracks
-                    .Where(t => t.Title != null && (t.Title.ToLower().Contains(q) || q.Contains(t.Title.ToLower())) ||
-                    t.Album != null && (t.Album.Name.ToLower().Contains(q) || q.Contains(t.Album.Name.ToLower())) ||
-                    t.Artist != null && (t.Artist.Name.ToLower().Contains(q)) || q.Contains(t.Artist.Name.ToLower())), page, pageSize);
+                return ExecuteQuery(library.Tracks.Where(t => terms.All(tm =>
+                    ((t.Title == null ? "" : t.Title) +
+                    (t.Album == null ? "" : t.Album.Name) +
+                    (t.Artist == null ? "" : t.Artist.Name)).ToLower().Contains(tm))), page, pageSize);
             }
         }
 

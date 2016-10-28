@@ -33,11 +33,11 @@ namespace AutoTune.Gui {
             if (DesignMode)
                 return;
             var app = AppSettings.Instance;
+            Library.Initialize(AppSettings.GetFolderPath());
             InitializeLog();
             InitializeSettings();
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();
-            Library.Initialize(AppSettings.GetFolderPath());
             uiDownloadQueue.Initialize(DownloadQueue.Instance);
             uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
             Action<QueueItem> enqueue = r => uiPostProcessingQueue.Enqueue(r.NewId());

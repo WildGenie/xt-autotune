@@ -31,6 +31,7 @@
             this.uiText = new System.Windows.Forms.RichTextBox();
             this.uiType = new System.Windows.Forms.Label();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.uiToggleFavourite = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.uiImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,7 +54,7 @@
             // 
             this.uiDownload.AutoSize = true;
             this.uiDownload.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiDownload.Location = new System.Drawing.Point(138, 16);
+            this.uiDownload.Location = new System.Drawing.Point(315, 16);
             this.uiDownload.Margin = new System.Windows.Forms.Padding(0);
             this.uiDownload.Name = "uiDownload";
             this.uiDownload.Size = new System.Drawing.Size(55, 13);
@@ -113,11 +114,26 @@
             this.uiType.Size = new System.Drawing.Size(0, 13);
             this.uiType.TabIndex = 5;
             // 
+            // uiToggleFavourite
+            // 
+            this.uiToggleFavourite.AutoSize = true;
+            this.uiToggleFavourite.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiToggleFavourite.Location = new System.Drawing.Point(138, 16);
+            this.uiToggleFavourite.Margin = new System.Windows.Forms.Padding(0);
+            this.uiToggleFavourite.Name = "uiToggleFavourite";
+            this.uiToggleFavourite.Size = new System.Drawing.Size(51, 13);
+            this.uiToggleFavourite.TabIndex = 6;
+            this.uiToggleFavourite.TabStop = true;
+            this.uiToggleFavourite.Text = "Favourite";
+            this.uiTooltip.SetToolTip(this.uiToggleFavourite, "Toggle track favourite status.");
+            this.uiToggleFavourite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleFavouriteClicked);
+            // 
             // ResultView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.uiToggleFavourite);
             this.Controls.Add(this.uiType);
             this.Controls.Add(this.uiRelated);
             this.Controls.Add(this.uiDownload);
@@ -142,5 +158,6 @@
         private System.Windows.Forms.LinkLabel uiDownload;
         private System.Windows.Forms.LinkLabel uiRelated;
         private System.Windows.Forms.ToolTip uiTooltip;
+        private System.Windows.Forms.LinkLabel uiToggleFavourite;
     }
 }

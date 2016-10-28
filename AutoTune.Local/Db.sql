@@ -40,3 +40,12 @@ on track (title);
 
 create index i_track_path
 on track (path);
+
+create table favourite (
+  id integer primary key,
+  type_id text not null,
+  video_id text not null
+);
+
+create unique index i_favourite_type_video
+on favourite(type_id, video_id);

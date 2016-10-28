@@ -81,6 +81,7 @@
     <Compile Include="Album.cs" />
     <Compile Include="Artist.cs" />
     <Compile Include="Counters.cs" />
+    <Compile Include="Favourite.cs" />
     <Compile Include="Library.cs" />
     <Compile Include="Genre.cs" />
     <Compile Include="INamed.cs" />
