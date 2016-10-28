@@ -1,4 +1,5 @@
 ﻿using AutoTune.Search;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace AutoTune.Settings {
     [YAXSerializableType(FieldsToSerialize = YAXSerializationFields.AllFields)]
     class AppSettings : SettingsBase<AppSettings> {
 
+        internal static string NoImageAvailableBase64;
         internal static string FetchFilePath = Path.Combine(GetFolderPath(), "fetch.js");
         internal static string LogFilePath = Path.Combine(GetFolderPath(), "autotune.log");
         internal static string FetchExecutablePath = Path.Combine("fetch", "AutoTune.Fetch.exe");
+        internal static string NoImageAvailablePath = Path.Combine(GetFolderPath(), "no-image-available.png");
         internal static ProviderSettings GetProvider(string typeId) => Instance.Providers.Single(p => p.Key.Equals(typeId)).Value;
 
         internal int FetchRetries { get; set; } = 55;
@@ -64,6 +67,8 @@ namespace AutoTune.Settings {
 
         internal override void OnInitialized() {
             InitializeResource(FetchFilePath, "AutoTune.fetch.js");
+            InitializeResource(NoImageAvailablePath, "AutoTune.no-image-available.png");
+            NoImageAvailableBase64 = Convert.ToBase64String(File.ReadAllBytes(NoImageAvailablePath));
             foreach (var entry in Providers)
                 if (!string.IsNullOrEmpty(entry.Value.FetchFile))
                     InitializeResource(Path.Combine(GetFolderPath(), entry.Value.FetchFile), "AutoTune." + entry.Value.FetchFile);
@@ -72,13 +77,13 @@ namespace AutoTune.Settings {
         static void InitializeResource(string path, string resourceName) {
             if (File.Exists(path))
                 return;
-            string fileContents = null;
+            byte[] fileContents = null;
             Directory.CreateDirectory(Directory.GetParent(path).FullName);
             using (Stream resource = typeof(AppSettings).Assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(resource))
-                fileContents = reader.ReadToEnd();
+            using (BinaryReader reader = new BinaryReader(resource))
+                fileContents = reader.ReadBytes((int)resource.Length);
             using (Stream file = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (StreamWriter writer = new StreamWriter(file))
+            using (BinaryWriter writer = new BinaryWriter(file))
                 writer.Write(fileContents);
         }
     }

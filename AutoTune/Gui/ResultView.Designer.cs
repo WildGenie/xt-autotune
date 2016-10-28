@@ -85,6 +85,7 @@
             this.uiImage.Margin = new System.Windows.Forms.Padding(0);
             this.uiImage.Name = "uiImage";
             this.uiImage.Size = new System.Drawing.Size(64, 64);
+            this.uiImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.uiImage.TabIndex = 0;
             this.uiImage.TabStop = false;
             // 

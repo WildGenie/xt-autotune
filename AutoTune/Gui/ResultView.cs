@@ -53,7 +53,7 @@ namespace AutoTune.Gui {
                 text += " \\line " + result.Description + " }";
                 uiText.Rtf = text;
             }
-            uiImage.Image = Utility.ImageFromBase64(result?.ThumbnailBase64);
+            uiImage.Image = Utility.ImageFromBase64(result?.ThumbnailBase64 ?? AppSettings.NoImageAvailableBase64);
             bool isFavourite = Library.IsFavourite(result?.TypeId, result?.VideoId);
             SetFavouriteState(isFavourite);
         }

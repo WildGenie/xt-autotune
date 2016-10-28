@@ -51,7 +51,7 @@ namespace AutoTune.Gui {
         internal void Initialize(QueueItem item) {
             this.item = item;
             uiTitle.Text = item.Search.Title;
-            uiImage.Image = Utility.ImageFromBase64(item.Search.ThumbnailBase64);
+            uiImage.Image = Utility.ImageFromBase64(item?.Search?.ThumbnailBase64 ?? AppSettings.NoImageAvailableBase64);
         }
     }
 }
