@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AutoTune.Shared;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SQLite;
 using System.IO;
@@ -47,8 +48,21 @@ namespace AutoTune.Local {
         }
 
         public static bool IsFavourite(string typeId, string videoId) {
-            using(var library = new Library()) {
+            using (var library = new Library()) {
                 return library.Favourites.Any(f => f.TypeId.Equals(typeId) && f.VideoId.Equals(videoId));
+            }
+        }
+
+        public static List<SearchResult> FilterFavourites(IEnumerable<SearchResult> items) {
+            using (var library = new Library()) {
+                var favourites = new HashSet<Favourite>(library.Favourites.ToList().Select(f => new Favourite(f.TypeId, f.VideoId)));
+                var favouriteItems = new Dictionary<Favourite, SearchResult>();
+                foreach (var item in items)
+                    favouriteItems.Add(new Favourite(item.TypeId, item.VideoId), item);
+                foreach (var favouriteItem in favouriteItems.Keys.ToArray())
+                    if (!favourites.Contains(favouriteItem))
+                        favouriteItems.Remove(favouriteItem);
+                return favouriteItems.Values.ToList();
             }
         }
 
@@ -81,10 +95,16 @@ namespace AutoTune.Local {
             }
         }
 
-        public static List<Track> Find(string query, int page, int pageSize) {
+        public static List<Track> Find(string query, bool favourite, int page, int pageSize) {
             var terms = query.Split(' ').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
             using (var library = new Library()) {
-                return ExecuteQuery(library.Tracks.Where(t => terms.All(tm =>
+                IQueryable<Track> q = library.Tracks;
+                if (favourite)
+                    q = q.Join(library.Favourites,
+                        t => new { TypeId = "Local", VideoId = t.Path },
+                        f => new { TypeId = f.TypeId, VideoId = f.VideoId },
+                        (t, f) => t);
+                return ExecuteQuery(q.Where(t => terms.All(tm =>
                     ((t.Title == null ? "" : t.Title) +
                     (t.Album == null ? "" : t.Album.Name) +
                     (t.Artist == null ? "" : t.Artist.Name)).ToLower().Contains(tm))), page, pageSize);

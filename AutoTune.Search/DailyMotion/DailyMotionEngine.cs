@@ -1,4 +1,5 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Local;
+using AutoTune.Shared;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,10 @@ namespace AutoTune.Search.DailyMotion {
 
         internal override SearchResults Execute(SearchQuery query, string currentPage) {
             var response = ExecuteRequest(query, currentPage);
-            return new SearchResults((response.page + 1).ToString(), TransformResponse(response));
+            var results = TransformResponse(response);
+            if (query.Favourite)
+                results = Library.FilterFavourites(results);
+            return new SearchResults((response.page + 1).ToString(), results);
         }
     }
 }

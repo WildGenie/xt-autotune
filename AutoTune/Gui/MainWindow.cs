@@ -131,6 +131,8 @@ namespace AutoTune.Gui {
             var ui = UiSettings.Instance;
             uiQuery.Text = ui.LastSearch;
             uiLogLevel.SelectedItem = ui.TraceLevel;
+            uiSearchLocalOnly.Checked = ui.SearchLocalOnly;
+            uiSearchFavouriteOnly.Checked = ui.SearchFavouritesOnly;
             ToggleFullScreen(ui.FullScreen);
             ToggleLog(UiSettings.Instance.LogCollapsed);
             TogglePlayerFull(UiSettings.Instance.PlayerFull);
@@ -191,6 +193,7 @@ namespace AutoTune.Gui {
         }
 
         void StartSearch() {
+            var ui = UiSettings.Instance;
             if (uiQuery.Text.Trim().Length == 0)
                 return;
             uiResults.Controls.Clear();
@@ -199,7 +202,7 @@ namespace AutoTune.Gui {
             UiSettings.Instance.LastSearch = searchQuery;
             var pageSize = AppSettings.Instance.SearchPageSize;
             var credentials = UserSettings.Instance.Credentials;
-            var query = new SearchQuery(credentials, searchQuery, pageSize);
+            var query = new SearchQuery(credentials, searchQuery, ui.SearchFavouritesOnly, ui.SearchLocalOnly, pageSize);
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
@@ -232,6 +235,7 @@ namespace AutoTune.Gui {
         }
 
         void LoadMoreResults() {
+            var ui = UiSettings.Instance;
             var typeId = searchRelated?.TypeId;
             SearchCredentials searchCredentials = null;
             var pageSize = AppSettings.Instance.SearchPageSize;
@@ -239,7 +243,7 @@ namespace AutoTune.Gui {
             if (typeId != null)
                 credentials.TryGetValue(typeId, out searchCredentials);
             SearchQuery q = searchRelated == null ?
-                new SearchQuery(credentials, searchQuery, pageSize) :
+                new SearchQuery(credentials, searchQuery, ui.SearchFavouritesOnly, ui.SearchLocalOnly, pageSize) :
                 new SearchQuery(typeId, searchCredentials, searchRelated.VideoId, pageSize);
             SearchEngine.Continue(q, searchState, AppendResults);
         }

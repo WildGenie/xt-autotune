@@ -16,6 +16,8 @@ namespace AutoTune.Settings {
         internal bool FullScreen { get; set; }
         internal bool PlayerFull { get; set; }
         internal string LastSearch { get; set; }
+        internal bool SearchLocalOnly { get; set; }
+        internal bool SearchFavouritesOnly { get; set; }
         internal SearchResult CurrentTrack { get; set; }
         internal LogLevel TraceLevel { get; set; } = LogLevel.Info;
 

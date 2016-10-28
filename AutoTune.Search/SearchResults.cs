@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AutoTune.Shared;
+using System.Collections.Generic;
 
 namespace AutoTune.Search {
 

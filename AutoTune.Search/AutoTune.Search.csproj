@@ -108,7 +108,6 @@
     <Compile Include="SearchQuery.cs" />
     <Compile Include="SearchResponse.cs" />
     <Compile Include="SearchEngine.cs" />
-    <Compile Include="SearchResult.cs" />
     <Compile Include="SearchResults.cs" />
     <Compile Include="Vimeo\VimeoEngine.cs" />
     <Compile Include="Vimeo\VimeoVideoClient.cs" />

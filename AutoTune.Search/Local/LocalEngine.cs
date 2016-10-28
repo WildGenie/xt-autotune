@@ -1,4 +1,5 @@
 ﻿using AutoTune.Local;
+using AutoTune.Shared;
 using System;
 using System.Linq;
 
@@ -8,7 +9,7 @@ namespace AutoTune.Search.Local {
 
         internal override SearchResults Execute(SearchQuery query, string currentPage) {
             int page = currentPage == null ? 0 : int.Parse(currentPage);
-            var tracks = query.Query != null ? Library.Find(query.Query, page, query.PageSize) :
+            var tracks = query.Query != null ? Library.Find(query.Query, query.Favourite, page, query.PageSize) :
                 Library.FindRelated(query.RelatedId, page, query.PageSize);
             var results = tracks.Select(t => new SearchResult {
                 Local = true,

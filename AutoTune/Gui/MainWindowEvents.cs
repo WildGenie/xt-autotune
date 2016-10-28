@@ -108,6 +108,16 @@ namespace AutoTune.Gui {
             ToggleLog(UiSettings.Instance.LogCollapsed);
         }
 
+        void OnSearchFavouriteOnlyCheckedChanged(object sender, EventArgs e) {
+            UiSettings.Instance.SearchFavouritesOnly = uiSearchFavouriteOnly.Checked;
+            StartSearch();
+        }
+
+        void OnSearchLocalOnlyCheckedChanged(object sender, EventArgs e) {
+            UiSettings.Instance.SearchLocalOnly = uiSearchLocalOnly.Checked;
+            StartSearch();
+        }
+
         void OnToggleSearchClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             ToggleSearch(!UiSettings.Instance.SearchCollapsed);
             UiSettings.Instance.SearchCollapsed = !UiSettings.Instance.SearchCollapsed;

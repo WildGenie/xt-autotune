@@ -1,7 +1,7 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Local;
+using AutoTune.Shared;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace AutoTune.Search.YouTube {
 
     class YouTubeEngine : SearchEngine {
 
-        static List<SearchResult> TransformResponse(SearchListResponse response) {
+        static List<SearchResult> TransformResponse(Google.Apis.YouTube.v3.Data.SearchListResponse response) {
             return response.Items.Select(i => new SearchResult {
                 Local = false,
                 TypeId = YouTubeTypeId,
@@ -38,7 +38,10 @@ namespace AutoTune.Search.YouTube {
             })) {
                 var request = CreateRequest(service, query, currentPage);
                 var response = request.Execute();
-                return new SearchResults(response.NextPageToken, TransformResponse(response));
+                var results = TransformResponse(response);
+                if (query.Favourite)
+                    results = Library.FilterFavourites(results);
+                return new SearchResults(response.NextPageToken, results);
             }
         }
     }

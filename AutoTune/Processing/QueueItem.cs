@@ -1,4 +1,5 @@
 ﻿using AutoTune.Search;
+using AutoTune.Shared;
 using System;
 using YAXLib;
 

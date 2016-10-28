@@ -1,13 +1,12 @@
-﻿using AutoTune.Search.DailyMotion;
+﻿using AutoTune.Local;
+using AutoTune.Search.DailyMotion;
 using AutoTune.Search.Local;
 using AutoTune.Search.Vimeo;
 using AutoTune.Search.YouTube;
-using AutoTune.Shared;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 
 namespace AutoTune.Search {
@@ -44,7 +43,8 @@ namespace AutoTune.Search {
                 DoSearch(query.Credentials.Keys.Single(), query, paging, callback);
             else
                 foreach (string typeId in Engines.Keys)
-                    DoSearch(typeId, query, paging, callback);
+                    if (!query.Local || LocalTypeId.Equals(typeId))
+                        DoSearch(typeId, query, paging, callback);
         }
 
         static void DoSearch(string typeId, SearchQuery query, IDictionary<string, string> paging, Action<SearchResponse> callback) {

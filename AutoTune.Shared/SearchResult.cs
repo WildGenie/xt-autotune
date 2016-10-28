@@ -1,4 +1,4 @@
-﻿namespace AutoTune.Search {
+﻿namespace AutoTune.Shared {
 
     public class SearchResult {
 

@@ -1,4 +1,5 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Local;
+using AutoTune.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,10 @@ namespace AutoTune.Search.Vimeo {
             var credentials = query.Credentials[VimeoTypeId];
             var client = new VimeoVideoClient(credentials.Key, credentials.Secret);
             var response = client.GetVideos(query, currentPage);
-            return new SearchResults(response.paging.next ?? NoMoreResults, TransformResponse(response));
+            var results = TransformResponse(response);
+            if (query.Favourite)
+                results = Library.FilterFavourites(results);
+            return new SearchResults(response.paging.next ?? NoMoreResults, results);
         }
     }
 }
