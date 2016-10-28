@@ -28,6 +28,7 @@ namespace AutoTune.Search.YouTube {
             result.PageToken = currentPage;
             result.MaxResults = query.PageSize;
             result.RelatedToVideoId = query.RelatedId;
+            result.VideoSyndicated = SearchResource.ListRequest.VideoSyndicatedEnum.True__;
             return result;
         }
 
