@@ -1,5 +1,4 @@
 ﻿using AutoTune.Local;
-using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
 using System;
@@ -79,6 +78,15 @@ namespace AutoTune.Gui {
             uiImage.Image = Utility.ImageFromBase64(result?.ThumbnailBase64 ?? AppSettings.NoImageAvailableBase64);
             bool isFavourite = Library.IsFavourite(result?.TypeId, result?.VideoId);
             SetFavouriteState(isFavourite);
+        }
+
+
+        void OnImageMouseClick(object sender, MouseEventArgs e) {
+            if (result != null)
+                if (e.Button == MouseButtons.Left)
+                    PlayClicked(this, new EventArgs<SearchResult>(result));
+                else if (e.Button == MouseButtons.Right)
+                    DownloadClicked(this, new EventArgs<SearchResult>(result));
         }
 
         void OnQueueClicked(object sender, LinkLabelLinkClickedEventArgs e) {

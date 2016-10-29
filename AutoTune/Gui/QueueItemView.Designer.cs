@@ -65,7 +65,7 @@
             this.uiPlay.TabIndex = 2;
             this.uiPlay.TabStop = true;
             this.uiPlay.Text = "Play";
-            this.uiTooltip.SetToolTip(this.uiPlay, "Open this track in the media player.");
+            this.uiTooltip.SetToolTip(this.uiPlay, "Open this track in the media player (left-click image).");
             this.uiPlay.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlayClicked);
             // 
             // uiState
@@ -99,6 +99,7 @@
             this.uiImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.uiImage.TabIndex = 3;
             this.uiImage.TabStop = false;
+            this.uiImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnImageMouseClick);
             // 
             // QueueItemView
             // 

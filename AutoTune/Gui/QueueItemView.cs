@@ -44,6 +44,11 @@ namespace AutoTune.Gui {
             uiState.ForeColor = ColorTranslator.FromHtml(theme.ForeColor1);
         }
 
+        void OnImageMouseClick(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left)
+                Play(this, new EventArgs<QueueItem>(item));
+        }
+
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Play(this, new EventArgs<QueueItem>(item));
         }

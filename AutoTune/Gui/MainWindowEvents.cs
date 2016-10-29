@@ -25,7 +25,6 @@ namespace AutoTune.Gui {
             Playlist.Terminate();
             UiSettings.Terminate();
             AppSettings.Terminate();
-            UserSettings.Terminate();
             ThemeSettings.Terminate();
             DownloadQueue.Terminate();
             PostProcessingQueue.Terminate();
