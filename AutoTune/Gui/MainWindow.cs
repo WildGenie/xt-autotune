@@ -124,7 +124,8 @@ namespace AutoTune.Gui {
             uiSplitBrowserPlayer.Panel2Collapsed = true;
             uiBrowser = new ChromiumWebBrowser("");
             uiSplitBrowserPlayer.Panel1.Controls.Add(uiBrowser);
-            uiBrowser.ConsoleMessage += (s, e) => Logger.Debug("Browser console: " + e.Message);
+            if (AppSettings.Instance.LogBrowserConsole)
+                uiBrowser.ConsoleMessage += (s, e) => Logger.Debug("Browser console: " + e.Message);
             uiBrowser.RegisterJsObject("videoCallbacks", new VideoCallbacks());
             uiBrowser.Dock = DockStyle.Fill;
             uiPlayer = new AxWindowsMediaPlayer();

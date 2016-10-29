@@ -26,6 +26,7 @@ namespace AutoTune.Settings {
         internal char TagSeparator = '-';
         internal int SearchPageSize { get; set; } = 10;
         internal int DownloadThreadCount { get; set; } = 0;
+        internal bool LogBrowserConsole { get; set; } = false;
         internal bool ScrollToEndOnMoreResults { get; set; } = false;
         internal bool UpdateLibraryAfterDownload { get; set; } = true;
         internal bool LoadMoreResultsOnScrollToEnd { get; set; } = true;

@@ -1,1 +1,15 @@
-﻿
+﻿<html><head><script src="https://api.dmcdn.net/all.js"></script><script>
+function loadVideo(id, play) {
+  var player = DM.player(document.getElementById("player"), {
+    video: id,
+    width: "100%",
+    height: "100%",
+    params: {
+      autoplay: play
+    }
+  });
+  player.addEventListener('video_end', function(event) {
+    videoCallbacks.stopped();
+  });
+}
+</script></head><body style="margin:0px;padding:0px;overflow:hidden"><div id="player" style="width:100%;height:100%"/></body></html>
