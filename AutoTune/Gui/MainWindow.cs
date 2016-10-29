@@ -227,6 +227,7 @@ namespace AutoTune.Gui {
                     uiPlayer.Ctlcontrols.stop();
             } else {
                 uiSplitBrowserPlayer.Panel2Collapsed = true;
+                uiBrowser.RequestHandler = new RefererRequestHandler(AppSettings.GetProvider(result.TypeId).HttpReferer);
                 if (start)
                     uiBrowser.Load(Utility.GetPlayUrl(result));
                 else

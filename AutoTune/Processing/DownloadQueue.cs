@@ -26,7 +26,19 @@ namespace AutoTune.Processing {
         }
 
         internal override void ProcessItem(QueueItem item) {
-            Download(item, FetchDownloadLink(item.Search));
+            string format;
+            var provider = AppSettings.GetProvider(item.Search.TypeId);
+            foreach (string fetchFile in provider.FetchFiles) {
+                try {
+                    Download(item, FetchDownloadLink(item.Search, fetchFile));
+                    return;
+                } catch (Exception e) {
+                    format = "Download of {0} failed for current fetch file, trying next.";
+                    Logger.Debug(format, item.Search.Title);
+                }
+            }
+            format = "Download of {0} failed for all fetch files.";
+            throw new ProcessingException(string.Format(format, item.Search.Title));
         }
 
         internal override int GetThreadCount() {
@@ -76,13 +88,13 @@ namespace AutoTune.Processing {
             File.WriteAllBytes(item.DownloadPath, data);
         }
 
-        static string FetchDownloadLink(SearchResult item) {
+        static string FetchDownloadLink(SearchResult item, string fetchFile) {
 
             var app = AppSettings.Instance;
             string delimiter = Guid.NewGuid().ToString();
             var provider = AppSettings.GetProvider(item.TypeId);
             var executable = Path.Combine("Fetch", "AutoTune.Fetch.exe");
-            string fetchFilePath = Path.Combine(AppSettings.GetFolderPath(), provider.FetchFile);
+            string fetchFilePath = Path.Combine(AppSettings.GetFolderPath(), fetchFile);
             string url = string.Format(provider.DownloadUrlPattern, item.VideoId);
             string args = string.Format("\"{0}\" {1} {2} {3} {4} {5}", fetchFilePath, url, delimiter, app.FetchTimeout, app.FetchDelay, app.FetchRetries);
 
@@ -91,7 +103,7 @@ namespace AutoTune.Processing {
             info.CreateNoWindow = true;
             info.UseShellExecute = false;
             info.RedirectStandardOutput = true;
-            Logger.Debug("Fetching {0} ({1}) ...", item.Title, url);
+            Logger.Debug("Fetching {0} using {1} ({2}) ...", item.Title, fetchFile, url);
             using (Process process = Process.Start(info)) {
                 process.WaitForExit();
                 string output = process.StandardOutput.ReadToEnd();

@@ -34,33 +34,37 @@ namespace AutoTune.Settings {
         internal int PostProcessingThreadCount { get; set; } = 0;
         internal string PostProcessingExtension { get; set; } = "mp3";
         internal string PostProcessingCommand { get; set; } = "ffmpeg";
-        internal bool PostProcessingKeepOriginal { get; set; } = false;
+        internal bool PostProcessingKeepOriginal { get; set; } = true;
         internal string PostProcessingArguments { get; set; } = "-i \"{0}\" -y \"{1}.{2}\" -quality good -cpu-used 0";
 
         [YAXDictionary(EachPairName = "Provider", KeyName = "Id", ValueName = "Settings", SerializeKeyAs = YAXNodeTypes.Attribute)]
         internal Dictionary<string, ProviderSettings> Providers { get; set; } = new Dictionary<string, ProviderSettings> {
              { SearchEngine.LocalTypeId, new ProviderSettings {
                 Enabled = true,
-                FetchFile = null,
-                DownloadUrlPattern = "{0}",
+                HttpReferer = null,
                 UrlPattern = "{0}",
-                PlayUrlPattern = "{0}" } },
+                PlayUrlPattern = "{0}",
+                DownloadUrlPattern = "{0}",
+                FetchFiles = new List<string>() } } ,
             { SearchEngine.VimeoTypeId, new ProviderSettings {
                 Enabled = true,
-                FetchFile = "fetch-catchvideo.html",
+                HttpReferer = "http://www.vimeo.com",
                 DownloadUrlPattern = "https://vimeo.com/{0}",
+                FetchFiles = new List<string>() { "fetch-catchvideo.html" },
                 UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0",
                 PlayUrlPattern = "https://player.vimeo.com/video/{0}?autoplay=1" } },
             { SearchEngine.YouTubeTypeId, new ProviderSettings {
                 Enabled = true,
-                FetchFile = "fetch-catchvideo.html",
+                HttpReferer = "http://www.youtube.com",
                 DownloadUrlPattern = "https://www.youtube.com/watch?v={0}",
                 UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&color=white",
-                PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&color=white" } },
+                PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&color=white",
+                FetchFiles = new List<string>() { "fetch-convert2mp3.html", "fetch-catchvideo.html" } } },
             { SearchEngine.DailyMotionTypeId, new ProviderSettings {
                 Enabled = true,
-                FetchFile = "fetch-convert2mp3.html",
+                HttpReferer = "http://www.dailymotion.com",
                 DownloadUrlPattern = "https://www.dailymotion.com/video/{0}",
+                FetchFiles = new List<string>() { "fetch-convert2mp3.html" },
                 UrlPattern = "https://www.dailymotion.com/embed/video/{0}?autoplay=false&sharing-enable=false",
                 PlayUrlPattern = "https://www.dailymotion.com/embed/video/{0}?autoplay=true&sharing-enable=false"
             } }
@@ -74,8 +78,8 @@ namespace AutoTune.Settings {
             InitializeResource(NoImageAvailablePath, "AutoTune.no-image-available.png");
             NoImageAvailableBase64 = Convert.ToBase64String(File.ReadAllBytes(NoImageAvailablePath));
             foreach (var entry in Providers)
-                if (!string.IsNullOrEmpty(entry.Value.FetchFile))
-                    InitializeResource(Path.Combine(GetFolderPath(), entry.Value.FetchFile), "AutoTune." + entry.Value.FetchFile);
+                foreach (var fetchFile in entry.Value.FetchFiles)
+                    InitializeResource(Path.Combine(GetFolderPath(), fetchFile), "AutoTune." + fetchFile);
         }
 
         static void InitializeResource(string path, string resourceName) {

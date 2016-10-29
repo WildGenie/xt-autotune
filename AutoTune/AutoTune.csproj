@@ -147,6 +147,7 @@
     <Compile Include="Gui\ResultView.Designer.cs">
       <DependentUpon>ResultView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shared\RefererRequestHandler.cs" />
     <Compile Include="Shared\Utility.cs" />
     <EmbeddedResource Include="Gui\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
