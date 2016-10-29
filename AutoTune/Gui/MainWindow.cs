@@ -135,7 +135,7 @@ namespace AutoTune.Gui {
         void InitializeControls() {
             uiSplitBrowserPlayer.Panel1Collapsed = true;
             uiSplitBrowserPlayer.Panel2Collapsed = true;
-            uiBrowser = new ChromiumWebBrowser("");
+            uiBrowser = new ChromiumWebBrowser(AppSettings.EmptyHtmlFilePath);
             uiSplitBrowserPlayer.Panel1.Controls.Add(uiBrowser);
             if (AppSettings.Instance.LogBrowserConsole)
                 uiBrowser.ConsoleMessage += (s, e) => Logger.Debug("Browser console: " + e.Message);
