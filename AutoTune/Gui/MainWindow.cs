@@ -141,7 +141,7 @@ namespace AutoTune.Gui {
                 if (track == null)
                     return;
                 var provider = AppSettings.GetProvider(track.TypeId);
-                if (!e.Url.Equals(new Uri(provider.GetEmbedFilePath()).ToString()))
+                if (provider.EmbedFile == null || !e.Url.Equals(new Uri(provider.GetEmbedFilePath()).ToString()))
                     return;
                 string script = string.Format("loadVideo('{0}', {1})", track.VideoId, startPlaying ? "true" : "false");
                 uiBrowser.GetMainFrame().ExecuteJavaScriptAsync(script);
