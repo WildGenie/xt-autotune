@@ -1,4 +1,5 @@
 ﻿using AutoTune.Local;
+using System.Linq;
 using AutoTune.Processing;
 using AutoTune.Search;
 using AutoTune.Settings;
@@ -33,8 +34,9 @@ namespace AutoTune.Gui {
             if (DesignMode)
                 return;
             var app = AppSettings.Instance;
-            Library.Initialize(AppSettings.GetFolderPath());
             InitializeLog();
+            SearchEngine.Initialize(app.Providers.Keys.Where(k => app.Providers[k].Enabled));
+            Library.Initialize(AppSettings.GetFolderPath());
             InitializeSettings();
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();

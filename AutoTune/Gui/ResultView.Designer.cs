@@ -52,6 +52,7 @@
             // 
             // uiDownload
             // 
+            this.uiDownload.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.uiDownload.AutoSize = true;
             this.uiDownload.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.uiDownload.Location = new System.Drawing.Point(315, 16);

@@ -40,21 +40,25 @@ namespace AutoTune.Settings {
         [YAXDictionary(EachPairName = "Provider", KeyName = "Id", ValueName = "Settings", SerializeKeyAs = YAXNodeTypes.Attribute)]
         internal Dictionary<string, ProviderSettings> Providers { get; set; } = new Dictionary<string, ProviderSettings> {
              { SearchEngine.LocalTypeId, new ProviderSettings {
+                Enabled = true,
                 FetchFile = null,
                 DownloadUrlPattern = "{0}",
                 UrlPattern = "{0}",
                 PlayUrlPattern = "{0}" } },
             { SearchEngine.VimeoTypeId, new ProviderSettings {
+                Enabled = true,
                 FetchFile = "fetch-catchvideo.html",
                 DownloadUrlPattern = "https://vimeo.com/{0}",
                 UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0",
                 PlayUrlPattern = "https://player.vimeo.com/video/{0}?autoplay=1" } },
             { SearchEngine.YouTubeTypeId, new ProviderSettings {
+                Enabled = true,
                 FetchFile = "fetch-catchvideo.html",
                 DownloadUrlPattern = "https://www.youtube.com/watch?v={0}",
                 UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&color=white",
                 PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&color=white" } },
             { SearchEngine.DailyMotionTypeId, new ProviderSettings {
+                Enabled = true,
                 FetchFile = "fetch-convert2mp3.html",
                 DownloadUrlPattern = "https://www.dailymotion.com/video/{0}",
                 UrlPattern = "https://www.dailymotion.com/embed/video/{0}?autoplay=false&sharing-enable=false",
