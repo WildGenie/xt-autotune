@@ -17,7 +17,7 @@ namespace AutoTune.Processing {
         private bool playing;
         private bool terminated;
         private readonly object Lock = new object();
-        internal event EventHandler<EventArgs<SearchResult>> Play;
+        internal event EventHandler<EventArgs<SearchResult>> Next;
 
         [YAXSerializableField]
         internal PlaylistMode Mode { get; set; } = PlaylistMode.RepeatAll;
@@ -40,13 +40,22 @@ namespace AutoTune.Processing {
         internal void Stop() {
             lock (Lock) {
                 running = false;
+                playing = false;
             }
         }
 
         internal void Start() {
             lock (Lock) {
                 running = true;
+                playing = false;
                 Monitor.Pulse(Lock);
+            }
+        }
+
+        internal void PlayNext() {
+            lock (Lock) {
+                if (Items.Count != 0)
+                    Next(this, new EventArgs<SearchResult>(GetNext()));
             }
         }
 
@@ -62,6 +71,15 @@ namespace AutoTune.Processing {
             lock (Lock) {
                 playing = false;
                 Monitor.Pulse(Lock);
+            }
+        }
+
+        internal void Play(SearchResult result) {
+            lock (Lock) {
+                int index = Items.FindIndex(i => i.TypeId.Equals(result.TypeId) && i.VideoId.Equals(result.VideoId));
+                current = index;
+                playing = true;
+                Next(this, new EventArgs<SearchResult>(GetNext()));
             }
         }
 
@@ -81,20 +99,39 @@ namespace AutoTune.Processing {
 
         void Run() {
             while (true)
-                lock (Lock) {
-                    while (!terminated && (playing || !running || Items.Count == 0))
-                        Monitor.Wait(Lock);
-                    if (terminated)
-                        return;
-                    playing = true;
-                    Play(this, new EventArgs<SearchResult>(Next()));
+                try {
+                    lock (Lock) {
+                        while (!terminated && (playing || !running || Items.Count == 0))
+                            Monitor.Wait(Lock);
+                        if (terminated)
+                            return;
+                        playing = true;
+                        Next(this, new EventArgs<SearchResult>(GetNext()));
+                    }
+                } catch (Exception e) {
+                    Logger.Error(e, "Error during playlist processing.");
                 }
         }
 
-        SearchResult Next() {
-            if (current >= Items.Count)
+        SearchResult GetNext() {
+            int newCurrent;
+            if (current >= Items.Count || current < 0)
                 current = 0;
-            return Items[current++];
+            var result = Items[current];
+            switch (Mode) {
+                case PlaylistMode.RepeatTrack:
+                    break;
+                case PlaylistMode.RepeatAll:
+                    current++;
+                    break;
+                case PlaylistMode.Random:
+                    newCurrent = new Random().Next(0, Items.Count);
+                    while (newCurrent == current && Items.Count != 1)
+                        newCurrent = new Random().Next(0, Items.Count);
+                    current = newCurrent;
+                    break;
+            }
+            return result;
         }
     }
 }

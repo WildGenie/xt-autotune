@@ -16,6 +16,7 @@ namespace AutoTune.Gui {
         internal event EventHandler<EventArgs<SearchResult>> RelatedClicked;
         internal event EventHandler<EventArgs<SearchResult>> DownloadClicked;
 
+        bool playing;
         private readonly bool playlist;
         private SearchResult result;
         internal SearchResult Result { get { return result; } }
@@ -56,6 +57,11 @@ namespace AutoTune.Gui {
             uiText.Width = Width - uiText.Left;
         }
 
+        internal void SetPlaying(bool playing) {
+            this.playing = playing;
+            uiType.Text = result.TypeId + (!playing ? "" : " (playing)");
+        }
+
         internal void SetResult(SearchResult result) {
             var theme = ThemeSettings.Instance;
             uiRemove.Visible = playlist;
@@ -64,7 +70,7 @@ namespace AutoTune.Gui {
             uiDownload.Visible = !playlist && (!result?.Local ?? false);
             this.result = result;
             uiText.Text = "";
-            uiType.Text = result == null ? "" : result.TypeId;
+            uiType.Text = result == null ? "" : result.TypeId + (!playing ? "" : " (playing)");
             if (result != null) {
                 string text = "{\\rtf \\b " + result.Title + " \\b0 ";
                 text += " \\line " + result.Description + " }";

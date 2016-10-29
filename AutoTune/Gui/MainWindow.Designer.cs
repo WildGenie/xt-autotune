@@ -70,6 +70,7 @@
             this.uiPlaylistModeAll = new System.Windows.Forms.RadioButton();
             this.uiPlaylistClear = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistStop = new System.Windows.Forms.LinkLabel();
+            this.uiPlaylistNext = new System.Windows.Forms.LinkLabel();
             this.uiLeftTabs = new System.Windows.Forms.TabControl();
             this.uiLeftTabsSearch = new System.Windows.Forms.TabPage();
             this.uiLeftTabsPlaylist = new System.Windows.Forms.TabPage();
@@ -658,15 +659,17 @@
             // 
             // uiPlaylistControls
             // 
-            this.uiPlaylistControls.ColumnCount = 4;
+            this.uiPlaylistControls.ColumnCount = 5;
+            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.uiPlaylistControls.Controls.Add(this.uiPlaylistStart, 0, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistModePanel, 3, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistModePanel, 4, 0);
             this.uiPlaylistControls.Controls.Add(this.uiPlaylistClear, 2, 0);
             this.uiPlaylistControls.Controls.Add(this.uiPlaylistStop, 1, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistNext, 3, 0);
             this.uiPlaylistControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiPlaylistControls.Location = new System.Drawing.Point(0, 0);
             this.uiPlaylistControls.Margin = new System.Windows.Forms.Padding(0);
@@ -695,16 +698,18 @@
             this.uiPlaylistModePanel.Controls.Add(this.uiPlaylistModeTrack);
             this.uiPlaylistModePanel.Controls.Add(this.uiPlaylistModeAll);
             this.uiPlaylistModePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiPlaylistModePanel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.uiPlaylistModePanel.Location = new System.Drawing.Point(123, 3);
+            this.uiPlaylistModePanel.Location = new System.Drawing.Point(163, 3);
             this.uiPlaylistModePanel.Name = "uiPlaylistModePanel";
-            this.uiPlaylistModePanel.Size = new System.Drawing.Size(275, 24);
+            this.uiPlaylistModePanel.Size = new System.Drawing.Size(235, 24);
             this.uiPlaylistModePanel.TabIndex = 2;
+            this.uiPlaylistModePanel.WrapContents = false;
             // 
             // uiPlaylistModeRandom
             // 
+            this.uiPlaylistModeRandom.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiPlaylistModeRandom.AutoSize = true;
-            this.uiPlaylistModeRandom.Location = new System.Drawing.Point(207, 3);
+            this.uiPlaylistModeRandom.Location = new System.Drawing.Point(0, 4);
+            this.uiPlaylistModeRandom.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.uiPlaylistModeRandom.Name = "uiPlaylistModeRandom";
             this.uiPlaylistModeRandom.Size = new System.Drawing.Size(65, 17);
             this.uiPlaylistModeRandom.TabIndex = 0;
@@ -715,8 +720,10 @@
             // 
             // uiPlaylistModeTrack
             // 
+            this.uiPlaylistModeTrack.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiPlaylistModeTrack.AutoSize = true;
-            this.uiPlaylistModeTrack.Location = new System.Drawing.Point(114, 3);
+            this.uiPlaylistModeTrack.Location = new System.Drawing.Point(65, 4);
+            this.uiPlaylistModeTrack.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.uiPlaylistModeTrack.Name = "uiPlaylistModeTrack";
             this.uiPlaylistModeTrack.Size = new System.Drawing.Size(87, 17);
             this.uiPlaylistModeTrack.TabIndex = 1;
@@ -727,8 +734,10 @@
             // 
             // uiPlaylistModeAll
             // 
+            this.uiPlaylistModeAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiPlaylistModeAll.AutoSize = true;
-            this.uiPlaylistModeAll.Location = new System.Drawing.Point(35, 3);
+            this.uiPlaylistModeAll.Location = new System.Drawing.Point(152, 4);
+            this.uiPlaylistModeAll.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.uiPlaylistModeAll.Name = "uiPlaylistModeAll";
             this.uiPlaylistModeAll.Size = new System.Drawing.Size(73, 17);
             this.uiPlaylistModeAll.TabIndex = 2;
@@ -762,6 +771,19 @@
             this.uiPlaylistStop.TabStop = true;
             this.uiPlaylistStop.Text = "Stop";
             this.uiPlaylistStop.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistStopClicked);
+            // 
+            // uiPlaylistNext
+            // 
+            this.uiPlaylistNext.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiPlaylistNext.AutoSize = true;
+            this.uiPlaylistNext.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiPlaylistNext.Location = new System.Drawing.Point(123, 8);
+            this.uiPlaylistNext.Name = "uiPlaylistNext";
+            this.uiPlaylistNext.Size = new System.Drawing.Size(29, 13);
+            this.uiPlaylistNext.TabIndex = 4;
+            this.uiPlaylistNext.TabStop = true;
+            this.uiPlaylistNext.Text = "Next";
+            this.uiPlaylistNext.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistNextClicked);
             // 
             // uiLeftTabs
             // 
@@ -979,6 +1001,7 @@
         private System.Windows.Forms.RadioButton uiPlaylistModeAll;
         private System.Windows.Forms.FlowLayoutPanel uiPlaylist;
         private System.Windows.Forms.LinkLabel uiPlaylistClear;
+        private System.Windows.Forms.LinkLabel uiPlaylistNext;
     }
 }
 

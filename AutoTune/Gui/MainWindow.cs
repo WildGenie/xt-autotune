@@ -121,6 +121,7 @@ namespace AutoTune.Gui {
             uiPlaylistModeTrack.ForeColor = fore1;
             uiPlaylistModeRandom.ForeColor = fore1;
             Utility.SetLinkForeColors(uiPlaylistStop);
+            Utility.SetLinkForeColors(uiPlaylistNext);
             Utility.SetLinkForeColors(uiPlaylistStart);
             Utility.SetLinkForeColors(uiPlaylistClear);
             Utility.SetLinkForeColors(uiLoadMore);
@@ -151,8 +152,8 @@ namespace AutoTune.Gui {
             };
             ConnectResultViewEventHandlers(uiCurrentResult);
             uiLogLevel.DataSource = Enum.GetValues(typeof(LogLevel));
-            uiDownloadQueue.Play += (s, e) => LoadResult(e.Data.Search, true);
-            uiPostProcessingQueue.Play += (s, e) => LoadResult(e.Data.Search, true);
+            uiDownloadQueue.Play += (s, e) => PlayResult(e.Data.Search);
+            uiPostProcessingQueue.Play += (s, e) => PlayResult(e.Data.Search);
             uiBrowser.FrameLoadEnd += (s, e) => {
                 var track = UiSettings.Instance.CurrentTrack;
                 if (track == null)
@@ -269,6 +270,26 @@ namespace AutoTune.Gui {
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
+        void PlayResult(SearchResult result) {
+            AddToPlaylist(result);
+            Playlist.Instance.Start();
+            Playlist.Instance.Play(result);
+            SetPlaylistPlaying(result);
+        }
+
+        void SetPlaylistPlaying(SearchResult result) {
+            try {
+                SuspendLayout();
+                foreach (ResultView view in uiPlaylist.Controls) {
+                    view.SetPlaying(false);
+                    if (result != null && view.Result.TypeId.Equals(result.TypeId) && view.Result.VideoId.Equals(result.VideoId))
+                        view.SetPlaying(true);
+                }
+            } finally {
+                ResumeLayout();
+            }
+        }
+
         void LoadResult(SearchResult result, bool start) {
             try {
                 uiPlayer.Ctlcontrols.stop();
@@ -277,9 +298,11 @@ namespace AutoTune.Gui {
             }
             uiBrowser.Load(AboutBlank);
             uiCurrentResult.SetResult(result);
+            uiSplitBrowserPlayer.Panel1Collapsed = true;
+            uiSplitBrowserPlayer.Panel2Collapsed = true;
+            if (result == null)
+                return;
             UiSettings.Instance.CurrentTrack = result;
-            uiSplitBrowserPlayer.Panel1Collapsed = false;
-            uiSplitBrowserPlayer.Panel2Collapsed = false;
             Logger.Debug("Loading {0} ({1}: {2}) in player.", result.Title, result.TypeId, result.VideoId);
             if (result.Local) {
                 LoadLocalResult(result, start);
@@ -289,7 +312,7 @@ namespace AutoTune.Gui {
         }
 
         void LoadLocalResult(SearchResult result, bool start) {
-            uiSplitBrowserPlayer.Panel1Collapsed = true;
+            uiSplitBrowserPlayer.Panel2Collapsed = false;
             uiPlayer.URL = result.VideoId;
             if (start)
                 uiPlayer.Ctlcontrols.play();
@@ -300,7 +323,7 @@ namespace AutoTune.Gui {
         void LoadWebResult(SearchResult result, bool start) {
             startPlaying = start;
             var provider = AppSettings.GetProvider(result.TypeId);
-            uiSplitBrowserPlayer.Panel2Collapsed = true;
+            uiSplitBrowserPlayer.Panel1Collapsed = false;
             uiBrowser.RequestHandler = new RefererRequestHandler(provider.HttpReferer);
             uiBrowser.Load(provider.GetEmbedFilePath());
         }

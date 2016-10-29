@@ -58,12 +58,19 @@ namespace AutoTune.Gui {
         }
 
         void InitializePlaylist() {
-            Playlist.Instance.Play += (s, e) => BeginInvoke(new Action(() => LoadResult(e.Data, true)));
+            Playlist.Instance.Next += OnPlaylistNext;
             uiPlaylistModeAll.Checked = Playlist.Instance.Mode == PlaylistMode.RepeatAll;
             uiPlaylistModeRandom.Checked = Playlist.Instance.Mode == PlaylistMode.Random;
             uiPlaylistModeTrack.Checked = Playlist.Instance.Mode == PlaylistMode.RepeatTrack;
             foreach (var item in Playlist.Instance.Items)
                 AddPlaylistView(item);
+        }
+
+        void OnPlaylistNext(object sender, EventArgs<SearchResult> e) {
+            BeginInvoke(new Action(() => {
+                LoadResult(e.Data, true);
+                SetPlaylistPlaying(e.Data);
+            }));
         }
 
         void OnMainWindowResized(object sender, EventArgs e) {
@@ -100,7 +107,13 @@ namespace AutoTune.Gui {
             Playlist.Instance.Start();
         }
 
+        void OnPlaylistNextClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Playlist.Instance.PlayNext();
+        }
+
         void OnPlaylistStopClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            LoadResult(null, false);
+            SetPlaylistPlaying(null);
             Playlist.Instance.Stop();
         }
 
@@ -120,7 +133,7 @@ namespace AutoTune.Gui {
         }
 
         void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
-            LoadResult(e.Data, true);
+            PlayResult(e.Data);
         }
 
         void OnResultQueueClicked(object sender, EventArgs<SearchResult> e) {
