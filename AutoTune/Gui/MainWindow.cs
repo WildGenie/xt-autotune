@@ -19,7 +19,6 @@ namespace AutoTune.Gui {
 
         const int MediaEnded = 8;
         const int ShowLogMinWidth = 1250;
-        const string AboutBlank = "about:blank";
         const string UnicodeBlackLowerLeftTriangle = "\u25e3";
         const string UnicodeWhiteLowerLeftTriangle = "\u25fa";
         const string UnicodeBlackUpperRightTriangle = "\u25e5";
@@ -296,10 +295,12 @@ namespace AutoTune.Gui {
             } catch (AxHost.InvalidActiveXStateException) {
 
             }
-            uiBrowser.Load(AboutBlank);
+            uiBrowser.Load(AppSettings.EmptyHtmlFilePath);
+            if (result == null)
+                return;
             uiCurrentResult.SetResult(result);
-            uiSplitBrowserPlayer.Panel1Collapsed = true;
-            uiSplitBrowserPlayer.Panel2Collapsed = true;
+            uiSplitBrowserPlayer.Panel1Collapsed = false;
+            uiSplitBrowserPlayer.Panel2Collapsed = false;
             if (result == null)
                 return;
             UiSettings.Instance.CurrentTrack = result;
@@ -312,7 +313,7 @@ namespace AutoTune.Gui {
         }
 
         void LoadLocalResult(SearchResult result, bool start) {
-            uiSplitBrowserPlayer.Panel2Collapsed = false;
+            uiSplitBrowserPlayer.Panel1Collapsed = true;
             uiPlayer.URL = result.VideoId;
             if (start)
                 uiPlayer.Ctlcontrols.play();
@@ -323,7 +324,7 @@ namespace AutoTune.Gui {
         void LoadWebResult(SearchResult result, bool start) {
             startPlaying = start;
             var provider = AppSettings.GetProvider(result.TypeId);
-            uiSplitBrowserPlayer.Panel1Collapsed = false;
+            uiSplitBrowserPlayer.Panel2Collapsed = true;
             uiBrowser.RequestHandler = new RefererRequestHandler(provider.HttpReferer);
             uiBrowser.Load(provider.GetEmbedFilePath());
         }

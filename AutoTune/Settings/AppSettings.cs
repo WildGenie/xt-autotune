@@ -13,6 +13,7 @@ namespace AutoTune.Settings {
         internal static string NoImageAvailableBase64;
         internal static string FetchFilePath = Path.Combine(GetFolderPath(), "fetch.js");
         internal static string LogFilePath = Path.Combine(GetFolderPath(), "autotune.log");
+        internal static string EmptyHtmlFilePath = Path.Combine(GetFolderPath(), "empty.html");
         internal static string FetchExecutablePath = Path.Combine("fetch", "AutoTune.Fetch.exe");
         internal static string NoImageAvailablePath = Path.Combine(GetFolderPath(), "no-image-available.png");
         internal static string GetFetchFilePath(string fetchFile) => Path.Combine(GetFolderPath(), fetchFile);
@@ -75,6 +76,7 @@ namespace AutoTune.Settings {
 
         internal override void OnInitialized() {
             InitializeResource(FetchFilePath, "AutoTune.fetch.js");
+            InitializeResource(EmptyHtmlFilePath, "AutoTune.empty.html");
             InitializeResource(NoImageAvailablePath, "AutoTune.no-image-available.png");
             NoImageAvailableBase64 = Convert.ToBase64String(File.ReadAllBytes(NoImageAvailablePath));
             foreach (var entry in Providers) {
