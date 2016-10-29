@@ -52,6 +52,7 @@ namespace AutoTune.Gui {
         [MethodImpl(MethodImplOptions.NoInlining)]
         static void Run() {
             LoadSettings();
+            CefSharpSettings.WcfTimeout = new TimeSpan(0);
             Cef.Initialize(CreateCefSettings());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -81,8 +82,13 @@ namespace AutoTune.Gui {
             InitializeComponent();
             if (DesignMode)
                 return;
-            InitializeControls();
-            InitializeColors();
+            try {
+                SuspendLayout();
+                InitializeControls();
+                InitializeColors();
+            } finally {
+                ResumeLayout();
+            }
         }
 
         void InitializeColors() {
@@ -143,16 +149,21 @@ namespace AutoTune.Gui {
 
         void InitializeSettings() {
             var ui = UiSettings.Instance;
-            uiQuery.Text = ui.LastSearch;
-            uiLogLevel.SelectedItem = ui.TraceLevel;
-            uiSearchLocalOnly.Checked = ui.SearchLocalOnly;
-            uiSearchFavouriteOnly.Checked = ui.SearchFavouritesOnly;
-            ToggleFullScreen(ui.FullScreen);
-            ToggleLog(UiSettings.Instance.LogCollapsed);
-            TogglePlayerFull(UiSettings.Instance.PlayerFull);
-            ToggleSearch(UiSettings.Instance.SearchCollapsed);
-            ToggleNotifications(UiSettings.Instance.NotificationsCollapsed);
-            ToggleCurrentControls(UiSettings.Instance.CurrentControlsCollapsed);
+            try {
+                SuspendLayout();
+                uiQuery.Text = ui.LastSearch;
+                uiLogLevel.SelectedItem = ui.TraceLevel;
+                uiSearchLocalOnly.Checked = ui.SearchLocalOnly;
+                uiSearchFavouriteOnly.Checked = ui.SearchFavouritesOnly;
+                ToggleFullScreen(ui.FullScreen);
+                ToggleLog(UiSettings.Instance.LogCollapsed);
+                TogglePlayerFull(UiSettings.Instance.PlayerFull);
+                ToggleSearch(UiSettings.Instance.SearchCollapsed);
+                ToggleNotifications(UiSettings.Instance.NotificationsCollapsed);
+                ToggleCurrentControls(UiSettings.Instance.CurrentControlsCollapsed);
+            } finally {
+                ResumeLayout();
+            }
             if (ui.CurrentTrack != null)
                 uiBrowser.IsBrowserInitializedChanged += (s, e) => {
                     if (e.IsBrowserInitialized)
@@ -179,19 +190,24 @@ namespace AutoTune.Gui {
             if (response.Error != null) {
                 Logger.Error(response.Error, "Search error.");
             } else
-                foreach (SearchResult result in response.Results) {
-                    BeginInvoke(new Action(() => {
-                        var view = new ResultView();
-                        ConnectResultViewEventHandlers(view);
-                        uiResults.Controls.Add(view);
-                        view.SetResult(result);
-                        if (AppSettings.Instance.ScrollToEndOnMoreResults) {
-                            appendingResult = true;
-                            uiResults.ScrollControlIntoView(view);
-                            appendingResult = false;
+                BeginInvoke(new Action(() => {
+                    try {
+                        SuspendLayout();
+                        foreach (SearchResult result in response.Results) {
+                            var view = new ResultView();
+                            ConnectResultViewEventHandlers(view);
+                            uiResults.Controls.Add(view);
+                            view.SetResult(result);
+                            if (AppSettings.Instance.ScrollToEndOnMoreResults) {
+                                appendingResult = true;
+                                uiResults.ScrollControlIntoView(view);
+                                appendingResult = false;
+                            }
                         }
-                    }));
-                }
+                    } finally {
+                        ResumeLayout();
+                    }
+                }));
         }
 
         void WriteLog(LogLevel level, string text) {

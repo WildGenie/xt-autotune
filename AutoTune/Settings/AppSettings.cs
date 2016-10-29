@@ -50,8 +50,8 @@ namespace AutoTune.Settings {
                 FetchFiles = new List<string>() } } ,
             { SearchEngine.VimeoTypeId, new ProviderSettings {
                 Enabled = true,
+                HttpReferer = null,
                 EmbedFile = "embed-vimeo.html",
-                HttpReferer = "http://www.vimeo.com",
                 DownloadUrlPattern = "https://vimeo.com/{0}",
                 FetchFiles = new List<string>() { "fetch-catchvideo.html" } } },
             { SearchEngine.YouTubeTypeId, new ProviderSettings {
