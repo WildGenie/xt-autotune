@@ -1,7 +1,6 @@
-﻿using System;
-using CefSharp;
+﻿using CefSharp;
 
-namespace AutoTune.Shared {
+namespace AutoTune.Web {
 
     class RefererRequestHandler : IRequestHandler {
 

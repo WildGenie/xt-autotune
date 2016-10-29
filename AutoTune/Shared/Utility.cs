@@ -1,5 +1,4 @@
-﻿using AutoTune.Search;
-using AutoTune.Settings;
+﻿using AutoTune.Settings;
 using System;
 using System.Drawing;
 using System.IO;
@@ -26,14 +25,6 @@ namespace AutoTune.Shared {
                 return null;
             using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(base64)))
                 return Image.FromStream(stream);
-        }
-
-        internal static string GetUrl(SearchResult result) {
-            return string.Format(AppSettings.GetProvider(result.TypeId).UrlPattern, result.VideoId);
-        }
-
-        internal static string GetPlayUrl(SearchResult result) {
-            return string.Format(AppSettings.GetProvider(result.TypeId).PlayUrlPattern, result.VideoId);
         }
     }
 }

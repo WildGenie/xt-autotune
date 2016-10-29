@@ -93,9 +93,9 @@ namespace AutoTune.Processing {
             var app = AppSettings.Instance;
             string delimiter = Guid.NewGuid().ToString();
             var provider = AppSettings.GetProvider(item.TypeId);
+            string url = provider.GetDownloadUrl(item.VideoId);
             var executable = Path.Combine("Fetch", "AutoTune.Fetch.exe");
-            string fetchFilePath = Path.Combine(AppSettings.GetFolderPath(), fetchFile);
-            string url = string.Format(provider.DownloadUrlPattern, item.VideoId);
+            string fetchFilePath = AppSettings.GetFetchFilePath(fetchFile);
             string args = string.Format("\"{0}\" {1} {2} {3} {4} {5}", fetchFilePath, url, delimiter, app.FetchTimeout, app.FetchDelay, app.FetchRetries);
 
             string link = null;

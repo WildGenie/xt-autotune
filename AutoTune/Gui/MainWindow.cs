@@ -1,6 +1,7 @@
 ﻿using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
+using AutoTune.Web;
 using AxWMPLib;
 using CefSharp;
 using CefSharp.WinForms;
@@ -65,6 +66,7 @@ namespace AutoTune.Gui {
         }
 
         private bool shutdown;
+        private bool startPlaying;
         private TextWriter logger;
         private bool appendingResult;
         private bool initializing = true;
@@ -116,6 +118,8 @@ namespace AutoTune.Gui {
             uiSplitBrowserPlayer.Panel2Collapsed = true;
             uiBrowser = new ChromiumWebBrowser("");
             uiSplitBrowserPlayer.Panel1.Controls.Add(uiBrowser);
+            uiBrowser.ConsoleMessage += (s, e) => Logger.Debug("Browser console: " + e.Message);
+            uiBrowser.RegisterJsObject("videoCallbacks", new VideoCallbacks());
             uiBrowser.Dock = DockStyle.Fill;
             uiPlayer = new AxWindowsMediaPlayer();
             uiSplitBrowserPlayer.Panel2.Controls.Add(uiPlayer);
@@ -125,6 +129,16 @@ namespace AutoTune.Gui {
             uiLogLevel.DataSource = Enum.GetValues(typeof(LogLevel));
             uiDownloadQueue.Play += (s, e) => LoadResult(e.Data.Search, true);
             uiPostProcessingQueue.Play += (s, e) => LoadResult(e.Data.Search, true);
+            uiBrowser.FrameLoadEnd += (s, e) => {
+                var track = UiSettings.Instance.CurrentTrack;
+                if (track == null)
+                    return;
+                var provider = AppSettings.GetProvider(track.TypeId);
+                if (!e.Url.Equals(new Uri(provider.GetEmbedFilePath()).ToString()))
+                    return;
+                string script = string.Format("loadVideo('{0}', {1})", track.VideoId, startPlaying ? "true" : "false");
+                uiBrowser.GetMainFrame().ExecuteJavaScriptAsync(script);
+            };
         }
 
         void InitializeSettings() {
@@ -140,7 +154,10 @@ namespace AutoTune.Gui {
             ToggleNotifications(UiSettings.Instance.NotificationsCollapsed);
             ToggleCurrentControls(UiSettings.Instance.CurrentControlsCollapsed);
             if (ui.CurrentTrack != null)
-                LoadResult(ui.CurrentTrack, false);
+                uiBrowser.IsBrowserInitializedChanged += (s, e) => {
+                    if (e.IsBrowserInitialized)
+                        BeginInvoke(new Action(() => LoadResult(ui.CurrentTrack, false)));
+                };
         }
 
         void InitializeLog() {
@@ -217,22 +234,29 @@ namespace AutoTune.Gui {
             UiSettings.Instance.CurrentTrack = result;
             uiSplitBrowserPlayer.Panel1Collapsed = false;
             uiSplitBrowserPlayer.Panel2Collapsed = false;
-            Logger.Debug("Playing {0} in player.", result.Local ? result.VideoId : Utility.GetPlayUrl(result));
+            Logger.Debug("Loading {0} ({1}: {2}) in player.", result.Title, result.TypeId, result.VideoId);
             if (result.Local) {
-                uiSplitBrowserPlayer.Panel1Collapsed = true;
-                uiPlayer.URL = result.VideoId;
-                if (start)
-                    uiPlayer.Ctlcontrols.play();
-                else
-                    uiPlayer.Ctlcontrols.stop();
+                LoadLocalResult(result, start);
             } else {
-                uiSplitBrowserPlayer.Panel2Collapsed = true;
-                uiBrowser.RequestHandler = new RefererRequestHandler(AppSettings.GetProvider(result.TypeId).HttpReferer);
-                if (start)
-                    uiBrowser.Load(Utility.GetPlayUrl(result));
-                else
-                    uiBrowser.Load(Utility.GetUrl(result));
+                LoadWebResult(result, start);
             }
+        }
+
+        void LoadLocalResult(SearchResult result, bool start) {
+            uiSplitBrowserPlayer.Panel1Collapsed = true;
+            uiPlayer.URL = result.VideoId;
+            if (start)
+                uiPlayer.Ctlcontrols.play();
+            else
+                uiPlayer.Ctlcontrols.stop();
+        }
+
+        void LoadWebResult(SearchResult result, bool start) {
+            startPlaying = start;
+            var provider = AppSettings.GetProvider(result.TypeId);
+            uiSplitBrowserPlayer.Panel2Collapsed = true;
+            uiBrowser.RequestHandler = new RefererRequestHandler(provider.HttpReferer);
+            uiBrowser.Load(provider.GetEmbedFilePath());
         }
 
         void LoadMoreResults() {

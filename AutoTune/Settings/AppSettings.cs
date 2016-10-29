@@ -15,7 +15,9 @@ namespace AutoTune.Settings {
         internal static string LogFilePath = Path.Combine(GetFolderPath(), "autotune.log");
         internal static string FetchExecutablePath = Path.Combine("fetch", "AutoTune.Fetch.exe");
         internal static string NoImageAvailablePath = Path.Combine(GetFolderPath(), "no-image-available.png");
+        internal static string GetFetchFilePath(string fetchFile) => Path.Combine(GetFolderPath(), fetchFile);
         internal static ProviderSettings GetProvider(string typeId) => Instance.Providers.Single(p => p.Key.Equals(typeId)).Value;
+
 
         internal int FetchRetries { get; set; } = 55;
         internal int FetchDelay { get; set; } = 1000;
@@ -42,32 +44,28 @@ namespace AutoTune.Settings {
         internal Dictionary<string, ProviderSettings> Providers { get; set; } = new Dictionary<string, ProviderSettings> {
              { SearchEngine.LocalTypeId, new ProviderSettings {
                 Enabled = true,
+                EmbedFile = null,
                 HttpReferer = null,
-                UrlPattern = "{0}",
-                PlayUrlPattern = "{0}",
                 DownloadUrlPattern = "{0}",
                 FetchFiles = new List<string>() } } ,
             { SearchEngine.VimeoTypeId, new ProviderSettings {
                 Enabled = true,
+                EmbedFile = "embed-vimeo.html",
                 HttpReferer = "http://www.vimeo.com",
                 DownloadUrlPattern = "https://vimeo.com/{0}",
-                FetchFiles = new List<string>() { "fetch-catchvideo.html" },
-                UrlPattern = "https://player.vimeo.com/video/{0}?autoplay=0",
-                PlayUrlPattern = "https://player.vimeo.com/video/{0}?autoplay=1" } },
+                FetchFiles = new List<string>() { "fetch-catchvideo.html" } } },
             { SearchEngine.YouTubeTypeId, new ProviderSettings {
                 Enabled = true,
+                EmbedFile = "embed-youtube.html",
                 HttpReferer = "http://www.youtube.com",
                 DownloadUrlPattern = "https://www.youtube.com/watch?v={0}",
-                UrlPattern = "https://www.youtube.com/embed/{0}?autoplay=0&fs=0&color=white",
-                PlayUrlPattern = "https://www.youtube.com/embed/{0}?autoplay=1&fs=0&color=white",
                 FetchFiles = new List<string>() { "fetch-convert2mp3.html", "fetch-catchvideo.html" } } },
             { SearchEngine.DailyMotionTypeId, new ProviderSettings {
                 Enabled = true,
+                EmbedFile = "embed-dailymotion.html",
                 HttpReferer = "http://www.dailymotion.com",
                 DownloadUrlPattern = "https://www.dailymotion.com/video/{0}",
-                FetchFiles = new List<string>() { "fetch-convert2mp3.html" },
-                UrlPattern = "https://www.dailymotion.com/embed/video/{0}?autoplay=false&sharing-enable=false",
-                PlayUrlPattern = "https://www.dailymotion.com/embed/video/{0}?autoplay=true&sharing-enable=false"
+                FetchFiles = new List<string>() { "fetch-convert2mp3.html" }
             } }
         };
 
@@ -78,9 +76,12 @@ namespace AutoTune.Settings {
             InitializeResource(FetchFilePath, "AutoTune.fetch.js");
             InitializeResource(NoImageAvailablePath, "AutoTune.no-image-available.png");
             NoImageAvailableBase64 = Convert.ToBase64String(File.ReadAllBytes(NoImageAvailablePath));
-            foreach (var entry in Providers)
+            foreach (var entry in Providers) {
                 foreach (var fetchFile in entry.Value.FetchFiles)
                     InitializeResource(Path.Combine(GetFolderPath(), fetchFile), "AutoTune." + fetchFile);
+                if (!string.IsNullOrWhiteSpace(entry.Value.EmbedFile))
+                    InitializeResource(Path.Combine(GetFolderPath(), entry.Value.EmbedFile), "AutoTune." + entry.Value.EmbedFile);
+            }
         }
 
         static void InitializeResource(string path, string resourceName) {
