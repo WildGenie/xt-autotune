@@ -32,13 +32,15 @@
             this.uiType = new System.Windows.Forms.Label();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.uiToggleFavourite = new System.Windows.Forms.LinkLabel();
+            this.uiQueue = new System.Windows.Forms.LinkLabel();
+            this.uiRemove = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.uiImage)).BeginInit();
             this.SuspendLayout();
             // 
             // uiPlay
             // 
             this.uiPlay.AutoSize = true;
-            this.uiPlay.BackColor = System.Drawing.SystemColors.Window;
+            this.uiPlay.BackColor = System.Drawing.SystemColors.Control;
             this.uiPlay.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.uiPlay.Location = new System.Drawing.Point(67, 16);
             this.uiPlay.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
@@ -55,7 +57,7 @@
             this.uiDownload.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.uiDownload.AutoSize = true;
             this.uiDownload.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiDownload.Location = new System.Drawing.Point(315, 16);
+            this.uiDownload.Location = new System.Drawing.Point(229, 16);
             this.uiDownload.Margin = new System.Windows.Forms.Padding(0);
             this.uiDownload.Name = "uiDownload";
             this.uiDownload.Size = new System.Drawing.Size(55, 13);
@@ -67,9 +69,10 @@
             // 
             // uiRelated
             // 
+            this.uiRelated.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.uiRelated.AutoSize = true;
             this.uiRelated.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiRelated.Location = new System.Drawing.Point(94, 16);
+            this.uiRelated.Location = new System.Drawing.Point(284, 16);
             this.uiRelated.Margin = new System.Windows.Forms.Padding(0);
             this.uiRelated.Name = "uiRelated";
             this.uiRelated.Size = new System.Drawing.Size(44, 13);
@@ -120,7 +123,7 @@
             // 
             this.uiToggleFavourite.AutoSize = true;
             this.uiToggleFavourite.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiToggleFavourite.Location = new System.Drawing.Point(138, 16);
+            this.uiToggleFavourite.Location = new System.Drawing.Point(94, 16);
             this.uiToggleFavourite.Margin = new System.Windows.Forms.Padding(0);
             this.uiToggleFavourite.Name = "uiToggleFavourite";
             this.uiToggleFavourite.Size = new System.Drawing.Size(51, 13);
@@ -130,11 +133,44 @@
             this.uiTooltip.SetToolTip(this.uiToggleFavourite, "Toggle track favourite status.");
             this.uiToggleFavourite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleFavouriteClicked);
             // 
+            // uiQueue
+            // 
+            this.uiQueue.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.uiQueue.AutoSize = true;
+            this.uiQueue.BackColor = System.Drawing.SystemColors.Control;
+            this.uiQueue.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiQueue.Location = new System.Drawing.Point(331, 16);
+            this.uiQueue.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.uiQueue.Name = "uiQueue";
+            this.uiQueue.Size = new System.Drawing.Size(39, 13);
+            this.uiQueue.TabIndex = 7;
+            this.uiQueue.TabStop = true;
+            this.uiQueue.Text = "Queue";
+            this.uiTooltip.SetToolTip(this.uiQueue, "Send this track to the playlist.");
+            this.uiQueue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnQueueClicked);
+            // 
+            // uiRemove
+            // 
+            this.uiRemove.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.uiRemove.AutoSize = true;
+            this.uiRemove.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiRemove.Location = new System.Drawing.Point(323, 16);
+            this.uiRemove.Margin = new System.Windows.Forms.Padding(0);
+            this.uiRemove.Name = "uiRemove";
+            this.uiRemove.Size = new System.Drawing.Size(47, 13);
+            this.uiRemove.TabIndex = 8;
+            this.uiRemove.TabStop = true;
+            this.uiRemove.Text = "Remove";
+            this.uiTooltip.SetToolTip(this.uiRemove, "Remove this track from the playlist.");
+            this.uiRemove.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnRemoveClicked);
+            // 
             // ResultView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.uiRemove);
+            this.Controls.Add(this.uiQueue);
             this.Controls.Add(this.uiToggleFavourite);
             this.Controls.Add(this.uiType);
             this.Controls.Add(this.uiRelated);
@@ -161,5 +197,7 @@
         private System.Windows.Forms.LinkLabel uiRelated;
         private System.Windows.Forms.ToolTip uiTooltip;
         private System.Windows.Forms.LinkLabel uiToggleFavourite;
+        private System.Windows.Forms.LinkLabel uiQueue;
+        private System.Windows.Forms.LinkLabel uiRemove;
     }
 }

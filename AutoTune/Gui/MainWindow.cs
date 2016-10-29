@@ -1,4 +1,5 @@
-﻿using AutoTune.Search;
+﻿using AutoTune.Processing;
+using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
 using AutoTune.Web;
@@ -16,6 +17,7 @@ namespace AutoTune.Gui {
 
     public partial class MainWindow : Form {
 
+        const int MediaEnded = 8;
         const int ShowLogMinWidth = 1250;
         const string AboutBlank = "about:blank";
         const string UnicodeBlackLowerLeftTriangle = "\u25e3";
@@ -106,10 +108,21 @@ namespace AutoTune.Gui {
             uiQuery.BackColor = back2;
             uiLogGroup.ForeColor = fore1;
             uiCurrentGroup.ForeColor = fore1;
-            uiGroupSearch.ForeColor = fore1;
+            uiLeftTabs.ForeColor = fore1;
+            uiLeftTabs.BackColor = back1;
+            uiLeftTabsSearch.ForeColor = fore1;
+            uiLeftTabsSearch.BackColor = back1;
+            uiLeftTabsPlaylist.ForeColor = fore1;
+            uiLeftTabsPlaylist.BackColor = back1;
             uiDownloadGroup.ForeColor = fore1;
             uiPostProcessingGroup.ForeColor = fore1;
             uiBrowserPlayerContainer.ForeColor = fore1;
+            uiPlaylistModeAll.ForeColor = fore1;
+            uiPlaylistModeTrack.ForeColor = fore1;
+            uiPlaylistModeRandom.ForeColor = fore1;
+            Utility.SetLinkForeColors(uiPlaylistStop);
+            Utility.SetLinkForeColors(uiPlaylistStart);
+            Utility.SetLinkForeColors(uiPlaylistClear);
             Utility.SetLinkForeColors(uiLoadMore);
             Utility.SetToggleForeColors(uiToggleLog);
             Utility.SetToggleForeColors(uiToggleSearch);
@@ -132,6 +145,10 @@ namespace AutoTune.Gui {
             uiSplitBrowserPlayer.Panel2.Controls.Add(uiPlayer);
             uiPlayer.CreateControl();
             uiPlayer.Dock = DockStyle.Fill;
+            uiPlayer.PlayStateChange += (s, e) => {
+                if (e.newState == MediaEnded)
+                    Playlist.Instance.Stopped();
+            };
             ConnectResultViewEventHandlers(uiCurrentResult);
             uiLogLevel.DataSource = Enum.GetValues(typeof(LogLevel));
             uiDownloadQueue.Play += (s, e) => LoadResult(e.Data.Search, true);
@@ -187,6 +204,18 @@ namespace AutoTune.Gui {
             };
         }
 
+        void AddToPlaylist(SearchResult result) {
+            if (Playlist.Instance.Add(result))
+                AddPlaylistView(result);
+        }
+
+        void AddPlaylistView(SearchResult result) {
+            var view = new ResultView(true);
+            ConnectResultViewEventHandlers(view);
+            uiPlaylist.Controls.Add(view);
+            view.SetResult(result);
+        }
+
         void AppendResults(SearchResponse response) {
             if (response.Error != null) {
                 Logger.Error(response.Error, "Search error.");
@@ -195,7 +224,7 @@ namespace AutoTune.Gui {
                     try {
                         SuspendLayout();
                         foreach (SearchResult result in response.Results) {
-                            var view = new ResultView();
+                            var view = new ResultView(false);
                             ConnectResultViewEventHandlers(view);
                             uiResults.Controls.Add(view);
                             view.SetResult(result);
@@ -292,9 +321,15 @@ namespace AutoTune.Gui {
 
         void ConnectResultViewEventHandlers(ResultView view) {
             view.PlayClicked += OnResultPlayClicked;
+            view.QueueClicked += OnResultQueueClicked;
             view.RelatedClicked += OnResultRelatedClicked;
             view.DownloadClicked += OnResultDownloadClicked;
-            view.DoubleClick += (s, e) => OnResultPlayClicked(s, new EventArgs<SearchResult>(((ResultView)s).Result));
+            view.RemoveClicked += (s, e) => RemoveFromPlaylist(view);
+        }
+
+        void RemoveFromPlaylist(ResultView view) {
+            uiPlaylist.Controls.Remove(view);
+            Playlist.Instance.Remove(view.Result);
         }
 
         void ToggleFullScreen(bool fullScreen) {

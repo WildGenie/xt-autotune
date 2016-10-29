@@ -111,8 +111,8 @@
     <Compile Include="Gui\MainWindowEvents.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Processing\PlayList.cs" />
-    <Compile Include="Processing\PlayListMode.cs" />
+    <Compile Include="Processing\Playlist.cs" />
+    <Compile Include="Processing\PlaylistMode.cs" />
     <Compile Include="Processing\ProcessingException.cs" />
     <Compile Include="Processing\QueueItem.cs" />
     <Compile Include="Settings\AppSettings.cs" />

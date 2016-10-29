@@ -11,18 +11,30 @@ namespace AutoTune.Gui {
     public partial class ResultView : UserControl {
 
         internal event EventHandler<EventArgs<SearchResult>> PlayClicked;
+        internal event EventHandler<EventArgs<SearchResult>> QueueClicked;
+        internal event EventHandler<EventArgs<SearchResult>> RemoveClicked;
         internal event EventHandler<EventArgs<SearchResult>> RelatedClicked;
         internal event EventHandler<EventArgs<SearchResult>> DownloadClicked;
 
-        SearchResult result;
+        private readonly bool playlist;
+        private SearchResult result;
         internal SearchResult Result { get { return result; } }
 
-        public ResultView() {
+        public ResultView() :
+            this(false) {
+        }
+
+        public ResultView(bool playlist) {
             InitializeComponent();
             if (DesignMode)
                 return;
             InitializeColors();
             Resize += OnResize;
+            this.playlist = playlist;
+        }
+
+        internal void Reload() {
+            SetResult(Result);
         }
 
         void InitializeColors() {
@@ -33,6 +45,8 @@ namespace AutoTune.Gui {
             uiText.ForeColor = fore1;
             SetFavouriteState(false);
             Utility.SetLinkForeColors(uiPlay);
+            Utility.SetLinkForeColors(uiQueue);
+            Utility.SetLinkForeColors(uiRemove);
             Utility.SetLinkForeColors(uiRelated);
             Utility.SetLinkForeColors(uiDownload);
             Utility.SetLinkForeColors(uiToggleFavourite);
@@ -44,9 +58,12 @@ namespace AutoTune.Gui {
 
         internal void SetResult(SearchResult result) {
             var theme = ThemeSettings.Instance;
+            uiRemove.Visible = playlist;
+            uiQueue.Visible = !playlist;
+            uiRelated.Visible = !playlist;
+            uiDownload.Visible = !playlist && (!result?.Local ?? false);
             this.result = result;
             uiText.Text = "";
-            uiDownload.Visible = !result?.Local ?? false;
             uiType.Text = result == null ? "" : result.TypeId;
             if (result != null) {
                 string text = "{\\rtf \\b " + result.Title + " \\b0 ";
@@ -56,6 +73,16 @@ namespace AutoTune.Gui {
             uiImage.Image = Utility.ImageFromBase64(result?.ThumbnailBase64 ?? AppSettings.NoImageAvailableBase64);
             bool isFavourite = Library.IsFavourite(result?.TypeId, result?.VideoId);
             SetFavouriteState(isFavourite);
+        }
+
+        void OnQueueClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            if (result != null)
+                QueueClicked(this, new EventArgs<SearchResult>(result));
+        }
+
+        void OnRemoveClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            if (result != null)
+                RemoveClicked(this, new EventArgs<SearchResult>(result));
         }
 
         void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -85,6 +112,7 @@ namespace AutoTune.Gui {
             BackColor = back;
             uiPlay.BackColor = back;
             uiText.BackColor = back;
+            uiQueue.BackColor = back;
             uiRelated.BackColor = back;
             uiDownload.BackColor = back;
             uiToggleFavourite.BackColor = back;

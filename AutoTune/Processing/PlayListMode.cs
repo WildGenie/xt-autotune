@@ -1,6 +1,6 @@
 ﻿namespace AutoTune.Processing {
 
-    enum PlayListMode {
+    enum PlaylistMode {
         Random,
         RepeatAll,
         RepeatTrack

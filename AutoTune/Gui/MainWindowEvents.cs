@@ -22,6 +22,7 @@ namespace AutoTune.Gui {
             logger.Flush();
             logger.Dispose();
             Scanner.Terminate();
+            Playlist.Terminate();
             UiSettings.Terminate();
             AppSettings.Terminate();
             UserSettings.Terminate();
@@ -38,6 +39,7 @@ namespace AutoTune.Gui {
             SearchEngine.Initialize(app.Providers.Keys.Where(k => app.Providers[k].Enabled));
             Library.Initialize(AppSettings.GetFolderPath());
             InitializeSettings();
+            Playlist.Initialize();
             DownloadQueue.Initialize();
             PostProcessingQueue.Initialize();
             uiDownloadQueue.Initialize(DownloadQueue.Instance);
@@ -50,8 +52,18 @@ namespace AutoTune.Gui {
             StartSearch();
             DownloadQueue.Start();
             PostProcessingQueue.Start();
+            InitializePlaylist();
             Scanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.ScanLibraryInterval);
             initializing = false;
+        }
+
+        void InitializePlaylist() {
+            Playlist.Instance.Play += (s, e) => BeginInvoke(new Action(() => LoadResult(e.Data, true)));
+            uiPlaylistModeAll.Checked = Playlist.Instance.Mode == PlaylistMode.RepeatAll;
+            uiPlaylistModeRandom.Checked = Playlist.Instance.Mode == PlaylistMode.Random;
+            uiPlaylistModeTrack.Checked = Playlist.Instance.Mode == PlaylistMode.RepeatTrack;
+            foreach (var item in Playlist.Instance.Items)
+                AddPlaylistView(item);
         }
 
         void OnMainWindowResized(object sender, EventArgs e) {
@@ -65,8 +77,54 @@ namespace AutoTune.Gui {
             StartSearch();
         }
 
+        void OnLeftTabsSelectedIndexChanged(object sender, EventArgs e) {
+            try {
+                SuspendLayout();
+                if (uiLeftTabs.SelectedIndex == 0)
+                    foreach (ResultView view in uiResults.Controls)
+                        view.Reload();
+                if (uiLeftTabs.SelectedIndex == 1)
+                    foreach (ResultView view in uiPlaylist.Controls)
+                        view.Reload();
+            } finally {
+                ResumeLayout();
+            }
+        }
+
+        void OnPlaylistClearClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Playlist.Instance.Clear();
+            uiPlaylist.Controls.Clear();
+        }
+
+        void OnPlaylistStartClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Playlist.Instance.Start();
+        }
+
+        void OnPlaylistStopClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Playlist.Instance.Stop();
+        }
+
+        void OnPlaylistModeAllCheckedChanged(object sender, EventArgs e) {
+            if (uiPlaylistModeAll.Checked)
+                Playlist.Instance.Mode = PlaylistMode.RepeatAll;
+        }
+
+        void OnPlaylistModeTrackCheckedChanged(object sender, EventArgs e) {
+            if (uiPlaylistModeTrack.Checked)
+                Playlist.Instance.Mode = PlaylistMode.RepeatTrack;
+        }
+
+        void OnPlaylistModeRandomCheckedChanged(object sender, EventArgs e) {
+            if (uiPlaylistModeRandom.Checked)
+                Playlist.Instance.Mode = PlaylistMode.Random;
+        }
+
         void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
             LoadResult(e.Data, true);
+        }
+
+        void OnResultQueueClicked(object sender, EventArgs<SearchResult> e) {
+            AddToPlaylist(e.Data);
         }
 
         void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {

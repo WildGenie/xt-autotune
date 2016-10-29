@@ -1,11 +1,11 @@
-﻿using AutoTune.Shared;
+﻿using AutoTune.Processing;
 
 namespace AutoTune.Web {
 
     public class VideoCallbacks {
 
         public void Stopped() {
-            Logger.Debug("DONE!");
+            Playlist.Instance.Stopped();
         }
     }
 }
