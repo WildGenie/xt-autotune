@@ -44,6 +44,8 @@ namespace AutoTune.Gui {
             uiPostProcessingQueue.Initialize(PostProcessingQueue.Instance);
             Action<QueueItem> enqueue = r => uiPostProcessingQueue.Enqueue(r.NewId());
             DownloadQueue.Instance.Completed += (s, evt) => BeginInvoke(new Action(() => enqueue(evt.Data)));
+            if (app.UpdateLibraryAfterDownload)
+                PostProcessingQueue.Instance.Completed += (s, evt) => Scanner.UpdateLibrary();
             uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
             StartSearch();
             DownloadQueue.Start();

@@ -25,6 +25,7 @@ namespace AutoTune.Settings {
         internal int SearchPageSize { get; set; } = 10;
         internal int DownloadThreadCount { get; set; } = 0;
         internal bool ScrollToEndOnMoreResults { get; set; } = false;
+        internal bool UpdateLibraryAfterDownload { get; set; } = true;
         internal bool LoadMoreResultsOnScrollToEnd { get; set; } = true;
         internal int ScanLibraryInterval { get; set; } = 60 * 60 * 1000;
         internal bool EmbedThumbnailAfterPostProcessing { get; set; } = true;

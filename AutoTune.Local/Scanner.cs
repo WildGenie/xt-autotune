@@ -11,8 +11,16 @@ namespace AutoTune.Local {
     public class Scanner {
 
         static int running = 0;
+        static bool forceUpdate = false;
         const double ProgressInterval = 0.05;
         static readonly object Lock = new object();
+
+        public static void UpdateLibrary() {
+            lock(Lock) {
+                forceUpdate = true;
+                Monitor.Pulse(Lock);
+            }
+        }
 
         public static void Start(string libraryFolder, char tagSeparator, int interval) {
             Interlocked.CompareExchange(ref running, 1, 0);
@@ -36,9 +44,10 @@ namespace AutoTune.Local {
                     } catch (Exception e) {
                         Logger.Error(e, "Scanning library failed.");
                     }
-                    long start = Environment.TickCount;
+                    forceUpdate = false;
                     long now = Environment.TickCount;
-                    while (now - start < interval && running != 0) {
+                    long start = Environment.TickCount;
+                    while (!forceUpdate && now - start < interval && running != 0) {
                         Monitor.Wait(Lock, interval);
                         now = Environment.TickCount;
                     }
