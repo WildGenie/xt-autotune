@@ -21,7 +21,8 @@ namespace AutoTune.Gui {
             Cef.Shutdown();
             logger.Flush();
             logger.Dispose();
-            Scanner.Terminate();
+            LibraryScanner.Terminate();
+            SuggestionScanner.Terminate();
             Playlist.Terminate();
             UiSettings.Terminate();
             AppSettings.Terminate();
@@ -46,13 +47,14 @@ namespace AutoTune.Gui {
             Action<QueueItem> enqueue = r => uiPostProcessingQueue.Enqueue(r.NewId());
             DownloadQueue.Instance.Completed += (s, evt) => BeginInvoke(new Action(() => enqueue(evt.Data)));
             if (app.UpdateLibraryAfterDownload)
-                PostProcessingQueue.Instance.Completed += (s, evt) => Scanner.UpdateLibrary();
+                PostProcessingQueue.Instance.Completed += (s, evt) => LibraryScanner.UpdateLibrary();
             uiCurrentResult.SetResult(UiSettings.Instance.CurrentTrack);
             StartSearch();
             DownloadQueue.Start();
             PostProcessingQueue.Start();
             InitializePlaylist();
-            Scanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.ScanLibraryInterval);
+            SuggestionScanner.Start(app.ScanSuggestionsInterval);
+            LibraryScanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.ScanLibraryInterval);
             ShowScrollBar(uiResults.Handle, SbVert, true);
             ShowScrollBar(uiPlaylist.Handle, SbVert, true);
             initializing = false;

@@ -8,7 +8,7 @@ using TagLib;
 
 namespace AutoTune.Local {
 
-    public class Scanner {
+    public static class LibraryScanner {
 
         static int running = 0;
         static bool forceUpdate = false;

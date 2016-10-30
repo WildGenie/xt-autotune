@@ -81,11 +81,12 @@
     <Compile Include="Album.cs" />
     <Compile Include="Artist.cs" />
     <Compile Include="Counters.cs" />
+    <Compile Include="Suggestion.cs" />
     <Compile Include="Favourite.cs" />
     <Compile Include="Library.cs" />
     <Compile Include="Genre.cs" />
     <Compile Include="INamed.cs" />
-    <Compile Include="Scanner.cs" />
+    <Compile Include="LibraryScanner.cs" />
     <Compile Include="Track.cs" />
     <Compile Include="TrackInfo.cs" />
   </ItemGroup>

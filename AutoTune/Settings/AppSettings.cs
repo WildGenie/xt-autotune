@@ -32,6 +32,7 @@ namespace AutoTune.Settings {
         internal bool UpdateLibraryAfterDownload { get; set; } = true;
         internal bool LoadMoreResultsOnScrollToEnd { get; set; } = true;
         internal int ScanLibraryInterval { get; set; } = 60 * 60 * 1000;
+        internal int ScanSuggestionsInterval { get; set; } = 60 * 60 * 1000;
         internal bool EmbedThumbnailAfterPostProcessing { get; set; } = true;
         internal bool EmbedDescriptionAfterPostProcessing { get; set; } = true;
 

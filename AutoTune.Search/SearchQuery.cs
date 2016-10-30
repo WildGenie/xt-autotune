@@ -5,7 +5,7 @@ namespace AutoTune.Search {
 
     public class SearchQuery {
 
-        public bool Local { get; }
+        public bool? Local { get; }
         public int PageSize { get; }
         public string Query { get; }
         public bool Favourite { get; }
@@ -18,7 +18,7 @@ namespace AutoTune.Search {
             Credentials = new Dictionary<string, SearchCredentials> { { typeId, credentials } };
         }
 
-        public SearchQuery(IDictionary<string, SearchCredentials> credentials, string query, bool favourite, bool local, int pageSize) {
+        public SearchQuery(IDictionary<string, SearchCredentials> credentials, string query, bool favourite, bool? local, int pageSize) {
             Query = query;
             Local = local;
             PageSize = pageSize;

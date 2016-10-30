@@ -37,7 +37,7 @@ namespace AutoTune.Gui {
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool ShowScrollBar(IntPtr hWnd, int wBar, bool bShow);
-        
+
         [STAThread]
         static void Main() {
             AppDomain.CurrentDomain.AssemblyResolve += ResolveCef;
@@ -272,7 +272,7 @@ namespace AutoTune.Gui {
             UiSettings.Instance.LastSearch = searchQuery;
             var pageSize = AppSettings.Instance.SearchPageSize;
             var credentials = UserSettings.Instance.Credentials;
-            var query = new SearchQuery(credentials, searchQuery, ui.SearchFavouritesOnly, ui.SearchLocalOnly, pageSize);
+            var query = new SearchQuery(credentials, searchQuery, ui.SearchFavouritesOnly, ui.SearchLocalOnly ? true : (bool?)null, pageSize);
             searchState = SearchEngine.Start(query, AppendResults);
         }
 
@@ -345,7 +345,7 @@ namespace AutoTune.Gui {
             if (typeId != null)
                 credentials.TryGetValue(typeId, out searchCredentials);
             SearchQuery q = searchRelated == null ?
-                new SearchQuery(credentials, searchQuery, ui.SearchFavouritesOnly, ui.SearchLocalOnly, pageSize) :
+                new SearchQuery(credentials, searchQuery, ui.SearchFavouritesOnly, ui.SearchLocalOnly ? true : (bool?)null, pageSize) :
                 new SearchQuery(typeId, searchCredentials, searchRelated.VideoId, pageSize);
             SearchEngine.Continue(q, searchState, AppendResults);
         }

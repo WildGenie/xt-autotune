@@ -24,6 +24,7 @@ namespace AutoTune.Local {
         public DbSet<Album> Albums { get; set; }
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Favourite> Favourites { get; set; }
+        public DbSet<Suggestion> Suggestions { get; set; }
 
         internal Library() : base(GetConnection(), true) {
             Configuration.LazyLoadingEnabled = false;
@@ -45,6 +46,54 @@ namespace AutoTune.Local {
                     command.CommandText = statements[i];
                     command.ExecuteNonQuery();
                 }
+        }
+
+        public static List<Suggestion> GetOpenSuggestions() {
+            using (var library = new Library()) {
+                return library.Suggestions.Where(s => !s.Declined && !s.Accepted).ToList();
+            }
+        }
+
+        public static void HandleSuggestion(Suggestion suggestion, bool accept) {
+            using (var library = new Library()) {
+                foreach (var existing in library.Suggestions
+                    .Where(s => s.TypeId.Equals(suggestion.TypeId))
+                    .Where(s => s.VideoId.Equals(suggestion.VideoId))) {
+                    existing.Accepted = accept;
+                    existing.Declined = !accept;
+                }
+                library.SaveChanges();
+            }
+        }
+
+        public static List<Artist> GetFavouritesWithoutPendingSuggestions(string localTypeId) {
+            using (var library = new Library()) {
+                return library.Tracks
+                    .Join(library.Favourites, t => t.Path, f => f.VideoId,
+                        (t, f) => new { Track = t, Favourite = f })
+                    .Where(tf => !library.Suggestions.Where(s => s.Artist.Id == tf.Track.Artist.Id && !s.Declined && !s.Accepted).Any())
+                    .Where(tsf => tsf.Favourite.TypeId.Equals(localTypeId))
+                    .Select(tsf => tsf.Track.Artist)
+                    .Distinct()
+                    .ToList();
+            }
+        }
+
+        public static void Suggest(Artist artist, IEnumerable<SearchResult> results) {
+            using (var library = new Library()) {
+                var a = library.Artists.Find(artist.Id);
+                foreach (var result in results)
+                    if (!library.Suggestions.Any(s => s.TypeId.Equals(result.TypeId) && s.VideoId.Equals(result.VideoId)))
+                        library.Suggestions.Add(new Suggestion() {
+                            Artist = a,
+                            Title = result.Title,
+                            TypeId = result.TypeId,
+                            VideoId = result.VideoId,
+                            Comment = result.Description,
+                            ImageBase64 = result.ThumbnailBase64,
+                        });
+                library.SaveChanges();
+            }
         }
 
         public static bool IsFavourite(string typeId, string videoId) {
@@ -96,7 +145,8 @@ namespace AutoTune.Local {
         }
 
         public static List<Track> Find(string query, bool favourite, int page, int pageSize) {
-            var terms = query.Split(' ').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
+            var qLower = query.ToLower();
+            var terms = qLower.Split(' ').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
             using (var library = new Library()) {
                 IQueryable<Track> q = library.Tracks;
                 if (favourite)
@@ -104,10 +154,10 @@ namespace AutoTune.Local {
                         t => new { TypeId = "Local", VideoId = t.Path },
                         f => new { TypeId = f.TypeId, VideoId = f.VideoId },
                         (t, f) => t);
-                return ExecuteQuery(q.Where(t => terms.All(tm =>
-                    ((t.Title == null ? "" : t.Title) +
-                    (t.Album == null ? "" : t.Album.Name) +
-                    (t.Artist == null ? "" : t.Artist.Name)).ToLower().Contains(tm))), page, pageSize);
+                return ExecuteQuery(q.Where(t => t.Path.ToLower().Contains(qLower) || terms.All(tm =>
+                     ((t.Title == null ? "" : t.Title) +
+                     (t.Album == null ? "" : t.Album.Name) +
+                     (t.Artist == null ? "" : t.Artist.Name)).ToLower().Contains(tm))), page, pageSize);
             }
         }
 

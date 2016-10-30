@@ -15,8 +15,6 @@ namespace AutoTune.Local {
         public string Title { get; set; }
         [Column("comment")]
         public string Comment { get; set; }
-        [Column("favourite")]
-        public bool Favourite { get; set; }
         [Column("image_base64")]
         public string ImageBase64 { get; set; }
         [Column("genre_id")]

@@ -115,6 +115,7 @@
     <Compile Include="Processing\PlaylistMode.cs" />
     <Compile Include="Processing\ProcessingException.cs" />
     <Compile Include="Processing\QueueItem.cs" />
+    <Compile Include="Processing\SuggestionScanner.cs" />
     <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="Settings\ProviderSettings.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
