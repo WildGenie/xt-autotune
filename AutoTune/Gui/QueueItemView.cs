@@ -15,8 +15,6 @@ namespace AutoTune.Gui {
         internal const string Missing = "Missing";
         internal const string Started = "Started";
 
-        internal event EventHandler<EventArgs<QueueItem>> Play;
-
         internal QueueItem item;
         internal string State { get { return uiState.Text; } }
 
@@ -37,25 +35,15 @@ namespace AutoTune.Gui {
         }
 
         void InitializeColors() {
-            Utility.SetLinkForeColors(uiPlay);
             var theme = ThemeSettings.Instance;
             BackColor = ColorTranslator.FromHtml(theme.BackColor2);
             uiTitle.ForeColor = ColorTranslator.FromHtml(theme.ForeColor1);
             uiState.ForeColor = ColorTranslator.FromHtml(theme.ForeColor1);
         }
 
-        void OnImageMouseClick(object sender, MouseEventArgs e) {
-            if (e.Button == MouseButtons.Left)
-                Play(this, new EventArgs<QueueItem>(item));
-        }
-
-        void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            Play(this, new EventArgs<QueueItem>(item));
-        }
-
         internal void Initialize(QueueItem item) {
             this.item = item;
-            uiTitle.Text = item.Search.Title;
+            uiTitle.Text = string.Format("({0}) {1}", item.Search.TypeId, item.Search.Title);
             uiImage.Image = Utility.ImageFromBase64(item?.Search?.ThumbnailBase64 ?? AppSettings.NoImageAvailableBase64);
         }
     }

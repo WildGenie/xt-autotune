@@ -50,7 +50,6 @@ namespace AutoTune.Gui {
 
         void AddView(QueueItem item) {
             QueueItemView view = new QueueItemView();
-            view.Play += (s, e) => Play(this, e);
             ResizeView(view);
             uiItems.Controls.Add(view);
             view.Initialize(item);

@@ -53,6 +53,8 @@ namespace AutoTune.Gui {
             PostProcessingQueue.Start();
             InitializePlaylist();
             Scanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.ScanLibraryInterval);
+            ShowScrollBar(uiResults.Handle, SbVert, true);
+            ShowScrollBar(uiPlaylist.Handle, SbVert, true);
             initializing = false;
         }
 
@@ -86,10 +88,12 @@ namespace AutoTune.Gui {
         void OnLeftTabsSelectedIndexChanged(object sender, EventArgs e) {
             try {
                 SuspendLayout();
-                if (uiLeftTabs.SelectedIndex == 0)
+                ShowScrollBar(uiResults.Handle, SbVert, true);
+                ShowScrollBar(uiPlaylist.Handle, SbVert, true);
+                if (uiLeftTabs.SelectedIndex == TabIndexSearch)
                     foreach (ResultView view in uiResults.Controls)
                         view.Reload();
-                if (uiLeftTabs.SelectedIndex == 1)
+                if (uiLeftTabs.SelectedIndex == TabIndexPlaylist)
                     foreach (ResultView view in uiPlaylist.Controls)
                         view.Reload();
             } finally {
@@ -100,10 +104,6 @@ namespace AutoTune.Gui {
         void OnPlaylistClearClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Playlist.Instance.Clear();
             uiPlaylist.Controls.Clear();
-        }
-
-        void OnPlaylistStartClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            Playlist.Instance.Start();
         }
 
         void OnPlaylistNextClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -167,6 +167,7 @@ namespace AutoTune.Gui {
             searchQuery = null;
             searchRelated = e.Data;
             uiResults.Controls.Clear();
+            uiLeftTabs.SelectedIndex = TabIndexSearch;
             SearchCredentials searchCredentials;
             var pageSize = AppSettings.Instance.SearchPageSize;
             var credentials = UserSettings.Instance.Credentials;

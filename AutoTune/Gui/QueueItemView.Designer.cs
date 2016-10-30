@@ -25,7 +25,6 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.uiColumns = new System.Windows.Forms.TableLayoutPanel();
-            this.uiPlay = new System.Windows.Forms.LinkLabel();
             this.uiState = new System.Windows.Forms.Label();
             this.uiTitle = new System.Windows.Forms.Label();
             this.uiImage = new System.Windows.Forms.PictureBox();
@@ -36,12 +35,11 @@
             // 
             // uiColumns
             // 
-            this.uiColumns.ColumnCount = 4;
+            this.uiColumns.ColumnCount = 3;
             this.uiColumns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.uiColumns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.uiColumns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.uiColumns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.uiColumns.Controls.Add(this.uiPlay, 3, 0);
+            this.uiColumns.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.uiColumns.Controls.Add(this.uiState, 2, 0);
             this.uiColumns.Controls.Add(this.uiTitle, 1, 0);
             this.uiColumns.Controls.Add(this.uiImage, 0, 0);
@@ -54,25 +52,11 @@
             this.uiColumns.Size = new System.Drawing.Size(300, 24);
             this.uiColumns.TabIndex = 0;
             // 
-            // uiPlay
-            // 
-            this.uiPlay.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiPlay.AutoSize = true;
-            this.uiPlay.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlay.Location = new System.Drawing.Point(263, 5);
-            this.uiPlay.Name = "uiPlay";
-            this.uiPlay.Size = new System.Drawing.Size(27, 13);
-            this.uiPlay.TabIndex = 2;
-            this.uiPlay.TabStop = true;
-            this.uiPlay.Text = "Play";
-            this.uiTooltip.SetToolTip(this.uiPlay, "Open this track in the media player (left-click image).");
-            this.uiPlay.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlayClicked);
-            // 
             // uiState
             // 
             this.uiState.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiState.AutoSize = true;
-            this.uiState.Location = new System.Drawing.Point(203, 5);
+            this.uiState.Location = new System.Drawing.Point(243, 5);
             this.uiState.Name = "uiState";
             this.uiState.Size = new System.Drawing.Size(45, 13);
             this.uiState.TabIndex = 0;
@@ -84,9 +68,9 @@
             this.uiTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.uiTitle.Location = new System.Drawing.Point(27, 5);
             this.uiTitle.Name = "uiTitle";
-            this.uiTitle.Size = new System.Drawing.Size(73, 13);
+            this.uiTitle.Size = new System.Drawing.Size(210, 13);
             this.uiTitle.TabIndex = 1;
-            this.uiTitle.Text = "Artist - Title";
+            this.uiTitle.Text = "(TypeId) Artist - Title";
             // 
             // uiImage
             // 
@@ -99,7 +83,6 @@
             this.uiImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.uiImage.TabIndex = 3;
             this.uiImage.TabStop = false;
-            this.uiImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnImageMouseClick);
             // 
             // QueueItemView
             // 
@@ -121,7 +104,6 @@
         private System.Windows.Forms.TableLayoutPanel uiColumns;
         private System.Windows.Forms.Label uiState;
         private System.Windows.Forms.Label uiTitle;
-        private System.Windows.Forms.LinkLabel uiPlay;
         private System.Windows.Forms.ToolTip uiTooltip;
         private System.Windows.Forms.PictureBox uiImage;
     }

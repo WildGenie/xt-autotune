@@ -3,6 +3,8 @@ using AutoTune.Settings;
 using AutoTune.Shared;
 using System;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AutoTune.Gui {
@@ -16,7 +18,12 @@ namespace AutoTune.Gui {
         internal event EventHandler<EventArgs<SearchResult>> DownloadClicked;
 
         bool playing;
+        long clickTime;
+        Rectangle clickArea;
         private readonly bool playlist;
+        volatile bool firstClick = true;
+        volatile bool doubleClick = false;
+
         private SearchResult result;
         internal SearchResult Result { get { return result; } }
 
@@ -44,8 +51,6 @@ namespace AutoTune.Gui {
             uiType.ForeColor = fore1;
             uiText.ForeColor = fore1;
             SetFavouriteState(false);
-            Utility.SetLinkForeColors(uiPlay);
-            Utility.SetLinkForeColors(uiQueue);
             Utility.SetLinkForeColors(uiRemove);
             Utility.SetLinkForeColors(uiRelated);
             Utility.SetLinkForeColors(uiDownload);
@@ -56,6 +61,10 @@ namespace AutoTune.Gui {
             uiText.Width = Width - uiText.Left;
         }
 
+        long CurrentMillis() {
+            return (long)(DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds;
+        }
+
         internal void SetPlaying(bool playing) {
             this.playing = playing;
             uiType.Text = result.TypeId + (!playing ? "" : " (playing)");
@@ -63,11 +72,9 @@ namespace AutoTune.Gui {
 
         internal void SetResult(SearchResult result) {
             var theme = ThemeSettings.Instance;
-            uiRemove.Visible = playlist;
-            uiQueue.Visible = !playlist;
-            uiRelated.Visible = !playlist;
-            uiDownload.Visible = !playlist && (!result?.Local ?? false);
             this.result = result;
+            uiRemove.Visible = playlist;
+            uiDownload.Visible = !result?.Local ?? false;
             uiText.Text = "";
             uiType.Text = result == null ? "" : result.TypeId + (!playing ? "" : " (playing)");
             if (result != null) {
@@ -80,28 +87,9 @@ namespace AutoTune.Gui {
             SetFavouriteState(isFavourite);
         }
 
-
-        void OnImageMouseClick(object sender, MouseEventArgs e) {
-            if (result != null)
-                if (e.Button == MouseButtons.Left)
-                    PlayClicked(this, new EventArgs<SearchResult>(result));
-                else if (e.Button == MouseButtons.Right)
-                    DownloadClicked(this, new EventArgs<SearchResult>(result));
-        }
-
-        void OnQueueClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            if (result != null)
-                QueueClicked(this, new EventArgs<SearchResult>(result));
-        }
-
         void OnRemoveClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (result != null)
                 RemoveClicked(this, new EventArgs<SearchResult>(result));
-        }
-
-        void OnPlayClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            if (result != null)
-                PlayClicked(this, new EventArgs<SearchResult>(result));
         }
 
         void OnRelatedClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -120,17 +108,37 @@ namespace AutoTune.Gui {
             SetFavouriteState(!isFavourite);
         }
 
+        void OnImageMouseDown(object sender, MouseEventArgs e) {
+            if (firstClick) {
+                firstClick = false;
+                Interlocked.Exchange(ref clickTime, CurrentMillis());
+                clickArea = new Rectangle(
+                    e.X - (SystemInformation.DoubleClickSize.Width / 2),
+                    e.Y - (SystemInformation.DoubleClickSize.Height / 2),
+                    SystemInformation.DoubleClickSize.Width,
+                    SystemInformation.DoubleClickSize.Height);
+                Task.Delay(SystemInformation.DoubleClickTime).ContinueWith(_ => {
+                    if (doubleClick && result != null)
+                        BeginInvoke(new Action(() => PlayClicked(this, new EventArgs<SearchResult>(result))));
+                    if (!doubleClick && result != null)
+                        BeginInvoke(new Action(() => QueueClicked(this, new EventArgs<SearchResult>(result))));
+                    firstClick = true;
+                    doubleClick = false;
+                });
+            } else if (clickArea.Contains(e.Location) && CurrentMillis() - clickTime < SystemInformation.DoubleClickTime)
+                doubleClick = true;
+        }
+
         void SetFavouriteState(bool favourite) {
             var theme = ThemeSettings.Instance;
             var back = ColorTranslator.FromHtml(favourite ? theme.BackColor3 : theme.BackColor2);
             BackColor = back;
-            uiPlay.BackColor = back;
             uiText.BackColor = back;
-            uiQueue.BackColor = back;
+            uiRemove.BackColor = back;
             uiRelated.BackColor = back;
             uiDownload.BackColor = back;
             uiToggleFavourite.BackColor = back;
-            uiToggleFavourite.Text = favourite ? "Unfavourite" : "Favourite";
+            uiToggleFavourite.Text = favourite ? "Unlike" : "Like";
         }
     }
 }

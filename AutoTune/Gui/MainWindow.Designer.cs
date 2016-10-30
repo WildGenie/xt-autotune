@@ -54,26 +54,25 @@
             this.uiLog = new System.Windows.Forms.TextBox();
             this.uiLogLevel = new System.Windows.Forms.ComboBox();
             this.uiLogLevelLabel = new System.Windows.Forms.Label();
+            this.uiQuery = new System.Windows.Forms.TextBox();
             this.uiResults = new System.Windows.Forms.FlowLayoutPanel();
             this.uiLoadMore = new System.Windows.Forms.LinkLabel();
             this.uiSearchLocalFavouritePanel = new System.Windows.Forms.TableLayoutPanel();
-            this.uiQuery = new System.Windows.Forms.TextBox();
             this.uiSearchFavouriteOnly = new System.Windows.Forms.CheckBox();
             this.uiSearchLocalOnly = new System.Windows.Forms.CheckBox();
             this.uiLogGroup = new System.Windows.Forms.GroupBox();
-            this.uiPlaylist = new System.Windows.Forms.FlowLayoutPanel();
-            this.uiPlaylistControls = new System.Windows.Forms.TableLayoutPanel();
-            this.uiPlaylistStart = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistModePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.uiPlaylistModeRandom = new System.Windows.Forms.RadioButton();
             this.uiPlaylistModeTrack = new System.Windows.Forms.RadioButton();
             this.uiPlaylistModeAll = new System.Windows.Forms.RadioButton();
-            this.uiPlaylistClear = new System.Windows.Forms.LinkLabel();
-            this.uiPlaylistStop = new System.Windows.Forms.LinkLabel();
+            this.uiPlaylist = new System.Windows.Forms.FlowLayoutPanel();
+            this.uiPlaylistControls = new System.Windows.Forms.TableLayoutPanel();
             this.uiPlaylistNext = new System.Windows.Forms.LinkLabel();
+            this.uiPlaylistStop = new System.Windows.Forms.LinkLabel();
+            this.uiPlaylistClear = new System.Windows.Forms.LinkLabel();
             this.uiLeftTabs = new System.Windows.Forms.TabControl();
-            this.uiLeftTabsSearch = new System.Windows.Forms.TabPage();
             this.uiLeftTabsPlaylist = new System.Windows.Forms.TabPage();
+            this.uiLeftTabsSearch = new System.Windows.Forms.TabPage();
             this.uiSplitNotificationsLog = new System.Windows.Forms.SplitContainer();
             this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
@@ -116,11 +115,11 @@
             uiPadLog.SuspendLayout();
             this.uiLogGroup.SuspendLayout();
             uiPlaylistContainer.SuspendLayout();
-            this.uiPlaylistControls.SuspendLayout();
             this.uiPlaylistModePanel.SuspendLayout();
+            this.uiPlaylistControls.SuspendLayout();
             this.uiLeftTabs.SuspendLayout();
-            this.uiLeftTabsSearch.SuspendLayout();
             this.uiLeftTabsPlaylist.SuspendLayout();
+            this.uiLeftTabsSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotificationsLog)).BeginInit();
             this.uiSplitNotificationsLog.Panel1.SuspendLayout();
             this.uiSplitNotificationsLog.Panel2.SuspendLayout();
@@ -498,17 +497,30 @@
             // 
             uiSearchPanel.ColumnCount = 1;
             uiSearchPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            uiSearchPanel.Controls.Add(uiResultsContinueContainer, 0, 1);
+            uiSearchPanel.Controls.Add(this.uiQuery, 0, 1);
+            uiSearchPanel.Controls.Add(uiResultsContinueContainer, 0, 2);
             uiSearchPanel.Controls.Add(this.uiSearchLocalFavouritePanel, 0, 0);
             uiSearchPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             uiSearchPanel.Location = new System.Drawing.Point(0, 0);
             uiSearchPanel.Margin = new System.Windows.Forms.Padding(0);
             uiSearchPanel.Name = "uiSearchPanel";
-            uiSearchPanel.RowCount = 2;
+            uiSearchPanel.RowCount = 3;
+            uiSearchPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             uiSearchPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             uiSearchPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             uiSearchPanel.Size = new System.Drawing.Size(401, 649);
             uiSearchPanel.TabIndex = 0;
+            // 
+            // uiQuery
+            // 
+            this.uiQuery.BackColor = System.Drawing.SystemColors.Window;
+            this.uiQuery.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.uiQuery.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiQuery.Location = new System.Drawing.Point(3, 33);
+            this.uiQuery.Name = "uiQuery";
+            this.uiQuery.Size = new System.Drawing.Size(395, 20);
+            this.uiQuery.TabIndex = 1;
+            this.uiQuery.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnQueryKeyPress);
             // 
             // uiResultsContinueContainer
             // 
@@ -517,7 +529,7 @@
             uiResultsContinueContainer.Controls.Add(this.uiResults, 0, 0);
             uiResultsContinueContainer.Controls.Add(this.uiLoadMore, 0, 1);
             uiResultsContinueContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            uiResultsContinueContainer.Location = new System.Drawing.Point(3, 33);
+            uiResultsContinueContainer.Location = new System.Drawing.Point(3, 63);
             uiResultsContinueContainer.Name = "uiResultsContinueContainer";
             uiResultsContinueContainer.RowCount = 2;
             uiResultsContinueContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -554,11 +566,10 @@
             // 
             // uiSearchLocalFavouritePanel
             // 
-            this.uiSearchLocalFavouritePanel.ColumnCount = 3;
+            this.uiSearchLocalFavouritePanel.ColumnCount = 2;
             this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.uiSearchLocalFavouritePanel.Controls.Add(this.uiQuery, 2, 0);
+            this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchFavouriteOnly, 0, 0);
             this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchLocalOnly, 1, 0);
             this.uiSearchLocalFavouritePanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -569,17 +580,6 @@
             this.uiSearchLocalFavouritePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.uiSearchLocalFavouritePanel.Size = new System.Drawing.Size(401, 30);
             this.uiSearchLocalFavouritePanel.TabIndex = 3;
-            // 
-            // uiQuery
-            // 
-            this.uiQuery.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiQuery.BackColor = System.Drawing.SystemColors.Window;
-            this.uiQuery.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.uiQuery.Location = new System.Drawing.Point(143, 5);
-            this.uiQuery.Name = "uiQuery";
-            this.uiQuery.Size = new System.Drawing.Size(255, 20);
-            this.uiQuery.TabIndex = 1;
-            this.uiQuery.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnQueryKeyPress);
             // 
             // uiSearchFavouriteOnly
             // 
@@ -635,62 +635,18 @@
             // 
             uiPlaylistContainer.ColumnCount = 1;
             uiPlaylistContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            uiPlaylistContainer.Controls.Add(this.uiPlaylist, 0, 1);
+            uiPlaylistContainer.Controls.Add(this.uiPlaylistModePanel, 0, 1);
+            uiPlaylistContainer.Controls.Add(this.uiPlaylist, 0, 2);
             uiPlaylistContainer.Controls.Add(this.uiPlaylistControls, 0, 0);
             uiPlaylistContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             uiPlaylistContainer.Location = new System.Drawing.Point(0, 0);
             uiPlaylistContainer.Name = "uiPlaylistContainer";
-            uiPlaylistContainer.RowCount = 2;
+            uiPlaylistContainer.RowCount = 3;
+            uiPlaylistContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             uiPlaylistContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             uiPlaylistContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             uiPlaylistContainer.Size = new System.Drawing.Size(401, 649);
             uiPlaylistContainer.TabIndex = 0;
-            // 
-            // uiPlaylist
-            // 
-            this.uiPlaylist.AutoScroll = true;
-            this.uiPlaylist.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiPlaylist.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.uiPlaylist.Location = new System.Drawing.Point(3, 33);
-            this.uiPlaylist.Name = "uiPlaylist";
-            this.uiPlaylist.Size = new System.Drawing.Size(395, 613);
-            this.uiPlaylist.TabIndex = 3;
-            this.uiPlaylist.WrapContents = false;
-            // 
-            // uiPlaylistControls
-            // 
-            this.uiPlaylistControls.ColumnCount = 5;
-            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistStart, 0, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistModePanel, 4, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistClear, 2, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistStop, 1, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistNext, 3, 0);
-            this.uiPlaylistControls.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiPlaylistControls.Location = new System.Drawing.Point(0, 0);
-            this.uiPlaylistControls.Margin = new System.Windows.Forms.Padding(0);
-            this.uiPlaylistControls.Name = "uiPlaylistControls";
-            this.uiPlaylistControls.RowCount = 1;
-            this.uiPlaylistControls.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.uiPlaylistControls.Size = new System.Drawing.Size(401, 30);
-            this.uiPlaylistControls.TabIndex = 0;
-            // 
-            // uiPlaylistStart
-            // 
-            this.uiPlaylistStart.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiPlaylistStart.AutoSize = true;
-            this.uiPlaylistStart.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistStart.Location = new System.Drawing.Point(3, 8);
-            this.uiPlaylistStart.Name = "uiPlaylistStart";
-            this.uiPlaylistStart.Size = new System.Drawing.Size(29, 13);
-            this.uiPlaylistStart.TabIndex = 0;
-            this.uiPlaylistStart.TabStop = true;
-            this.uiPlaylistStart.Text = "Start";
-            this.uiPlaylistStart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistStartClicked);
             // 
             // uiPlaylistModePanel
             // 
@@ -698,9 +654,9 @@
             this.uiPlaylistModePanel.Controls.Add(this.uiPlaylistModeTrack);
             this.uiPlaylistModePanel.Controls.Add(this.uiPlaylistModeAll);
             this.uiPlaylistModePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiPlaylistModePanel.Location = new System.Drawing.Point(163, 3);
+            this.uiPlaylistModePanel.Location = new System.Drawing.Point(3, 33);
             this.uiPlaylistModePanel.Name = "uiPlaylistModePanel";
-            this.uiPlaylistModePanel.Size = new System.Drawing.Size(235, 24);
+            this.uiPlaylistModePanel.Size = new System.Drawing.Size(395, 24);
             this.uiPlaylistModePanel.TabIndex = 2;
             this.uiPlaylistModePanel.WrapContents = false;
             // 
@@ -746,18 +702,48 @@
             this.uiPlaylistModeAll.UseVisualStyleBackColor = true;
             this.uiPlaylistModeAll.CheckedChanged += new System.EventHandler(this.OnPlaylistModeAllCheckedChanged);
             // 
-            // uiPlaylistClear
+            // uiPlaylist
             // 
-            this.uiPlaylistClear.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiPlaylistClear.AutoSize = true;
-            this.uiPlaylistClear.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistClear.Location = new System.Drawing.Point(83, 8);
-            this.uiPlaylistClear.Name = "uiPlaylistClear";
-            this.uiPlaylistClear.Size = new System.Drawing.Size(31, 13);
-            this.uiPlaylistClear.TabIndex = 3;
-            this.uiPlaylistClear.TabStop = true;
-            this.uiPlaylistClear.Text = "Clear";
-            this.uiPlaylistClear.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistClearClicked);
+            this.uiPlaylist.AutoScroll = true;
+            this.uiPlaylist.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiPlaylist.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.uiPlaylist.Location = new System.Drawing.Point(3, 63);
+            this.uiPlaylist.Name = "uiPlaylist";
+            this.uiPlaylist.Size = new System.Drawing.Size(395, 583);
+            this.uiPlaylist.TabIndex = 3;
+            this.uiPlaylist.WrapContents = false;
+            // 
+            // uiPlaylistControls
+            // 
+            this.uiPlaylistControls.ColumnCount = 3;
+            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistNext, 0, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistStop, 1, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistClear, 2, 0);
+            this.uiPlaylistControls.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiPlaylistControls.Location = new System.Drawing.Point(0, 0);
+            this.uiPlaylistControls.Margin = new System.Windows.Forms.Padding(0);
+            this.uiPlaylistControls.Name = "uiPlaylistControls";
+            this.uiPlaylistControls.RowCount = 1;
+            this.uiPlaylistControls.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.uiPlaylistControls.Size = new System.Drawing.Size(401, 30);
+            this.uiPlaylistControls.TabIndex = 0;
+            // 
+            // uiPlaylistNext
+            // 
+            this.uiPlaylistNext.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiPlaylistNext.AutoSize = true;
+            this.uiPlaylistNext.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiPlaylistNext.Location = new System.Drawing.Point(3, 8);
+            this.uiPlaylistNext.Name = "uiPlaylistNext";
+            this.uiPlaylistNext.Size = new System.Drawing.Size(29, 13);
+            this.uiPlaylistNext.TabIndex = 4;
+            this.uiPlaylistNext.TabStop = true;
+            this.uiPlaylistNext.Text = "Next";
+            this.uiPlaylistNext.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistNextClicked);
             // 
             // uiPlaylistStop
             // 
@@ -772,23 +758,23 @@
             this.uiPlaylistStop.Text = "Stop";
             this.uiPlaylistStop.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistStopClicked);
             // 
-            // uiPlaylistNext
+            // uiPlaylistClear
             // 
-            this.uiPlaylistNext.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiPlaylistNext.AutoSize = true;
-            this.uiPlaylistNext.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistNext.Location = new System.Drawing.Point(123, 8);
-            this.uiPlaylistNext.Name = "uiPlaylistNext";
-            this.uiPlaylistNext.Size = new System.Drawing.Size(29, 13);
-            this.uiPlaylistNext.TabIndex = 4;
-            this.uiPlaylistNext.TabStop = true;
-            this.uiPlaylistNext.Text = "Next";
-            this.uiPlaylistNext.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistNextClicked);
+            this.uiPlaylistClear.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiPlaylistClear.AutoSize = true;
+            this.uiPlaylistClear.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiPlaylistClear.Location = new System.Drawing.Point(83, 8);
+            this.uiPlaylistClear.Name = "uiPlaylistClear";
+            this.uiPlaylistClear.Size = new System.Drawing.Size(31, 13);
+            this.uiPlaylistClear.TabIndex = 3;
+            this.uiPlaylistClear.TabStop = true;
+            this.uiPlaylistClear.Text = "Clear";
+            this.uiPlaylistClear.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistClearClicked);
             // 
             // uiLeftTabs
             // 
-            this.uiLeftTabs.Controls.Add(this.uiLeftTabsSearch);
             this.uiLeftTabs.Controls.Add(this.uiLeftTabsPlaylist);
+            this.uiLeftTabs.Controls.Add(this.uiLeftTabsSearch);
             this.uiLeftTabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiLeftTabs.Location = new System.Drawing.Point(3, 3);
             this.uiLeftTabs.Margin = new System.Windows.Forms.Padding(0);
@@ -798,17 +784,6 @@
             this.uiLeftTabs.Size = new System.Drawing.Size(409, 675);
             this.uiLeftTabs.TabIndex = 1;
             this.uiLeftTabs.SelectedIndexChanged += new System.EventHandler(this.OnLeftTabsSelectedIndexChanged);
-            // 
-            // uiLeftTabsSearch
-            // 
-            this.uiLeftTabsSearch.Controls.Add(uiSearchPanel);
-            this.uiLeftTabsSearch.Location = new System.Drawing.Point(4, 22);
-            this.uiLeftTabsSearch.Margin = new System.Windows.Forms.Padding(0);
-            this.uiLeftTabsSearch.Name = "uiLeftTabsSearch";
-            this.uiLeftTabsSearch.Size = new System.Drawing.Size(401, 649);
-            this.uiLeftTabsSearch.TabIndex = 0;
-            this.uiLeftTabsSearch.Text = "Search";
-            this.uiLeftTabsSearch.UseVisualStyleBackColor = true;
             // 
             // uiLeftTabsPlaylist
             // 
@@ -820,6 +795,17 @@
             this.uiLeftTabsPlaylist.TabIndex = 1;
             this.uiLeftTabsPlaylist.Text = "Playlist";
             this.uiLeftTabsPlaylist.UseVisualStyleBackColor = true;
+            // 
+            // uiLeftTabsSearch
+            // 
+            this.uiLeftTabsSearch.Controls.Add(uiSearchPanel);
+            this.uiLeftTabsSearch.Location = new System.Drawing.Point(4, 22);
+            this.uiLeftTabsSearch.Margin = new System.Windows.Forms.Padding(0);
+            this.uiLeftTabsSearch.Name = "uiLeftTabsSearch";
+            this.uiLeftTabsSearch.Size = new System.Drawing.Size(401, 649);
+            this.uiLeftTabsSearch.TabIndex = 0;
+            this.uiLeftTabsSearch.Text = "Search";
+            this.uiLeftTabsSearch.UseVisualStyleBackColor = true;
             // 
             // uiSplitNotificationsLog
             // 
@@ -926,6 +912,7 @@
             uiLogLevelContainer.ResumeLayout(false);
             uiLogLevelContainer.PerformLayout();
             uiSearchPanel.ResumeLayout(false);
+            uiSearchPanel.PerformLayout();
             uiResultsContinueContainer.ResumeLayout(false);
             uiResultsContinueContainer.PerformLayout();
             this.uiSearchLocalFavouritePanel.ResumeLayout(false);
@@ -933,13 +920,13 @@
             uiPadLog.ResumeLayout(false);
             this.uiLogGroup.ResumeLayout(false);
             uiPlaylistContainer.ResumeLayout(false);
-            this.uiPlaylistControls.ResumeLayout(false);
-            this.uiPlaylistControls.PerformLayout();
             this.uiPlaylistModePanel.ResumeLayout(false);
             this.uiPlaylistModePanel.PerformLayout();
+            this.uiPlaylistControls.ResumeLayout(false);
+            this.uiPlaylistControls.PerformLayout();
             this.uiLeftTabs.ResumeLayout(false);
-            this.uiLeftTabsSearch.ResumeLayout(false);
             this.uiLeftTabsPlaylist.ResumeLayout(false);
+            this.uiLeftTabsSearch.ResumeLayout(false);
             this.uiSplitNotificationsLog.Panel1.ResumeLayout(false);
             this.uiSplitNotificationsLog.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotificationsLog)).EndInit();
@@ -993,7 +980,6 @@
         private System.Windows.Forms.TabPage uiLeftTabsSearch;
         private System.Windows.Forms.TabPage uiLeftTabsPlaylist;
         private System.Windows.Forms.TableLayoutPanel uiPlaylistControls;
-        private System.Windows.Forms.LinkLabel uiPlaylistStart;
         private System.Windows.Forms.LinkLabel uiPlaylistStop;
         private System.Windows.Forms.FlowLayoutPanel uiPlaylistModePanel;
         private System.Windows.Forms.RadioButton uiPlaylistModeRandom;

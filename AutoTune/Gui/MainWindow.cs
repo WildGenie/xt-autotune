@@ -11,14 +11,18 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace AutoTune.Gui {
 
     public partial class MainWindow : Form {
 
+        const int SbVert = 1;
         const int MediaEnded = 8;
         const int ShowLogMinWidth = 1250;
+        const int TabIndexSearch = 1;
+        const int TabIndexPlaylist = 0;
         const string UnicodeBlackLowerLeftTriangle = "\u25e3";
         const string UnicodeWhiteLowerLeftTriangle = "\u25fa";
         const string UnicodeBlackUpperRightTriangle = "\u25e5";
@@ -30,6 +34,10 @@ namespace AutoTune.Gui {
         static readonly string Arch = Environment.Is64BitProcess ? "x64" : "x86";
         static readonly string AppBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ShowScrollBar(IntPtr hWnd, int wBar, bool bShow);
+        
         [STAThread]
         static void Main() {
             AppDomain.CurrentDomain.AssemblyResolve += ResolveCef;
@@ -121,7 +129,6 @@ namespace AutoTune.Gui {
             uiPlaylistModeRandom.ForeColor = fore1;
             Utility.SetLinkForeColors(uiPlaylistStop);
             Utility.SetLinkForeColors(uiPlaylistNext);
-            Utility.SetLinkForeColors(uiPlaylistStart);
             Utility.SetLinkForeColors(uiPlaylistClear);
             Utility.SetLinkForeColors(uiLoadMore);
             Utility.SetToggleForeColors(uiToggleLog);
@@ -405,6 +412,10 @@ namespace AutoTune.Gui {
             bool realCollapsed = collapsed || UiSettings.Instance.PlayerFull;
             uiToggleCurrentControls.Text = realCollapsed ? UnicodeBlackDownPointingTriangle : UnicodeBlackUpPointingTriangle;
             uiSplitBrowserCurrentControls.Panel1Collapsed = realCollapsed;
+        }
+
+        private void OnPlaylistStartClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+
         }
     }
 }
