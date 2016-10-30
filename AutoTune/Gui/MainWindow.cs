@@ -413,9 +413,5 @@ namespace AutoTune.Gui {
             uiToggleCurrentControls.Text = realCollapsed ? UnicodeBlackDownPointingTriangle : UnicodeBlackUpPointingTriangle;
             uiSplitBrowserCurrentControls.Panel1Collapsed = realCollapsed;
         }
-
-        private void OnPlaylistStartClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-
-        }
     }
 }

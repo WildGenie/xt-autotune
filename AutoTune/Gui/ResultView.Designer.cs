@@ -75,7 +75,6 @@
             this.uiImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.uiImage.TabIndex = 0;
             this.uiImage.TabStop = false;
-            this.uiTooltip.SetToolTip(this.uiImage, "Click to queue, double-click to play.");
             this.uiImage.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnImageMouseDown);
             // 
             // uiText

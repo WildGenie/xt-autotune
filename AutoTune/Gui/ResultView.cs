@@ -33,11 +33,18 @@ namespace AutoTune.Gui {
 
         public ResultView(bool playlist) {
             InitializeComponent();
+            this.playlist = playlist;
             if (DesignMode)
                 return;
             InitializeColors();
             Resize += OnResize;
-            this.playlist = playlist;
+            uiTooltip.SetToolTip(uiImage, "Click to queue, double-click to play.");
+            if (playlist) {
+                uiTooltip.SetToolTip(uiImage, "Click to queue, double-click to play, drag to reorder.");
+                AllowDrop = true;
+                DragOver += OnDragOver;
+                DragDrop += OnDragDrop;
+            }
         }
 
         internal void Reload() {
@@ -109,6 +116,7 @@ namespace AutoTune.Gui {
         }
 
         void OnImageMouseDown(object sender, MouseEventArgs e) {
+            DoDragDrop(this, DragDropEffects.Move);
             if (firstClick) {
                 firstClick = false;
                 Interlocked.Exchange(ref clickTime, CurrentMillis());
@@ -139,6 +147,20 @@ namespace AutoTune.Gui {
             uiDownload.BackColor = back;
             uiToggleFavourite.BackColor = back;
             uiToggleFavourite.Text = favourite ? "Unlike" : "Like";
+        }
+
+        void OnDragOver(object sender, DragEventArgs e) {
+            var other = e.Data.GetData(typeof(ResultView)) as ResultView;
+            e.Effect = other == null ? DragDropEffects.None : DragDropEffects.Move;
+        }
+
+        void OnDragDrop(object sender, DragEventArgs e) {
+            var other = e.Data.GetData(typeof(ResultView)) as ResultView;
+            if (other == null)
+                return;
+            var panel = (FlowLayoutPanel)Parent;
+            int index = panel.Controls.GetChildIndex(this);
+            panel.Controls.SetChildIndex(other, index);
         }
     }
 }
