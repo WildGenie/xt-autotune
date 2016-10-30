@@ -12,6 +12,7 @@ namespace AutoTune.Local {
         static string dbPath;
         const string FileName = "db.sqlite";
         const string ConnectionString = "Data Source=\"{0}\";Version=3;";
+        static readonly string[] StopList = { "the", "and", "feat", "featuring", "vs" };
 
         static SQLiteConnection GetConnection() {
             SQLiteConnection result = new SQLiteConnection(string.Format(ConnectionString, dbPath));
@@ -46,12 +47,24 @@ namespace AutoTune.Local {
                     command.CommandText = statements[i];
                     command.ExecuteNonQuery();
                 }
+            using (var library = new Library()) {
+                Logger.Debug("Library contents: {0} tracks.", library.Tracks.Count());
+                Logger.Debug("Library contents: {0} genres.", library.Genres.Count());
+                Logger.Debug("Library contents: {0} albums.", library.Albums.Count());
+                Logger.Debug("Library contents: {0} artists.", library.Artists.Count());
+                Logger.Debug("Library contents: {0} favourites.", library.Favourites.Count());
+                Logger.Debug("Library contents: {0} suggestions.", library.Suggestions.Count());
+            }
         }
 
         public static List<Suggestion> GetOpenSuggestions() {
             using (var library = new Library()) {
                 return library.Suggestions.Where(s => !s.Declined && !s.Accepted).ToList();
             }
+        }
+
+        public static bool HasSearchResults(string artist, string title) {
+            return Find(artist + " " + title, false, 0, 1).Count > 0;
         }
 
         public static void HandleSuggestion(Suggestion suggestion, bool accept) {
@@ -66,7 +79,7 @@ namespace AutoTune.Local {
             }
         }
 
-        public static List<Artist> GetFavouritesWithoutPendingSuggestions(string localTypeId) {
+        public static List<Artist> GetFavouriteArtistsWithoutPendingSuggestions(string localTypeId) {
             using (var library = new Library()) {
                 return library.Tracks
                     .Join(library.Favourites, t => t.Path, f => f.VideoId,
@@ -146,7 +159,10 @@ namespace AutoTune.Local {
 
         public static List<Track> Find(string query, bool favourite, int page, int pageSize) {
             var qLower = query.ToLower();
-            var terms = qLower.Split(' ').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
+            var terms = qLower.Split(' ').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct();
+            terms = terms.Where(t => t.All(c => 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z'));
+            terms = terms.Where(t => !StopList.Contains(t)).ToArray();
+            Logger.Debug("Q = " + string.Join(", ", terms));
             using (var library = new Library()) {
                 IQueryable<Track> q = library.Tracks;
                 if (favourite)

@@ -20,6 +20,7 @@ namespace AutoTune.Settings {
             return Instance.Credentials.Single(c => c.Key.Equals(typeId)).Value;
         }
 
+        internal string MusicGraphAPIKey { get; set; }
         internal string TempFolder { get; set; } = Path.Combine(GetFolderPath(), "temp");
         internal string TargetFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
         internal string LibraryFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);

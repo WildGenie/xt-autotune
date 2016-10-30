@@ -7,8 +7,8 @@
     <ProjectGuid>{4A050F28-B2A5-4FCA-85FF-4661F61A01D8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoTune.Driver</RootNamespace>
-    <AssemblyName>AutoTune.Driver</AssemblyName>
+    <RootNamespace>AutoTune.Search</RootNamespace>
+    <AssemblyName>AutoTune.Search</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -109,6 +109,11 @@
     <Compile Include="SearchResponse.cs" />
     <Compile Include="SearchEngine.cs" />
     <Compile Include="SearchResults.cs" />
+    <Compile Include="Suggest\Item.cs" />
+    <Compile Include="Suggest\SuggestionEngine.cs" />
+    <Compile Include="Suggest\Response.cs" />
+    <Compile Include="Suggest\Status.cs" />
+    <Compile Include="Suggest\SuggestionResult.cs" />
     <Compile Include="Vimeo\VimeoEngine.cs" />
     <Compile Include="Vimeo\VimeoVideoClient.cs" />
     <Compile Include="YouTube\YouTubeEngine.cs" />

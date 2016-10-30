@@ -43,8 +43,8 @@ namespace AutoTune.Search {
             List<SearchResult> result = new List<SearchResult>();
             foreach (string typeId in ActiveEngines.Keys)
                 if ((query.Local == null) ||
-                    (query.Local == true && LocalTypeId.Equals(typeId))
-                    || (query.Local == false && !LocalTypeId.Equals(typeId)))
+                    (query.Local == true && LocalTypeId.Equals(typeId)) ||
+                     (query.Local == false && !LocalTypeId.Equals(typeId)))
                     try {
                         result.AddRange(DoSearch(typeId, query, new Dictionary<string, string>()));
                     } catch (Exception e) {
@@ -69,7 +69,7 @@ namespace AutoTune.Search {
                 DoSearchAsync(query.Credentials.Keys.Single(), query, paging, callback);
             else
                 foreach (string typeId in ActiveEngines.Keys)
-                    if ((query.Local == null) || 
+                    if ((query.Local == null) ||
                         (query.Local == true && LocalTypeId.Equals(typeId)) ||
                         (query.Local == false && !LocalTypeId.Equals(typeId)))
                         DoSearchAsync(typeId, query, paging, callback);

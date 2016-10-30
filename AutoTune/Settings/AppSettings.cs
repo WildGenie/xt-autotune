@@ -25,6 +25,8 @@ namespace AutoTune.Settings {
         internal int FetchTimeout { get; set; } = 60000;
 
         internal char TagSeparator = '-';
+        internal int SuggestionArtistCount = 10;
+        internal double SuggestionMinSimilarity = 0.9;
         internal int SearchPageSize { get; set; } = 10;
         internal int DownloadThreadCount { get; set; } = 0;
         internal bool LogBrowserConsole { get; set; } = false;
