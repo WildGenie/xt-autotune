@@ -32,6 +32,7 @@
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.uiToggleFavourite = new System.Windows.Forms.LinkLabel();
             this.uiRemove = new System.Windows.Forms.LinkLabel();
+            this.uiSimilar = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.uiImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -40,7 +41,7 @@
             this.uiDownload.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiDownload.AutoSize = true;
             this.uiDownload.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiDownload.Location = new System.Drawing.Point(151, 16);
+            this.uiDownload.Location = new System.Drawing.Point(188, 16);
             this.uiDownload.Margin = new System.Windows.Forms.Padding(0);
             this.uiDownload.Name = "uiDownload";
             this.uiDownload.Size = new System.Drawing.Size(55, 13);
@@ -132,11 +133,27 @@
             this.uiTooltip.SetToolTip(this.uiRemove, "Remove this track from the playlist.");
             this.uiRemove.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnRemoveClicked);
             // 
+            // uiSimilar
+            // 
+            this.uiSimilar.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSimilar.AutoSize = true;
+            this.uiSimilar.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSimilar.Location = new System.Drawing.Point(151, 16);
+            this.uiSimilar.Margin = new System.Windows.Forms.Padding(0);
+            this.uiSimilar.Name = "uiSimilar";
+            this.uiSimilar.Size = new System.Drawing.Size(37, 13);
+            this.uiSimilar.TabIndex = 9;
+            this.uiSimilar.TabStop = true;
+            this.uiSimilar.Text = "Similar";
+            this.uiTooltip.SetToolTip(this.uiSimilar, "Search similar tracks.");
+            this.uiSimilar.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSimilarClicked);
+            // 
             // ResultView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.uiSimilar);
             this.Controls.Add(this.uiRemove);
             this.Controls.Add(this.uiToggleFavourite);
             this.Controls.Add(this.uiType);
@@ -163,5 +180,6 @@
         private System.Windows.Forms.ToolTip uiTooltip;
         private System.Windows.Forms.LinkLabel uiToggleFavourite;
         private System.Windows.Forms.LinkLabel uiRemove;
+        private System.Windows.Forms.LinkLabel uiSimilar;
     }
 }

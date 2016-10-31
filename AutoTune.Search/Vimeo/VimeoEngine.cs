@@ -11,6 +11,10 @@ namespace AutoTune.Search.Vimeo {
 
         const string NoMoreResults = "NoMoreResults";
 
+        static string GetThumbnailUrl(Video video) {
+            return video?.pictures?.SelectMany(p => p.sizes).Select(s => s.link).FirstOrDefault();
+        }
+
         static List<SearchResult> TransformResponse(Paginated<Video> response) {
             return response.data.Select(v => new SearchResult {
                 Local = false,
@@ -18,7 +22,7 @@ namespace AutoTune.Search.Vimeo {
                 TypeId = VimeoTypeId,
                 VideoId = v.id?.ToString(),
                 Description = v.description,
-                ThumbnailBase64 = Convert.ToBase64String(Utility.Download(v.pictures.SelectMany(p => p.sizes).Select(s => s.link).FirstOrDefault()))
+                ThumbnailBase64 = GetThumbnailUrl(v) == null ? null : Convert.ToBase64String(Utility.Download(GetThumbnailUrl(v)))
             }).ToList();
         }
 

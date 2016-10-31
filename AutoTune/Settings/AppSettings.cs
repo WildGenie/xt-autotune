@@ -13,6 +13,7 @@ namespace AutoTune.Settings {
         internal static string NoImageAvailableBase64;
         internal static string FetchFilePath = Path.Combine(GetFolderPath(), "fetch.js");
         internal static string LogFilePath = Path.Combine(GetFolderPath(), "autotune.log");
+        internal static string StopListPath = Path.Combine(GetFolderPath(), "stoplist.txt");
         internal static string EmptyHtmlFilePath = Path.Combine(GetFolderPath(), "empty.html");
         internal static string FetchExecutablePath = Path.Combine("fetch", "AutoTune.Fetch.exe");
         internal static string NoImageAvailablePath = Path.Combine(GetFolderPath(), "no-image-available.png");
@@ -25,8 +26,12 @@ namespace AutoTune.Settings {
         internal int FetchTimeout { get; set; } = 60000;
 
         internal char TagSeparator = '-';
-        internal int SuggestionArtistCount = 10;
+        internal int SimilarArtistCount = 10;
+        internal int SimilarArtistLimit = 10;
+        internal double SimilarMinSimilarity = 0.7;
         internal double SuggestionMinSimilarity = 0.9;
+        internal int SuggestionSimilarTrackLimit = 3;
+        internal int SuggestionSimilarArtistLimit = 3;
         internal int SearchPageSize { get; set; } = 10;
         internal int DownloadThreadCount { get; set; } = 0;
         internal bool LogBrowserConsole { get; set; } = false;
@@ -34,7 +39,7 @@ namespace AutoTune.Settings {
         internal bool UpdateLibraryAfterDownload { get; set; } = true;
         internal bool LoadMoreResultsOnScrollToEnd { get; set; } = true;
         internal int ScanLibraryInterval { get; set; } = 60 * 60 * 1000;
-        internal int ScanSuggestionsInterval { get; set; } = 60 * 60 * 1000;
+        internal int ScanFavouritesInterval { get; set; } = 60 * 60 * 1000;
         internal bool EmbedThumbnailAfterPostProcessing { get; set; } = true;
         internal bool EmbedDescriptionAfterPostProcessing { get; set; } = true;
 
@@ -79,6 +84,7 @@ namespace AutoTune.Settings {
 
         internal override void OnInitialized() {
             InitializeResource(FetchFilePath, "AutoTune.fetch.js");
+            InitializeResource(StopListPath, "AutoTune.stoplist.txt");
             InitializeResource(EmptyHtmlFilePath, "AutoTune.empty.html");
             InitializeResource(NoImageAvailablePath, "AutoTune.no-image-available.png");
             NoImageAvailableBase64 = Convert.ToBase64String(File.ReadAllBytes(NoImageAvailablePath));

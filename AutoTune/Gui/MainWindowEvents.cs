@@ -7,6 +7,7 @@ using AutoTune.Shared;
 using CefSharp;
 using System;
 using System.Windows.Forms;
+using System.IO;
 
 namespace AutoTune.Gui {
 
@@ -21,8 +22,6 @@ namespace AutoTune.Gui {
             Cef.Shutdown();
             logger.Flush();
             logger.Dispose();
-            LibraryScanner.Terminate();
-            SuggestionScanner.Terminate();
             Playlist.Terminate();
             UiSettings.Terminate();
             AppSettings.Terminate();
@@ -37,7 +36,11 @@ namespace AutoTune.Gui {
             var app = AppSettings.Instance;
             InitializeLog();
             SearchEngine.Initialize(app.Providers.Keys.Where(k => app.Providers[k].Enabled));
-            Library.Initialize(AppSettings.GetFolderPath());
+            string[] stopList = File.ReadAllLines(AppSettings.StopListPath)
+                .Select(s => s.Trim())
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .ToArray();
+            Library.Initialize(AppSettings.GetFolderPath(), stopList);
             InitializeSettings();
             Playlist.Initialize();
             DownloadQueue.Initialize();
@@ -53,7 +56,7 @@ namespace AutoTune.Gui {
             DownloadQueue.Start();
             PostProcessingQueue.Start();
             InitializePlaylist();
-            SuggestionScanner.Start(app.ScanSuggestionsInterval);
+            SimilarScanner.Start(app.ScanFavouritesInterval);
             LibraryScanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.ScanLibraryInterval);
             ShowScrollBar(uiResults.Handle, SbVert, true);
             ShowScrollBar(uiPlaylist.Handle, SbVert, true);
@@ -165,8 +168,18 @@ namespace AutoTune.Gui {
             LoadMoreResults();
         }
 
+        void OnResultSimilarClicked(object sender, EventArgs<SearchResult> e) {
+            searchQuery = null;
+            searchRelated = null;
+            searchSimilar = e.Data;
+            uiResults.Controls.Clear();
+            uiLeftTabs.SelectedIndex = TabIndexSearch;
+            SimilarScanner.SearchSimilar(e.Data.Title, AppendResults);
+        }
+
         void OnResultRelatedClicked(object sender, EventArgs<SearchResult> e) {
             searchQuery = null;
+            searchSimilar = null;
             searchRelated = e.Data;
             uiResults.Controls.Clear();
             uiLeftTabs.SelectedIndex = TabIndexSearch;

@@ -41,8 +41,10 @@ namespace AutoTune.Search.Vimeo {
         }
 
         IApiRequest GenerateVideosRequest(SearchQuery query) {
-            string path = query.Query != null ? "/videos" : "/videos/" + query.RelatedId + "/videos";
+            string path = query.Query != null ? "/categories/music/videos" : "/videos/" + query.RelatedId + "/videos";
             var request = GenerateVideosRequest(path);
+            request.Query.Add("sort", "relevant");
+            request.Query.Add("categories", Uri.EscapeDataString("[music]"));
             request.Query.Add("per_page", query.PageSize.ToString());
             if (query.Query != null)
                 request.Query.Add("query", query.Query);

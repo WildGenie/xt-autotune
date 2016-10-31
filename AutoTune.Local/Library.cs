@@ -1,4 +1,5 @@
 ﻿using AutoTune.Shared;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SQLite;
@@ -10,9 +11,9 @@ namespace AutoTune.Local {
     public class Library : DbContext {
 
         static string dbPath;
+        static string[] stopList;
         const string FileName = "db.sqlite";
         const string ConnectionString = "Data Source=\"{0}\";Version=3;";
-        static readonly string[] StopList = { "the", "and", "feat", "featuring", "vs" };
 
         static SQLiteConnection GetConnection() {
             SQLiteConnection result = new SQLiteConnection(string.Format(ConnectionString, dbPath));
@@ -32,8 +33,9 @@ namespace AutoTune.Local {
             Configuration.AutoDetectChangesEnabled = false;
         }
 
-        public static void Initialize(string dbFolder) {
+        public static void Initialize(string dbFolder, string[] stopList) {
             string[] statements;
+            Library.stopList = stopList;
             dbPath = Path.Combine(dbFolder, FileName);
             if (File.Exists(dbPath))
                 return;
@@ -151,7 +153,7 @@ namespace AutoTune.Local {
                     return new List<Track>();
                 var albumId = track?.Album?.Id;
                 var artistId = track?.Artist?.Id;
-                return ExecuteQuery(library.Tracks
+                return ExecuteQuery(path, library.Tracks
                     .Where(t => t.Album != null && t.Album.Id == albumId ||
                       t.Artist != null && t.Artist.Id == artistId), page, pageSize);
             }
@@ -159,10 +161,8 @@ namespace AutoTune.Local {
 
         public static List<Track> Find(string query, bool favourite, int page, int pageSize) {
             var qLower = query.ToLower();
-            var terms = qLower.Split(' ').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct();
-            terms = terms.Where(t => t.All(c => 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z'));
-            terms = terms.Where(t => !StopList.Contains(t)).ToArray();
-            Logger.Debug("Q = " + string.Join(", ", terms));
+            var terms = qLower.Split(' ').Select(t => Utility.Normalize(t)).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct();
+            terms = terms.Where(t => !stopList.Contains(t)).Select(t => t.Replace('-', ' ')).ToArray();
             using (var library = new Library()) {
                 IQueryable<Track> q = library.Tracks;
                 if (favourite)
@@ -170,20 +170,26 @@ namespace AutoTune.Local {
                         t => new { TypeId = "Local", VideoId = t.Path },
                         f => new { TypeId = f.TypeId, VideoId = f.VideoId },
                         (t, f) => t);
-                return ExecuteQuery(q.Where(t => t.Path.ToLower().Contains(qLower) || terms.All(tm =>
+                return ExecuteQuery(query, q.Where(t => t.Path.ToLower().Contains(qLower) || terms.All(tm =>
                      ((t.Title == null ? "" : t.Title) +
                      (t.Album == null ? "" : t.Album.Name) +
                      (t.Artist == null ? "" : t.Artist.Name)).ToLower().Contains(tm))), page, pageSize);
             }
         }
 
-        static List<Track> ExecuteQuery(IQueryable<Track> query, int page, int pageSize) {
-            return query.OrderBy(t => t.Title)
+        static List<Track> ExecuteQuery(string text, IQueryable<Track> query, int page, int pageSize) {
+            query = query.OrderBy(t => t.Title)
                     .Skip(page * pageSize)
                     .Take(pageSize)
                     .Include(t => t.Genre)
-                    .Include(t => t.Artist)
-                    .ToList();
+                    .Include(t => t.Artist);
+            try {
+                return query.ToList();
+            } catch (Exception e) {
+                string sql = query.ToString();
+                Logger.Error(e, "Failed to execute sql for query text {0}: {1}.", text, sql);
+                throw;
+            }
         }
     }
 }

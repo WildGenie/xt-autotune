@@ -1,6 +1,6 @@
-﻿namespace AutoTune.Search.Suggest {
+﻿namespace AutoTune.Search.Similar {
 
-    public class SuggestionResult {
+    public class SimilarResult {
 
         public string Name { get; set; }
         public double Similarity { get; set; }

@@ -10,48 +10,42 @@ namespace AutoTune.Local {
 
     public static class LibraryScanner {
 
-        static int running = 0;
         static bool forceUpdate = false;
         const double ProgressInterval = 0.05;
         static readonly object Lock = new object();
 
         public static void UpdateLibrary() {
-            lock(Lock) {
+            lock (Lock) {
                 forceUpdate = true;
                 Monitor.Pulse(Lock);
             }
         }
 
         public static void Start(string libraryFolder, char tagSeparator, int interval) {
-            Interlocked.CompareExchange(ref running, 1, 0);
-            new Thread(() => Run(libraryFolder, tagSeparator, interval)).Start();
-        }
-
-        public static void Terminate() {
-            Interlocked.CompareExchange(ref running, 0, 1);
-            lock (Lock)
-                Monitor.Pulse(Lock);
+            var thread = new Thread(() => Run(libraryFolder, tagSeparator, interval));
+            thread.IsBackground = true;
+            thread.Start();
         }
 
         static void Run(string libraryFolder, char tagSeparator, int interval) {
-            lock (Lock)
-                while (running != 0) {
-                    try {
-                        using (Library library = new Library()) {
-                            ScanNewTracks(library, libraryFolder, tagSeparator);
-                            CleanOldTracks(library, libraryFolder);
-                        }
-                    } catch (Exception e) {
-                        Logger.Error(e, "Scanning library failed.");
+            while (true) {
+                try {
+                    using (Library library = new Library()) {
+                        ScanNewTracks(library, libraryFolder, tagSeparator);
+                        CleanOldTracks(library, libraryFolder);
                     }
-                    forceUpdate = false;
-                    long now = Environment.TickCount;
-                    long start = Environment.TickCount;
-                    while (!forceUpdate && now - start < interval && running != 0) {
+                } catch (Exception e) {
+                    Logger.Error(e, "Scanning library failed.");
+                }
+                forceUpdate = false;
+                long now = Environment.TickCount;
+                long start = Environment.TickCount;
+                lock (Lock)
+                    while (!forceUpdate && now - start < interval) {
                         Monitor.Wait(Lock, interval);
                         now = Environment.TickCount;
                     }
-                }
+            }
         }
 
         static TrackInfo ParseTrack(string path, char tagSeparator) {
@@ -116,8 +110,6 @@ namespace AutoTune.Local {
             Logger.Info("Scanning new tracks...");
             var paths = Directory.GetFiles(libraryFolder, "*.*", SearchOption.AllDirectories);
             for (int i = 0; i < paths.Length; i++) {
-                if (Interlocked.CompareExchange(ref running, 0, 0) == 0)
-                    return;
                 path = paths[i];
                 if (library.Tracks.Where(t => t.Path.Equals(path)).Any())
                     continue;
@@ -140,8 +132,6 @@ namespace AutoTune.Local {
             Logger.Info("Cleaning old tracks...");
             var libraryDirectory = new DirectoryInfo(libraryFolder);
             foreach (var track in library.Tracks) {
-                if (Interlocked.CompareExchange(ref running, 0, 0) == 0)
-                    return;
                 bool inLibrary = System.IO.File.Exists(track.Path);
                 if (inLibrary) {
                     var trackDirectory = new FileInfo(track.Path).Directory;

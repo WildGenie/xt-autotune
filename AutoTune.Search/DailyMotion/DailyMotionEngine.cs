@@ -12,7 +12,7 @@ namespace AutoTune.Search.DailyMotion {
 
         const string Fields = "description,embed_url,id,thumbnail_120_url,title,url";
         const string RelatedFormat = "https://api.dailymotion.com/video/{0}/related?fields={1}&page={2}&limit={3}";
-        const string SearchFormat = "https://api.dailymotion.com/videos/?fields={0}&search={1}&page={2}&limit={3}";
+        const string SearchFormat = "https://api.dailymotion.com/channel/music/videos/?fields={0}&search={1}&page={2}&limit={3}";
 
         static List<SearchResult> TransformResponse(DailyMotionResponse response) {
             return response.list.Select(v => new SearchResult {

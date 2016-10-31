@@ -83,6 +83,7 @@ namespace AutoTune.Gui {
         private object searchState = null;
         private string searchQuery = null;
         private SearchResult searchRelated = null;
+        private SearchResult searchSimilar = null;
         private ChromiumWebBrowser uiBrowser;
         private AxWindowsMediaPlayer uiPlayer;
         private readonly object shutdownLock = new object();
@@ -127,16 +128,16 @@ namespace AutoTune.Gui {
             uiPlaylistModeAll.ForeColor = fore1;
             uiPlaylistModeTrack.ForeColor = fore1;
             uiPlaylistModeRandom.ForeColor = fore1;
-            Utility.SetLinkForeColors(uiPlaylistStop);
-            Utility.SetLinkForeColors(uiPlaylistNext);
-            Utility.SetLinkForeColors(uiPlaylistClear);
-            Utility.SetLinkForeColors(uiLoadMore);
-            Utility.SetToggleForeColors(uiToggleLog);
-            Utility.SetToggleForeColors(uiToggleSearch);
-            Utility.SetToggleForeColors(uiToggleFullScreen);
-            Utility.SetToggleForeColors(uiTogglePlayerFull);
-            Utility.SetToggleForeColors(uiToggleNotifications);
-            Utility.SetToggleForeColors(uiToggleCurrentControls);
+            UiUtility.SetLinkForeColors(uiPlaylistStop);
+            UiUtility.SetLinkForeColors(uiPlaylistNext);
+            UiUtility.SetLinkForeColors(uiPlaylistClear);
+            UiUtility.SetLinkForeColors(uiLoadMore);
+            UiUtility.SetToggleForeColors(uiToggleLog);
+            UiUtility.SetToggleForeColors(uiToggleSearch);
+            UiUtility.SetToggleForeColors(uiToggleFullScreen);
+            UiUtility.SetToggleForeColors(uiTogglePlayerFull);
+            UiUtility.SetToggleForeColors(uiToggleNotifications);
+            UiUtility.SetToggleForeColors(uiToggleCurrentControls);
         }
 
         void InitializeControls() {
@@ -264,10 +265,9 @@ namespace AutoTune.Gui {
 
         void StartSearch() {
             var ui = UiSettings.Instance;
-            if (uiQuery.Text.Trim().Length == 0)
-                return;
             uiResults.Controls.Clear();
             searchRelated = null;
+            searchSimilar = null;
             searchQuery = uiQuery.Text.Trim();
             UiSettings.Instance.LastSearch = searchQuery;
             var pageSize = AppSettings.Instance.SearchPageSize;
@@ -337,6 +337,8 @@ namespace AutoTune.Gui {
         }
 
         void LoadMoreResults() {
+            if (searchSimilar != null)
+                return;
             var ui = UiSettings.Instance;
             var typeId = searchRelated?.TypeId;
             SearchCredentials searchCredentials = null;
@@ -354,6 +356,7 @@ namespace AutoTune.Gui {
             view.PlayClicked += OnResultPlayClicked;
             view.QueueClicked += OnResultQueueClicked;
             view.RelatedClicked += OnResultRelatedClicked;
+            view.SimilarClicked += OnResultSimilarClicked;
             view.DownloadClicked += OnResultDownloadClicked;
             view.RemoveClicked += (s, e) => RemoveFromPlaylist(view);
         }

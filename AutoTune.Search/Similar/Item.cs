@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace AutoTune.Search {
+namespace AutoTune.Search.Similar {
 
     class Item {
 

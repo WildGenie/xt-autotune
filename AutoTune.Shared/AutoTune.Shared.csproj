@@ -49,6 +49,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="SearchCredentials.cs" />
+    <Compile Include="SearchResponse.cs" />
     <Compile Include="SearchResult.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>

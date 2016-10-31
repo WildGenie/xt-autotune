@@ -15,6 +15,7 @@ namespace AutoTune.Gui {
         internal event EventHandler<EventArgs<SearchResult>> QueueClicked;
         internal event EventHandler<EventArgs<SearchResult>> RemoveClicked;
         internal event EventHandler<EventArgs<SearchResult>> RelatedClicked;
+        internal event EventHandler<EventArgs<SearchResult>> SimilarClicked;
         internal event EventHandler<EventArgs<SearchResult>> DownloadClicked;
 
         bool playing;
@@ -58,10 +59,11 @@ namespace AutoTune.Gui {
             uiType.ForeColor = fore1;
             uiText.ForeColor = fore1;
             SetFavouriteState(false);
-            Utility.SetLinkForeColors(uiRemove);
-            Utility.SetLinkForeColors(uiRelated);
-            Utility.SetLinkForeColors(uiDownload);
-            Utility.SetLinkForeColors(uiToggleFavourite);
+            UiUtility.SetLinkForeColors(uiRemove);
+            UiUtility.SetLinkForeColors(uiRelated);
+            UiUtility.SetLinkForeColors(uiSimilar);
+            UiUtility.SetLinkForeColors(uiDownload);
+            UiUtility.SetLinkForeColors(uiToggleFavourite);
         }
 
         void OnResize(object sender, EventArgs e) {
@@ -89,7 +91,7 @@ namespace AutoTune.Gui {
                 text += " \\line " + result.Description + " }";
                 uiText.Rtf = text;
             }
-            uiImage.Image = Utility.ImageFromBase64(result?.ThumbnailBase64 ?? AppSettings.NoImageAvailableBase64);
+            uiImage.Image = UiUtility.ImageFromBase64(result?.ThumbnailBase64 ?? AppSettings.NoImageAvailableBase64);
             bool isFavourite = Library.IsFavourite(result?.TypeId, result?.VideoId);
             SetFavouriteState(isFavourite);
         }
@@ -102,6 +104,11 @@ namespace AutoTune.Gui {
         void OnRelatedClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (result != null)
                 RelatedClicked(this, new EventArgs<SearchResult>(result));
+        }
+
+        void OnSimilarClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            if (result != null)
+                SimilarClicked(this, new EventArgs<SearchResult>(result));
         }
 
         void OnDownloadClicked(object sender, LinkLabelLinkClickedEventArgs e) {

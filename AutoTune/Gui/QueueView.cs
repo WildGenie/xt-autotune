@@ -34,9 +34,9 @@ namespace AutoTune.Gui {
         }
 
         void InitializeColors() {
-            Utility.SetLinkForeColors(uiPause);
-            Utility.SetLinkForeColors(uiClearQueue);
-            Utility.SetLinkForeColors(uiHideCompleted);
+            UiUtility.SetLinkForeColors(uiPause);
+            UiUtility.SetLinkForeColors(uiClearQueue);
+            UiUtility.SetLinkForeColors(uiHideCompleted);
         }
 
         void AddViews() {

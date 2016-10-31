@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Shared {
 
-    static class Utility {
+    static class UiUtility {
 
         internal static void SetToggleForeColors(LinkLabel link) {
             var theme = ThemeSettings.Instance;

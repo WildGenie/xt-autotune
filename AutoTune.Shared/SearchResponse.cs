@@ -1,15 +1,14 @@
-﻿using AutoTune.Shared;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace AutoTune.Search {
+namespace AutoTune.Shared {
 
     public class SearchResponse {
 
         public Exception Error { get; }
         public List<SearchResult> Results { get; }
 
-        internal SearchResponse(Exception error, List<SearchResult> results) {
+        public SearchResponse(Exception error, List<SearchResult> results) {
             Error = error;
             Results = results;
         }

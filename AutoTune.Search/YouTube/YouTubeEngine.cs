@@ -10,6 +10,8 @@ namespace AutoTune.Search.YouTube {
 
     class YouTubeEngine : SearchEngine {
 
+        const int MusicCategoryId = 10;
+
         static List<SearchResult> TransformResponse(Google.Apis.YouTube.v3.Data.SearchListResponse response) {
             return response.Items.Select(i => new SearchResult {
                 Local = false,
@@ -28,6 +30,7 @@ namespace AutoTune.Search.YouTube {
             result.PageToken = currentPage;
             result.MaxResults = query.PageSize;
             result.RelatedToVideoId = query.RelatedId;
+            result.VideoCategoryId = MusicCategoryId.ToString();
             return result;
         }
 
