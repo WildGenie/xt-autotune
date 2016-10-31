@@ -27,6 +27,8 @@ namespace AutoTune.Search.Vimeo {
         }
 
         internal override SearchResults Execute(SearchQuery query, string currentPage) {
+            if (query.RelatedId == null && string.IsNullOrWhiteSpace(query.Query))
+                return new SearchResults(NoMoreResults, new List<SearchResult>());
             if (NoMoreResults.Equals(currentPage))
                 return new SearchResults(NoMoreResults, new List<SearchResult>());
             var credentials = query.Credentials[VimeoTypeId];
