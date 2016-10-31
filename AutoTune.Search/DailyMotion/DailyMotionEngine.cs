@@ -40,6 +40,8 @@ namespace AutoTune.Search.DailyMotion {
         }
 
         internal override SearchResults Execute(SearchQuery query, string currentPage) {
+            if (query.RelatedId == null && string.IsNullOrWhiteSpace(query.Query))
+                return new SearchResults(null, new List<SearchResult>());
             var response = ExecuteRequest(query, currentPage);
             var results = TransformResponse(response);
             if (query.Favourite)
