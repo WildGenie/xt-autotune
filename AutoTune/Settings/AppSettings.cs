@@ -36,8 +36,8 @@ namespace AutoTune.Settings {
         internal int SuggestionSimilarTrackLimit { get; set; } = 3;
         internal int SuggestionSearchArtistLimit { get; set; } = 3;
         internal int DelaySuggestionsScan { get; set; } = 20 * 1000;
-        internal double SuggestionMinSimilarity { get; set; } = 0.9;
         internal int SuggestionSimilarArtistLimit { get; set; } = 3;
+        internal double SuggestionMinSimilarity { get; set; } = 0.95;
         internal bool ScrollToEndOnMoreResults { get; set; } = false;
         internal bool UpdateLibraryAfterDownload { get; set; } = true;
         internal bool LoadMoreResultsOnScrollToEnd { get; set; } = true;
@@ -46,11 +46,11 @@ namespace AutoTune.Settings {
         internal bool EmbedThumbnailAfterPostProcessing { get; set; } = true;
         internal bool EmbedDescriptionAfterPostProcessing { get; set; } = true;
 
-        internal bool PostProcessingEnabled { get; set; } = true;
+        internal bool PostProcessingEnabled { get; set; } = false;
         internal int PostProcessingThreadCount { get; set; } = 0;
+        internal bool PostProcessingKeepOriginal { get; set; } = true;
         internal string PostProcessingExtension { get; set; } = "mp3";
         internal string PostProcessingCommand { get; set; } = "ffmpeg";
-        internal bool PostProcessingKeepOriginal { get; set; } = true;
         internal string PostProcessingArguments { get; set; } = "-i \"{0}\" -y \"{1}.{2}\" -quality good -cpu-used 0";
 
         [YAXDictionary(EachPairName = "Provider", KeyName = "Id", ValueName = "Settings", SerializeKeyAs = YAXNodeTypes.Attribute)]
