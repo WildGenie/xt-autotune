@@ -33,6 +33,7 @@ namespace AutoTune.Gui {
         const string UnicodeBlackDownPointingTriangle = "\u25bc";
         const string UnicodeBlackLeftPointingTriangle = "\u25c0";
         const string UnicodeBlackRightPointingTriangle = "\u25b6";
+        static Form mainWindow;
         static readonly string Arch = Environment.Is64BitProcess ? "x64" : "x86";
         static readonly string AppBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
@@ -67,7 +68,18 @@ namespace AutoTune.Gui {
             Cef.Initialize(CreateCefSettings());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+            Application.ThreadException += (s, e) => OnUnexpectedError(e.Exception);
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => OnUnexpectedError(e.ExceptionObject);
+            mainWindow = new MainWindow();
+            Application.Run(mainWindow);
+        }
+
+        static void OnUnexpectedError(object error) {
+            var exception = error as Exception;
+            string text = exception == null ? "Unknown error." : exception.Message;
+            MessageBox.Show(mainWindow, text, "Unexpected error.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (exception != null)
+                Logger.Error(exception, text);
         }
 
         static Assembly ResolveCef(object sender, ResolveEventArgs args) {
