@@ -131,6 +131,10 @@ namespace AutoTune.Gui {
                 Playlist.Instance.Mode = PlaylistMode.Random;
         }
 
+        void OnSearchUpdateLibraryClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            LibraryScanner.UpdateLibrary();
+        }
+
         void OnResultPlayClicked(object sender, EventArgs<SearchResult> e) {
             PlayResult(e.Data);
         }

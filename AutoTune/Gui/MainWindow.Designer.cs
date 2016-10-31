@@ -89,6 +89,7 @@
             this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.uiSearchUpdateLibrary = new System.Windows.Forms.LinkLabel();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -583,13 +584,15 @@
             // 
             // uiSearchLocalFavouritePanel
             // 
-            this.uiSearchLocalFavouritePanel.ColumnCount = 3;
+            this.uiSearchLocalFavouritePanel.ColumnCount = 4;
             this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchFavouriteOnly, 0, 0);
+            this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchReplacePlaylist, 3, 0);
             this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchLocalOnly, 1, 0);
-            this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchReplacePlaylist, 2, 0);
+            this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchUpdateLibrary, 2, 0);
             this.uiSearchLocalFavouritePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiSearchLocalFavouritePanel.Location = new System.Drawing.Point(0, 0);
             this.uiSearchLocalFavouritePanel.Margin = new System.Windows.Forms.Padding(0);
@@ -630,7 +633,7 @@
             this.uiSearchReplacePlaylist.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiSearchReplacePlaylist.AutoSize = true;
             this.uiSearchReplacePlaylist.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiSearchReplacePlaylist.Location = new System.Drawing.Point(143, 8);
+            this.uiSearchReplacePlaylist.Location = new System.Drawing.Point(223, 8);
             this.uiSearchReplacePlaylist.Name = "uiSearchReplacePlaylist";
             this.uiSearchReplacePlaylist.Size = new System.Drawing.Size(81, 13);
             this.uiSearchReplacePlaylist.TabIndex = 4;
@@ -1062,6 +1065,20 @@
             this.uiSplitSearch.SplitterDistance = 415;
             this.uiSplitSearch.TabIndex = 6;
             // 
+            // uiSearchUpdateLibrary
+            // 
+            this.uiSearchUpdateLibrary.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSearchUpdateLibrary.AutoSize = true;
+            this.uiSearchUpdateLibrary.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSearchUpdateLibrary.Location = new System.Drawing.Point(143, 8);
+            this.uiSearchUpdateLibrary.Name = "uiSearchUpdateLibrary";
+            this.uiSearchUpdateLibrary.Size = new System.Drawing.Size(72, 13);
+            this.uiSearchUpdateLibrary.TabIndex = 5;
+            this.uiSearchUpdateLibrary.TabStop = true;
+            this.uiSearchUpdateLibrary.Text = "Update library";
+            this.uiTooltip.SetToolTip(this.uiSearchUpdateLibrary, "Re-scan local library.");
+            this.uiSearchUpdateLibrary.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSearchUpdateLibraryClicked);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1199,6 +1216,7 @@
         private System.Windows.Forms.LinkLabel uiSuggestionsIgnoreAll;
         private System.Windows.Forms.LinkLabel uiSuggestionsReplacePlayist;
         private System.Windows.Forms.LinkLabel uiSuggestionsClearHistory;
+        private System.Windows.Forms.LinkLabel uiSearchUpdateLibrary;
     }
 }
 

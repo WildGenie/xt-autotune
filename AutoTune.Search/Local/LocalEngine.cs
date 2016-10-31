@@ -15,7 +15,7 @@ namespace AutoTune.Search.Local {
                 Local = true,
                 VideoId = t.Path,
                 TypeId = LocalTypeId,
-                Description = t.Comment,
+                Description = t.Path,
                 ThumbnailBase64 = t.ImageBase64,
                 Title = string.Format("{0} - {1}", t.Artist?.Name ?? "?", t.Title ?? "?")
             }).ToList();

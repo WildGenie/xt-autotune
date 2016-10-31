@@ -7,7 +7,6 @@
         internal string album;
         internal string genre;
         internal string artist;
-        internal string comment;
         internal string imageBase64;
     }
 }

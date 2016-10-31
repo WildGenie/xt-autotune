@@ -34,7 +34,6 @@ on favourite(type_id, video_id);
 create table track (
   id integer primary key,
   title text,
-  comment text,
   album_id integer,
   genre_id integer,
   artist_id integer,

@@ -65,7 +65,6 @@ namespace AutoTune.Local {
                         title = title,
                         artist = artist,
                         album = file.Tag.Album,
-                        comment = file.Tag.Comment,
                         genre = file.Tag.FirstGenre,
                         imageBase64 = file.Tag.Pictures.Length == 0 ? null : Convert.ToBase64String(file.Tag.Pictures[0].Data.Data)
                     };
@@ -96,7 +95,7 @@ namespace AutoTune.Local {
             Genre genre = FindOrCreate(library, library.Genres, info.genre, ref counters.genres);
             Album album = FindOrCreate(library, library.Albums, info.album, ref counters.albums);
             Artist artist = FindOrCreate(library, library.Artists, info.artist, ref counters.artists);
-            library.Tracks.Add(new Track(info.path, info.title, info.comment, info.imageBase64, genre, album, artist));
+            library.Tracks.Add(new Track(info.path, info.title, info.imageBase64, genre, album, artist));
             library.SaveChanges();
             counters.tracks++;
         }
