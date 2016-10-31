@@ -21,27 +21,43 @@ namespace AutoTune.Gui {
         bool playing;
         long clickTime;
         Rectangle clickArea;
-        private readonly bool playlist;
         volatile bool firstClick = true;
         volatile bool doubleClick = false;
+        internal ResultViewType Type { get; }
 
         private SearchResult result;
         internal SearchResult Result { get { return result; } }
 
         public ResultView() :
-            this(false) {
+            this(ResultViewType.Search) {
         }
 
-        public ResultView(bool playlist) {
+        public ResultView(ResultViewType type) {
             InitializeComponent();
-            this.playlist = playlist;
+            Type = type;
             if (DesignMode)
                 return;
             InitializeColors();
             Resize += OnResize;
-            uiTooltip.SetToolTip(uiImage, "Click to queue, double-click to play.");
-            if (playlist) {
-                uiTooltip.SetToolTip(uiImage, "Click to queue, double-click to play, drag to reorder.");
+            switch (type) {
+                case ResultViewType.Search:
+                    uiTooltip.SetToolTip(uiImage, "Click to queue, double-click to play.");
+                    uiTooltip.SetToolTip(uiDownload, "Send this track to the download queue.");
+                    break;
+                case ResultViewType.Suggestion:
+                    uiTooltip.SetToolTip(uiImage, "Click to queue, double-click to play.");
+                    uiTooltip.SetToolTip(uiRemove, "Decline suggestion (won't show up again).");
+                    uiTooltip.SetToolTip(uiDownload, "Accept suggestion and send to the download queue.");
+                    break;
+                case ResultViewType.Playlist:
+                    uiTooltip.SetToolTip(uiRemove, "Remove this track from the playlist.");
+                    uiTooltip.SetToolTip(uiDownload, "Send this track to the download queue.");
+                    uiTooltip.SetToolTip(uiImage, "Click to queue, double-click to play, drag to reorder.");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            if (type == ResultViewType.Playlist) {
                 AllowDrop = true;
                 DragOver += OnDragOver;
                 DragDrop += OnDragDrop;
@@ -82,8 +98,8 @@ namespace AutoTune.Gui {
         internal void SetResult(SearchResult result) {
             var theme = ThemeSettings.Instance;
             this.result = result;
-            uiRemove.Visible = playlist;
             uiDownload.Visible = !result?.Local ?? false;
+            uiRemove.Visible = Type != ResultViewType.Search;
             uiText.Text = "";
             uiType.Text = result == null ? "" : result.TypeId + (!playing ? "" : " (playing)");
             if (result != null) {

@@ -25,21 +25,24 @@ namespace AutoTune.Settings {
         internal int FetchDelay { get; set; } = 1000;
         internal int FetchTimeout { get; set; } = 60000;
 
-        internal char TagSeparator = '-';
-        internal int SimilarArtistCount = 10;
-        internal int SimilarArtistLimit = 10;
-        internal double SimilarMinSimilarity = 0.7;
-        internal double SuggestionMinSimilarity = 0.9;
-        internal int SuggestionSimilarTrackLimit = 3;
-        internal int SuggestionSimilarArtistLimit = 3;
+        internal char TagSeparator { get; set; } = '-';
         internal int SearchPageSize { get; set; } = 10;
+        internal int SimilarArtistCount { get; set; } = 10;
+        internal int SimilarArtistLimit { get; set; } = 10;
         internal int DownloadThreadCount { get; set; } = 0;
         internal bool LogBrowserConsole { get; set; } = false;
+        internal int DelayLibraryScan { get; set; } = 10 * 1000;
+        internal double SimilarMinSimilarity { get; set; } = 0.7;
+        internal int SuggestionSimilarTrackLimit { get; set; } = 3;
+        internal int SuggestionSearchArtistLimit { get; set; } = 3;
+        internal int DelaySuggestionsScan { get; set; } = 20 * 1000;
+        internal double SuggestionMinSimilarity { get; set; } = 0.9;
+        internal int SuggestionSimilarArtistLimit { get; set; } = 3;
         internal bool ScrollToEndOnMoreResults { get; set; } = false;
         internal bool UpdateLibraryAfterDownload { get; set; } = true;
         internal bool LoadMoreResultsOnScrollToEnd { get; set; } = true;
         internal int ScanLibraryInterval { get; set; } = 60 * 60 * 1000;
-        internal int ScanFavouritesInterval { get; set; } = 60 * 60 * 1000;
+        internal int ScanSuggestionsInterval { get; set; } = 60 * 60 * 1000;
         internal bool EmbedThumbnailAfterPostProcessing { get; set; } = true;
         internal bool EmbedDescriptionAfterPostProcessing { get; set; } = true;
 

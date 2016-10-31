@@ -48,7 +48,6 @@
             this.uiDownload.TabIndex = 3;
             this.uiDownload.TabStop = true;
             this.uiDownload.Text = "Download";
-            this.uiTooltip.SetToolTip(this.uiDownload, "Send this track to the download queue (right-click image).");
             this.uiDownload.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnDownloadClicked);
             // 
             // uiRelated
@@ -130,7 +129,6 @@
             this.uiRemove.TabIndex = 8;
             this.uiRemove.TabStop = true;
             this.uiRemove.Text = "Remove";
-            this.uiTooltip.SetToolTip(this.uiRemove, "Remove this track from the playlist.");
             this.uiRemove.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnRemoveClicked);
             // 
             // uiSimilar

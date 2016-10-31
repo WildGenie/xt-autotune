@@ -21,13 +21,14 @@ namespace AutoTune.Local {
             }
         }
 
-        public static void Start(string libraryFolder, char tagSeparator, int interval) {
-            var thread = new Thread(() => Run(libraryFolder, tagSeparator, interval));
+        public static void Start(string libraryFolder, char tagSeparator, int delay, int interval) {
+            var thread = new Thread(() => Run(libraryFolder, tagSeparator, delay, interval));
             thread.IsBackground = true;
             thread.Start();
         }
 
-        static void Run(string libraryFolder, char tagSeparator, int interval) {
+        static void Run(string libraryFolder, char tagSeparator, int delay, int interval) {
+            Thread.Sleep(delay);
             while (true) {
                 try {
                     using (Library library = new Library()) {

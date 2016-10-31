@@ -59,6 +59,20 @@ namespace AutoTune.Local {
             }
         }
 
+        public static void ClearOpenSuggestions() {
+            using (var library = new Library()) {
+                var open = library.Suggestions.Where(s => !s.Declined && !s.Accepted).ToList();
+                library.Suggestions.RemoveRange(open);
+                library.SaveChanges();
+            }
+        }
+
+        public static void ForgetSuggestions() {
+            using (var library = new Library()) {
+                library.Database.ExecuteSqlCommand("delete from suggestion");
+            }
+        }
+
         public static List<Suggestion> GetOpenSuggestions() {
             using (var library = new Library()) {
                 return library.Suggestions.Where(s => !s.Declined && !s.Accepted).ToList();
@@ -69,11 +83,18 @@ namespace AutoTune.Local {
             return Find(artist + " " + title, false, 0, 1).Count > 0;
         }
 
-        public static void HandleSuggestion(Suggestion suggestion, bool accept) {
+        public static bool IsSuggestionHandled(string typeId, string videoId) {
             using (var library = new Library()) {
+                return library.Suggestions.Any(s => s.TypeId.Equals(typeId) && s.VideoId.Equals(videoId) && (s.Accepted || s.Declined));
+            }
+        }
+
+        public static void HandleSuggestion(string typeId, string videoId, bool accept) {
+            using (var library = new Library()) {
+                library.Configuration.AutoDetectChangesEnabled = true;
                 foreach (var existing in library.Suggestions
-                    .Where(s => s.TypeId.Equals(suggestion.TypeId))
-                    .Where(s => s.VideoId.Equals(suggestion.VideoId))) {
+                    .Where(s => s.TypeId.Equals(typeId))
+                    .Where(s => s.VideoId.Equals(videoId))) {
                     existing.Accepted = accept;
                     existing.Declined = !accept;
                 }
@@ -81,7 +102,7 @@ namespace AutoTune.Local {
             }
         }
 
-        public static List<Artist> GetFavouriteArtistsWithoutPendingSuggestions(string localTypeId) {
+        public static List<Artist> GetFavouriteArtistsWithoutPendingSuggestions(string localTypeId, int limit) {
             using (var library = new Library()) {
                 return library.Tracks
                     .Join(library.Favourites, t => t.Path, f => f.VideoId,
@@ -90,6 +111,8 @@ namespace AutoTune.Local {
                     .Where(tsf => tsf.Favourite.TypeId.Equals(localTypeId))
                     .Select(tsf => tsf.Track.Artist)
                     .Distinct()
+                    .OrderBy(_ => Guid.NewGuid())
+                    .Take(limit)
                     .ToList();
             }
         }

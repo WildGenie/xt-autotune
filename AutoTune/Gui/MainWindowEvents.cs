@@ -8,6 +8,7 @@ using CefSharp;
 using System;
 using System.Windows.Forms;
 using System.IO;
+using System.Collections.Generic;
 
 namespace AutoTune.Gui {
 
@@ -56,20 +57,13 @@ namespace AutoTune.Gui {
             DownloadQueue.Start();
             PostProcessingQueue.Start();
             InitializePlaylist();
-            SimilarScanner.Start(app.ScanFavouritesInterval);
-            LibraryScanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.ScanLibraryInterval);
+            InitializeSuggestions();
+            SuggestionScanner.Suggested += OnScannerSuggestions;
+            SuggestionScanner.Start(app.DelaySuggestionsScan, app.ScanSuggestionsInterval);
+            LibraryScanner.Start(UserSettings.Instance.LibraryFolder, app.TagSeparator, app.DelayLibraryScan, app.ScanLibraryInterval);
             ShowScrollBar(uiResults.Handle, SbVert, true);
             ShowScrollBar(uiPlaylist.Handle, SbVert, true);
             initializing = false;
-        }
-
-        void InitializePlaylist() {
-            Playlist.Instance.Next += OnPlaylistNext;
-            uiPlaylistModeAll.Checked = Playlist.Instance.Mode == PlaylistMode.RepeatAll;
-            uiPlaylistModeRandom.Checked = Playlist.Instance.Mode == PlaylistMode.Random;
-            uiPlaylistModeTrack.Checked = Playlist.Instance.Mode == PlaylistMode.RepeatTrack;
-            foreach (var item in Playlist.Instance.Items)
-                AddPlaylistView(item);
         }
 
         void OnPlaylistNext(object sender, EventArgs<SearchResult> e) {
@@ -91,19 +85,20 @@ namespace AutoTune.Gui {
         }
 
         void OnLeftTabsSelectedIndexChanged(object sender, EventArgs e) {
-            try {
-                SuspendLayout();
+            this.WithLayoutSuspended(() => {
                 ShowScrollBar(uiResults.Handle, SbVert, true);
                 ShowScrollBar(uiPlaylist.Handle, SbVert, true);
+                ShowScrollBar(uiSuggestions.Handle, SbVert, true);
                 if (uiLeftTabs.SelectedIndex == TabIndexSearch)
                     foreach (ResultView view in uiResults.Controls)
                         view.Reload();
                 if (uiLeftTabs.SelectedIndex == TabIndexPlaylist)
                     foreach (ResultView view in uiPlaylist.Controls)
                         view.Reload();
-            } finally {
-                ResumeLayout();
-            }
+                if (uiLeftTabs.SelectedIndex == TabIndexSuggestions)
+                    foreach (ResultView view in uiSuggestions.Controls)
+                        view.Reload();
+            });
         }
 
         void OnPlaylistClearClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -144,22 +139,35 @@ namespace AutoTune.Gui {
             AddToPlaylist(e.Data);
         }
 
-        void OnReplacePlaylistClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            Playlist.Instance.Clear();
-            uiPlaylist.Controls.Clear();
-            try {
-                SuspendLayout();
-                foreach (var view in uiResults.Controls)
-                    AddToPlaylist(((ResultView)view).Result);
-                uiLeftTabs.SelectedIndex = TabIndexPlaylist;
-            } finally {
-                ResumeLayout();
-            }
-            Playlist.Instance.Start();
+        void OnSearchReplacePlaylistClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            ReplacePlaylist(uiResults);
+        }
+
+        void OnSuggestionsReplacePlayistClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            ReplacePlaylist(uiSuggestions);
+        }
+
+        void OnSuggestionsClearHistoryClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            uiSuggestions.Controls.Clear();
+            Library.ForgetSuggestions();
+        }
+
+        void OnSuggestionsDownloadAllClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            this.WithLayoutSuspended(() => {
+                foreach (var view in uiSuggestions.Controls.Cast<ResultView>().ToList())
+                    AcceptSuggestion(view);
+            });
+        }
+
+        void OnSuggestionsRemoveAllClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            this.WithLayoutSuspended(() => {
+                foreach (var view in uiSuggestions.Controls.Cast<ResultView>().ToList())
+                    DeclineSuggestion(view);
+            });
         }
 
         void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {
-            uiDownloadQueue.Enqueue(new QueueItem(e.Data));
+            DownloadResult(e.Data);
         }
 
         void OnLoadMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -172,6 +180,15 @@ namespace AutoTune.Gui {
                 UiSettings.Instance.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
         }
 
+        void OnScannerSuggestions(object sender, EventArgs<List<SearchResult>> e) {
+            BeginInvoke(new Action(() => {
+                this.WithLayoutSuspended(() => {
+                    foreach (var result in e.Data)
+                        AddToResultsViews(uiSuggestions, result, ResultViewType.Suggestion);
+                });
+            }));
+        }
+
         void OnResultsScroll(object sender, ScrollEventArgs e) {
             var autoLoad = AppSettings.Instance.LoadMoreResultsOnScrollToEnd;
             if (searchState == null || appendingResult || !autoLoad)
@@ -182,13 +199,22 @@ namespace AutoTune.Gui {
             LoadMoreResults();
         }
 
+        void OnSuggestionsIgnoreAllClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Library.ClearOpenSuggestions();
+            uiSuggestions.Controls.Clear();
+        }
+
+        void OnSuggestionsSearchMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            SuggestionScanner.UpdateSuggestions();
+        }
+
         void OnResultSimilarClicked(object sender, EventArgs<SearchResult> e) {
             searchQuery = null;
             searchRelated = null;
             searchSimilar = e.Data;
             uiResults.Controls.Clear();
             uiLeftTabs.SelectedIndex = TabIndexSearch;
-            SimilarScanner.SearchSimilar(e.Data.Title, AppendResults);
+            SuggestionScanner.SearchSimilar(e.Data.Title, AppendResults);
         }
 
         void OnResultRelatedClicked(object sender, EventArgs<SearchResult> e) {

@@ -33,6 +33,8 @@
             System.Windows.Forms.TableLayoutPanel uiResultsContinueContainer;
             System.Windows.Forms.Panel uiPadLog;
             System.Windows.Forms.TableLayoutPanel uiPlaylistContainer;
+            System.Windows.Forms.TableLayoutPanel uiSuggestionsPanel;
+            System.Windows.Forms.TableLayoutPanel uiSuggestionsSearchMoreContainer;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.uiTogglePlayerFull = new System.Windows.Forms.LinkLabel();
             this.uiToggleFullScreen = new System.Windows.Forms.LinkLabel();
@@ -60,7 +62,7 @@
             this.uiSearchLocalFavouritePanel = new System.Windows.Forms.TableLayoutPanel();
             this.uiSearchFavouriteOnly = new System.Windows.Forms.CheckBox();
             this.uiSearchLocalOnly = new System.Windows.Forms.CheckBox();
-            this.uiReplacePlaylist = new System.Windows.Forms.LinkLabel();
+            this.uiSearchReplacePlaylist = new System.Windows.Forms.LinkLabel();
             this.uiLogGroup = new System.Windows.Forms.GroupBox();
             this.uiPlaylistModePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.uiPlaylistModeRandom = new System.Windows.Forms.RadioButton();
@@ -71,9 +73,18 @@
             this.uiPlaylistNext = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistStop = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistClear = new System.Windows.Forms.LinkLabel();
+            this.uiSuggestions = new System.Windows.Forms.FlowLayoutPanel();
+            this.uiSuggestionsSearchMore = new System.Windows.Forms.LinkLabel();
+            this.uiSuggestionsActionsPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.uiSuggestionsDownloadAll = new System.Windows.Forms.LinkLabel();
+            this.uiSuggestionsRemoveAll = new System.Windows.Forms.LinkLabel();
+            this.uiSuggestionsIgnoreAll = new System.Windows.Forms.LinkLabel();
+            this.uiSuggestionsClearHistory = new System.Windows.Forms.LinkLabel();
+            this.uiSuggestionsReplacePlayist = new System.Windows.Forms.LinkLabel();
             this.uiLeftTabs = new System.Windows.Forms.TabControl();
             this.uiLeftTabsPlaylist = new System.Windows.Forms.TabPage();
             this.uiLeftTabsSearch = new System.Windows.Forms.TabPage();
+            this.uiLeftTabsSuggestions = new System.Windows.Forms.TabPage();
             this.uiSplitNotificationsLog = new System.Windows.Forms.SplitContainer();
             this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
@@ -87,6 +98,8 @@
             uiResultsContinueContainer = new System.Windows.Forms.TableLayoutPanel();
             uiPadLog = new System.Windows.Forms.Panel();
             uiPlaylistContainer = new System.Windows.Forms.TableLayoutPanel();
+            uiSuggestionsPanel = new System.Windows.Forms.TableLayoutPanel();
+            uiSuggestionsSearchMoreContainer = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(uiSplitPlayerToggleSearch)).BeginInit();
             uiSplitPlayerToggleSearch.Panel1.SuspendLayout();
             uiSplitPlayerToggleSearch.Panel2.SuspendLayout();
@@ -118,9 +131,13 @@
             uiPlaylistContainer.SuspendLayout();
             this.uiPlaylistModePanel.SuspendLayout();
             this.uiPlaylistControls.SuspendLayout();
+            uiSuggestionsPanel.SuspendLayout();
+            uiSuggestionsSearchMoreContainer.SuspendLayout();
+            this.uiSuggestionsActionsPanel.SuspendLayout();
             this.uiLeftTabs.SuspendLayout();
             this.uiLeftTabsPlaylist.SuspendLayout();
             this.uiLeftTabsSearch.SuspendLayout();
+            this.uiLeftTabsSuggestions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotificationsLog)).BeginInit();
             this.uiSplitNotificationsLog.Panel1.SuspendLayout();
             this.uiSplitNotificationsLog.Panel2.SuspendLayout();
@@ -572,7 +589,7 @@
             this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchFavouriteOnly, 0, 0);
             this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchLocalOnly, 1, 0);
-            this.uiSearchLocalFavouritePanel.Controls.Add(this.uiReplacePlaylist, 2, 0);
+            this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchReplacePlaylist, 2, 0);
             this.uiSearchLocalFavouritePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiSearchLocalFavouritePanel.Location = new System.Drawing.Point(0, 0);
             this.uiSearchLocalFavouritePanel.Margin = new System.Windows.Forms.Padding(0);
@@ -608,19 +625,19 @@
             this.uiSearchLocalOnly.UseVisualStyleBackColor = true;
             this.uiSearchLocalOnly.CheckedChanged += new System.EventHandler(this.OnSearchLocalOnlyCheckedChanged);
             // 
-            // uiReplacePlaylist
+            // uiSearchReplacePlaylist
             // 
-            this.uiReplacePlaylist.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiReplacePlaylist.AutoSize = true;
-            this.uiReplacePlaylist.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiReplacePlaylist.Location = new System.Drawing.Point(143, 8);
-            this.uiReplacePlaylist.Name = "uiReplacePlaylist";
-            this.uiReplacePlaylist.Size = new System.Drawing.Size(81, 13);
-            this.uiReplacePlaylist.TabIndex = 4;
-            this.uiReplacePlaylist.TabStop = true;
-            this.uiReplacePlaylist.Text = "Replace playlist";
-            this.uiTooltip.SetToolTip(this.uiReplacePlaylist, "Replace playlist contents with search results.");
-            this.uiReplacePlaylist.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnReplacePlaylistClicked);
+            this.uiSearchReplacePlaylist.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSearchReplacePlaylist.AutoSize = true;
+            this.uiSearchReplacePlaylist.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSearchReplacePlaylist.Location = new System.Drawing.Point(143, 8);
+            this.uiSearchReplacePlaylist.Name = "uiSearchReplacePlaylist";
+            this.uiSearchReplacePlaylist.Size = new System.Drawing.Size(81, 13);
+            this.uiSearchReplacePlaylist.TabIndex = 4;
+            this.uiSearchReplacePlaylist.TabStop = true;
+            this.uiSearchReplacePlaylist.Text = "Replace playlist";
+            this.uiTooltip.SetToolTip(this.uiSearchReplacePlaylist, "Replace playlist contents with search results.");
+            this.uiSearchReplacePlaylist.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSearchReplacePlaylistClicked);
             // 
             // uiPadLog
             // 
@@ -786,10 +803,161 @@
             this.uiPlaylistClear.Text = "Clear";
             this.uiPlaylistClear.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistClearClicked);
             // 
+            // uiSuggestionsPanel
+            // 
+            uiSuggestionsPanel.ColumnCount = 1;
+            uiSuggestionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            uiSuggestionsPanel.Controls.Add(uiSuggestionsSearchMoreContainer, 0, 2);
+            uiSuggestionsPanel.Controls.Add(this.uiSuggestionsActionsPanel, 0, 1);
+            uiSuggestionsPanel.Controls.Add(this.uiSuggestionsReplacePlayist, 0, 0);
+            uiSuggestionsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            uiSuggestionsPanel.Location = new System.Drawing.Point(0, 0);
+            uiSuggestionsPanel.Margin = new System.Windows.Forms.Padding(0);
+            uiSuggestionsPanel.Name = "uiSuggestionsPanel";
+            uiSuggestionsPanel.RowCount = 3;
+            uiSuggestionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            uiSuggestionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            uiSuggestionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            uiSuggestionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            uiSuggestionsPanel.Size = new System.Drawing.Size(401, 649);
+            uiSuggestionsPanel.TabIndex = 1;
+            // 
+            // uiSuggestionsSearchMoreContainer
+            // 
+            uiSuggestionsSearchMoreContainer.ColumnCount = 1;
+            uiSuggestionsSearchMoreContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            uiSuggestionsSearchMoreContainer.Controls.Add(this.uiSuggestions, 0, 0);
+            uiSuggestionsSearchMoreContainer.Controls.Add(this.uiSuggestionsSearchMore, 0, 1);
+            uiSuggestionsSearchMoreContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            uiSuggestionsSearchMoreContainer.Location = new System.Drawing.Point(3, 63);
+            uiSuggestionsSearchMoreContainer.Name = "uiSuggestionsSearchMoreContainer";
+            uiSuggestionsSearchMoreContainer.RowCount = 2;
+            uiSuggestionsSearchMoreContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            uiSuggestionsSearchMoreContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            uiSuggestionsSearchMoreContainer.Size = new System.Drawing.Size(395, 624);
+            uiSuggestionsSearchMoreContainer.TabIndex = 5;
+            // 
+            // uiSuggestions
+            // 
+            this.uiSuggestions.AutoScroll = true;
+            this.uiSuggestions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiSuggestions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.uiSuggestions.Location = new System.Drawing.Point(0, 0);
+            this.uiSuggestions.Margin = new System.Windows.Forms.Padding(0);
+            this.uiSuggestions.Name = "uiSuggestions";
+            this.uiSuggestions.Size = new System.Drawing.Size(395, 599);
+            this.uiSuggestions.TabIndex = 2;
+            this.uiSuggestions.WrapContents = false;
+            // 
+            // uiSuggestionsSearchMore
+            // 
+            this.uiSuggestionsSearchMore.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.uiSuggestionsSearchMore.AutoSize = true;
+            this.uiSuggestionsSearchMore.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSuggestionsSearchMore.Location = new System.Drawing.Point(164, 605);
+            this.uiSuggestionsSearchMore.Name = "uiSuggestionsSearchMore";
+            this.uiSuggestionsSearchMore.Size = new System.Drawing.Size(67, 13);
+            this.uiSuggestionsSearchMore.TabIndex = 3;
+            this.uiSuggestionsSearchMore.TabStop = true;
+            this.uiSuggestionsSearchMore.Text = "Search more";
+            this.uiTooltip.SetToolTip(this.uiSuggestionsSearchMore, "Search more suggestions.");
+            this.uiSuggestionsSearchMore.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSuggestionsSearchMoreClicked);
+            // 
+            // uiSuggestionsActionsPanel
+            // 
+            this.uiSuggestionsActionsPanel.ColumnCount = 4;
+            this.uiSuggestionsActionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.uiSuggestionsActionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.uiSuggestionsActionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.uiSuggestionsActionsPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.uiSuggestionsActionsPanel.Controls.Add(this.uiSuggestionsDownloadAll, 0, 0);
+            this.uiSuggestionsActionsPanel.Controls.Add(this.uiSuggestionsRemoveAll, 1, 0);
+            this.uiSuggestionsActionsPanel.Controls.Add(this.uiSuggestionsIgnoreAll, 3, 0);
+            this.uiSuggestionsActionsPanel.Controls.Add(this.uiSuggestionsClearHistory, 2, 0);
+            this.uiSuggestionsActionsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiSuggestionsActionsPanel.Location = new System.Drawing.Point(0, 30);
+            this.uiSuggestionsActionsPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.uiSuggestionsActionsPanel.Name = "uiSuggestionsActionsPanel";
+            this.uiSuggestionsActionsPanel.RowCount = 1;
+            this.uiSuggestionsActionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.uiSuggestionsActionsPanel.Size = new System.Drawing.Size(401, 30);
+            this.uiSuggestionsActionsPanel.TabIndex = 3;
+            // 
+            // uiSuggestionsDownloadAll
+            // 
+            this.uiSuggestionsDownloadAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSuggestionsDownloadAll.AutoSize = true;
+            this.uiSuggestionsDownloadAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSuggestionsDownloadAll.Location = new System.Drawing.Point(3, 8);
+            this.uiSuggestionsDownloadAll.Name = "uiSuggestionsDownloadAll";
+            this.uiSuggestionsDownloadAll.Size = new System.Drawing.Size(68, 13);
+            this.uiSuggestionsDownloadAll.TabIndex = 0;
+            this.uiSuggestionsDownloadAll.TabStop = true;
+            this.uiSuggestionsDownloadAll.Text = "Download all";
+            this.uiTooltip.SetToolTip(this.uiSuggestionsDownloadAll, "Accept and download all suggestions.");
+            this.uiSuggestionsDownloadAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSuggestionsDownloadAllClicked);
+            // 
+            // uiSuggestionsRemoveAll
+            // 
+            this.uiSuggestionsRemoveAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSuggestionsRemoveAll.AutoSize = true;
+            this.uiSuggestionsRemoveAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSuggestionsRemoveAll.Location = new System.Drawing.Point(83, 8);
+            this.uiSuggestionsRemoveAll.Name = "uiSuggestionsRemoveAll";
+            this.uiSuggestionsRemoveAll.Size = new System.Drawing.Size(60, 13);
+            this.uiSuggestionsRemoveAll.TabIndex = 1;
+            this.uiSuggestionsRemoveAll.TabStop = true;
+            this.uiSuggestionsRemoveAll.Text = "Remove all";
+            this.uiTooltip.SetToolTip(this.uiSuggestionsRemoveAll, "Decline and remove all suggestions.");
+            this.uiSuggestionsRemoveAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSuggestionsRemoveAllClicked);
+            // 
+            // uiSuggestionsIgnoreAll
+            // 
+            this.uiSuggestionsIgnoreAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSuggestionsIgnoreAll.AutoSize = true;
+            this.uiSuggestionsIgnoreAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSuggestionsIgnoreAll.Location = new System.Drawing.Point(223, 8);
+            this.uiSuggestionsIgnoreAll.Name = "uiSuggestionsIgnoreAll";
+            this.uiSuggestionsIgnoreAll.Size = new System.Drawing.Size(50, 13);
+            this.uiSuggestionsIgnoreAll.TabIndex = 2;
+            this.uiSuggestionsIgnoreAll.TabStop = true;
+            this.uiSuggestionsIgnoreAll.Text = "Ignore all";
+            this.uiTooltip.SetToolTip(this.uiSuggestionsIgnoreAll, "Ignore all suggestions for now.");
+            this.uiSuggestionsIgnoreAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSuggestionsIgnoreAllClicked);
+            // 
+            // uiSuggestionsClearHistory
+            // 
+            this.uiSuggestionsClearHistory.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSuggestionsClearHistory.AutoSize = true;
+            this.uiSuggestionsClearHistory.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSuggestionsClearHistory.Location = new System.Drawing.Point(153, 8);
+            this.uiSuggestionsClearHistory.Name = "uiSuggestionsClearHistory";
+            this.uiSuggestionsClearHistory.Size = new System.Drawing.Size(64, 13);
+            this.uiSuggestionsClearHistory.TabIndex = 3;
+            this.uiSuggestionsClearHistory.TabStop = true;
+            this.uiSuggestionsClearHistory.Text = "Clear history";
+            this.uiTooltip.SetToolTip(this.uiSuggestionsClearHistory, "Forget any suggestion ever made.");
+            this.uiSuggestionsClearHistory.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSuggestionsClearHistoryClicked);
+            // 
+            // uiSuggestionsReplacePlayist
+            // 
+            this.uiSuggestionsReplacePlayist.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSuggestionsReplacePlayist.AutoSize = true;
+            this.uiSuggestionsReplacePlayist.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSuggestionsReplacePlayist.Location = new System.Drawing.Point(3, 8);
+            this.uiSuggestionsReplacePlayist.Name = "uiSuggestionsReplacePlayist";
+            this.uiSuggestionsReplacePlayist.Size = new System.Drawing.Size(81, 13);
+            this.uiSuggestionsReplacePlayist.TabIndex = 4;
+            this.uiSuggestionsReplacePlayist.TabStop = true;
+            this.uiSuggestionsReplacePlayist.Text = "Replace playlist";
+            this.uiTooltip.SetToolTip(this.uiSuggestionsReplacePlayist, "Replace playlist with suggestions contents.");
+            this.uiSuggestionsReplacePlayist.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSuggestionsReplacePlayistClicked);
+            // 
             // uiLeftTabs
             // 
             this.uiLeftTabs.Controls.Add(this.uiLeftTabsPlaylist);
             this.uiLeftTabs.Controls.Add(this.uiLeftTabsSearch);
+            this.uiLeftTabs.Controls.Add(this.uiLeftTabsSuggestions);
             this.uiLeftTabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiLeftTabs.Location = new System.Drawing.Point(3, 3);
             this.uiLeftTabs.Margin = new System.Windows.Forms.Padding(0);
@@ -821,6 +989,17 @@
             this.uiLeftTabsSearch.TabIndex = 0;
             this.uiLeftTabsSearch.Text = "Search";
             this.uiLeftTabsSearch.UseVisualStyleBackColor = true;
+            // 
+            // uiLeftTabsSuggestions
+            // 
+            this.uiLeftTabsSuggestions.Controls.Add(uiSuggestionsPanel);
+            this.uiLeftTabsSuggestions.Location = new System.Drawing.Point(4, 22);
+            this.uiLeftTabsSuggestions.Margin = new System.Windows.Forms.Padding(0);
+            this.uiLeftTabsSuggestions.Name = "uiLeftTabsSuggestions";
+            this.uiLeftTabsSuggestions.Size = new System.Drawing.Size(401, 649);
+            this.uiLeftTabsSuggestions.TabIndex = 2;
+            this.uiLeftTabsSuggestions.Text = "Suggestions";
+            this.uiLeftTabsSuggestions.UseVisualStyleBackColor = true;
             // 
             // uiSplitNotificationsLog
             // 
@@ -939,9 +1118,16 @@
             this.uiPlaylistModePanel.PerformLayout();
             this.uiPlaylistControls.ResumeLayout(false);
             this.uiPlaylistControls.PerformLayout();
+            uiSuggestionsPanel.ResumeLayout(false);
+            uiSuggestionsPanel.PerformLayout();
+            uiSuggestionsSearchMoreContainer.ResumeLayout(false);
+            uiSuggestionsSearchMoreContainer.PerformLayout();
+            this.uiSuggestionsActionsPanel.ResumeLayout(false);
+            this.uiSuggestionsActionsPanel.PerformLayout();
             this.uiLeftTabs.ResumeLayout(false);
             this.uiLeftTabsPlaylist.ResumeLayout(false);
             this.uiLeftTabsSearch.ResumeLayout(false);
+            this.uiLeftTabsSuggestions.ResumeLayout(false);
             this.uiSplitNotificationsLog.Panel1.ResumeLayout(false);
             this.uiSplitNotificationsLog.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiSplitNotificationsLog)).EndInit();
@@ -1003,7 +1189,16 @@
         private System.Windows.Forms.FlowLayoutPanel uiPlaylist;
         private System.Windows.Forms.LinkLabel uiPlaylistClear;
         private System.Windows.Forms.LinkLabel uiPlaylistNext;
-        private System.Windows.Forms.LinkLabel uiReplacePlaylist;
+        private System.Windows.Forms.LinkLabel uiSearchReplacePlaylist;
+        private System.Windows.Forms.TabPage uiLeftTabsSuggestions;
+        private System.Windows.Forms.FlowLayoutPanel uiSuggestions;
+        private System.Windows.Forms.LinkLabel uiSuggestionsSearchMore;
+        private System.Windows.Forms.TableLayoutPanel uiSuggestionsActionsPanel;
+        private System.Windows.Forms.LinkLabel uiSuggestionsDownloadAll;
+        private System.Windows.Forms.LinkLabel uiSuggestionsRemoveAll;
+        private System.Windows.Forms.LinkLabel uiSuggestionsIgnoreAll;
+        private System.Windows.Forms.LinkLabel uiSuggestionsReplacePlayist;
+        private System.Windows.Forms.LinkLabel uiSuggestionsClearHistory;
     }
 }
 

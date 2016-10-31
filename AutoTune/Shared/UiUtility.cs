@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace AutoTune.Shared {
 
-    static class UiUtility {
+    public static class UiUtility {
 
         internal static void SetToggleForeColors(LinkLabel link) {
             var theme = ThemeSettings.Instance;
@@ -25,6 +25,15 @@ namespace AutoTune.Shared {
                 return null;
             using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(base64)))
                 return Image.FromStream(stream);
+        }
+
+        public static void WithLayoutSuspended(this Control control, Action action) {
+            try {
+                control.SuspendLayout();
+                action();
+            } finally {
+                control.ResumeLayout();
+            }
         }
     }
 }

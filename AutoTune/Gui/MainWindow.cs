@@ -1,4 +1,5 @@
-﻿using AutoTune.Processing;
+﻿using AutoTune.Local;
+using AutoTune.Processing;
 using AutoTune.Search;
 using AutoTune.Settings;
 using AutoTune.Shared;
@@ -23,6 +24,7 @@ namespace AutoTune.Gui {
         const int ShowLogMinWidth = 1250;
         const int TabIndexSearch = 1;
         const int TabIndexPlaylist = 0;
+        const int TabIndexSuggestions = 2;
         const string UnicodeBlackLowerLeftTriangle = "\u25e3";
         const string UnicodeWhiteLowerLeftTriangle = "\u25fa";
         const string UnicodeBlackUpperRightTriangle = "\u25e5";
@@ -92,13 +94,10 @@ namespace AutoTune.Gui {
             InitializeComponent();
             if (DesignMode)
                 return;
-            try {
-                SuspendLayout();
+            this.WithLayoutSuspended(() => {
                 InitializeControls();
                 InitializeColors();
-            } finally {
-                ResumeLayout();
-            }
+            });
         }
 
         void InitializeColors() {
@@ -122,6 +121,8 @@ namespace AutoTune.Gui {
             uiLeftTabsSearch.BackColor = back1;
             uiLeftTabsPlaylist.ForeColor = fore1;
             uiLeftTabsPlaylist.BackColor = back1;
+            uiLeftTabsSuggestions.ForeColor = fore1;
+            uiLeftTabsSuggestions.BackColor = back1;
             uiDownloadGroup.ForeColor = fore1;
             uiPostProcessingGroup.ForeColor = fore1;
             uiBrowserPlayerContainer.ForeColor = fore1;
@@ -132,7 +133,13 @@ namespace AutoTune.Gui {
             UiUtility.SetLinkForeColors(uiPlaylistStop);
             UiUtility.SetLinkForeColors(uiPlaylistNext);
             UiUtility.SetLinkForeColors(uiPlaylistClear);
-            UiUtility.SetLinkForeColors(uiReplacePlaylist);
+            UiUtility.SetLinkForeColors(uiSearchReplacePlaylist);
+            UiUtility.SetLinkForeColors(uiSuggestionsSearchMore);
+            UiUtility.SetLinkForeColors(uiSuggestionsIgnoreAll);
+            UiUtility.SetLinkForeColors(uiSuggestionsRemoveAll);
+            UiUtility.SetLinkForeColors(uiSuggestionsDownloadAll);
+            UiUtility.SetLinkForeColors(uiSuggestionsClearHistory);
+            UiUtility.SetLinkForeColors(uiSuggestionsReplacePlayist);
             UiUtility.SetToggleForeColors(uiToggleLog);
             UiUtility.SetToggleForeColors(uiToggleSearch);
             UiUtility.SetToggleForeColors(uiToggleFullScreen);
@@ -176,8 +183,7 @@ namespace AutoTune.Gui {
 
         void InitializeSettings() {
             var ui = UiSettings.Instance;
-            try {
-                SuspendLayout();
+            this.WithLayoutSuspended(() => {
                 uiQuery.Text = ui.LastSearch;
                 uiLogLevel.SelectedItem = ui.TraceLevel;
                 uiSearchLocalOnly.Checked = ui.SearchLocalOnly;
@@ -188,9 +194,7 @@ namespace AutoTune.Gui {
                 ToggleSearch(UiSettings.Instance.SearchCollapsed);
                 ToggleNotifications(UiSettings.Instance.NotificationsCollapsed);
                 ToggleCurrentControls(UiSettings.Instance.CurrentControlsCollapsed);
-            } finally {
-                ResumeLayout();
-            }
+            });
             if (ui.CurrentTrack != null)
                 uiBrowser.IsBrowserInitializedChanged += (s, e) => {
                     if (e.IsBrowserInitialized)
@@ -213,40 +217,22 @@ namespace AutoTune.Gui {
             };
         }
 
-        void AddToPlaylist(SearchResult result) {
-            if (Playlist.Instance.Add(result))
-                AddPlaylistView(result);
+        void InitializeSuggestions() {
+            this.WithLayoutSuspended(() => {
+                foreach (var s in Library.GetOpenSuggestions())
+                    AddToResultsViews(uiSuggestions, SuggestionScanner.SuggestionToSearchResult(s), ResultViewType.Suggestion);
+            });
         }
 
-        void AddPlaylistView(SearchResult result) {
-            var view = new ResultView(true);
-            ConnectResultViewEventHandlers(view);
-            uiPlaylist.Controls.Add(view);
-            view.SetResult(result);
-        }
-
-        void AppendResults(SearchResponse response) {
-            if (response.Error != null) {
-                Logger.Error(response.Error, "Search error.");
-            } else
-                BeginInvoke(new Action(() => {
-                    try {
-                        SuspendLayout();
-                        foreach (SearchResult result in response.Results) {
-                            var view = new ResultView(false);
-                            ConnectResultViewEventHandlers(view);
-                            uiResults.Controls.Add(view);
-                            view.SetResult(result);
-                            if (AppSettings.Instance.ScrollToEndOnMoreResults) {
-                                appendingResult = true;
-                                uiResults.ScrollControlIntoView(view);
-                                appendingResult = false;
-                            }
-                        }
-                    } finally {
-                        ResumeLayout();
-                    }
-                }));
+        void InitializePlaylist() {
+            Playlist.Instance.Next += OnPlaylistNext;
+            this.WithLayoutSuspended(() => {
+                uiPlaylistModeAll.Checked = Playlist.Instance.Mode == PlaylistMode.RepeatAll;
+                uiPlaylistModeRandom.Checked = Playlist.Instance.Mode == PlaylistMode.Random;
+                uiPlaylistModeTrack.Checked = Playlist.Instance.Mode == PlaylistMode.RepeatTrack;
+                foreach (var item in Playlist.Instance.Items)
+                    AddToResultsViews(uiPlaylist, item, ResultViewType.Playlist);
+            });
         }
 
         void WriteLog(LogLevel level, string text) {
@@ -262,6 +248,48 @@ namespace AutoTune.Gui {
                 uiLog.SelectionStart = uiLog.TextLength;
                 uiLog.ScrollToCaret();
             }));
+        }
+
+        void AddToPlaylist(SearchResult result) {
+            if (Playlist.Instance.Add(result))
+                AddToResultsViews(uiPlaylist, result, ResultViewType.Playlist);
+        }
+
+        void ReplacePlaylist(FlowLayoutPanel container) {
+            Playlist.Instance.Clear();
+            this.WithLayoutSuspended(() => {
+                uiPlaylist.Controls.Clear();
+                foreach (var view in container.Controls)
+                    AddToPlaylist(((ResultView)view).Result);
+                uiLeftTabs.SelectedIndex = TabIndexPlaylist;
+            });
+            Playlist.Instance.Start();
+        }
+
+        ResultView AddToResultsViews(FlowLayoutPanel container, SearchResult result, ResultViewType type) {
+            var view = new ResultView(type);
+            ConnectResultViewEventHandlers(view);
+            container.Controls.Add(view);
+            view.SetResult(result);
+            return view;
+        }
+
+        void AppendResults(SearchResponse response) {
+            if (response.Error != null) {
+                Logger.Error(response.Error, "Search error.");
+            } else
+                BeginInvoke(new Action(() => {
+                    this.WithLayoutSuspended(() => {
+                        foreach (SearchResult result in response.Results) {
+                            var view = AddToResultsViews(uiResults, result, ResultViewType.Search);
+                            if (AppSettings.Instance.ScrollToEndOnMoreResults) {
+                                appendingResult = true;
+                                uiResults.ScrollControlIntoView(view);
+                                appendingResult = false;
+                            }
+                        }
+                    });
+                }));
         }
 
         void StartSearch() {
@@ -285,16 +313,13 @@ namespace AutoTune.Gui {
         }
 
         void SetPlaylistPlaying(SearchResult result) {
-            try {
-                SuspendLayout();
+            this.WithLayoutSuspended(() => {
                 foreach (ResultView view in uiPlaylist.Controls) {
                     view.SetPlaying(false);
                     if (result != null && view.Result.TypeId.Equals(result.TypeId) && view.Result.VideoId.Equals(result.VideoId))
                         view.SetPlaying(true);
                 }
-            } finally {
-                ResumeLayout();
-            }
+            });
         }
 
         void LoadResult(SearchResult result, bool start) {
@@ -358,13 +383,34 @@ namespace AutoTune.Gui {
             view.QueueClicked += OnResultQueueClicked;
             view.RelatedClicked += OnResultRelatedClicked;
             view.SimilarClicked += OnResultSimilarClicked;
-            view.DownloadClicked += OnResultDownloadClicked;
-            view.RemoveClicked += (s, e) => RemoveFromPlaylist(view);
+            if (view.Type != ResultViewType.Suggestion)
+                view.DownloadClicked += OnResultDownloadClicked;
+            else
+                view.DownloadClicked += (s, e) => AcceptSuggestion(view);
+            if (view.Type == ResultViewType.Playlist)
+                view.RemoveClicked += (s, e) => RemoveFromPlaylist(view);
+            if (view.Type == ResultViewType.Suggestion)
+                view.RemoveClicked += (s, e) => DeclineSuggestion(view);
         }
 
         void RemoveFromPlaylist(ResultView view) {
             uiPlaylist.Controls.Remove(view);
             Playlist.Instance.Remove(view.Result);
+        }
+
+        void AcceptSuggestion(ResultView view) {
+            Library.HandleSuggestion(view.Result.TypeId, view.Result.VideoId, true);
+            uiSuggestions.Controls.Remove(view);
+            DownloadResult(view.Result);
+        }
+
+        void DeclineSuggestion(ResultView view) {
+            Library.HandleSuggestion(view.Result.TypeId, view.Result.VideoId, false);
+            uiSuggestions.Controls.Remove(view);
+        }
+
+        void DownloadResult(SearchResult result) {
+            uiDownloadQueue.Enqueue(new QueueItem(result));
         }
 
         void ToggleFullScreen(bool fullScreen) {

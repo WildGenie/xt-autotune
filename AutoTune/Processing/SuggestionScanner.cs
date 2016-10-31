@@ -9,12 +9,34 @@ using System.Threading;
 
 namespace AutoTune.Local {
 
-    static class SimilarScanner {
+    static class SuggestionScanner {
 
-        public static void Start(int interval) {
-            var thread = new Thread(() => Run(interval));
+        static bool forceUpdate = false;
+        static readonly object Lock = new object();
+        public static event EventHandler<EventArgs<List<SearchResult>>> Suggested;
+
+        public static void Start(int delay, int interval) {
+            var thread = new Thread(() => Run(delay, interval));
             thread.IsBackground = true;
             thread.Start();
+        }
+
+        public static SearchResult SuggestionToSearchResult(Suggestion s) {
+            return new SearchResult {
+                Local = false,
+                Title = s.Title,
+                TypeId = s.TypeId,
+                VideoId = s.VideoId,
+                Description = s.Comment,
+                ThumbnailBase64 = s.ImageBase64
+            };
+        }
+
+        public static void UpdateSuggestions() {
+            lock (Lock) {
+                forceUpdate = true;
+                Monitor.Pulse(Lock);
+            }
         }
 
         public static void SearchSimilar(string title, Action<SearchResponse> callback) {
@@ -45,19 +67,22 @@ namespace AutoTune.Local {
             });
         }
 
-        static void Run(int interval) {
-            object lock_ = new object();
+        static void Run(int delay, int interval) {
+            Thread.Sleep(delay);
             while (true) {
                 try {
-                    SearchSimilarTracks(FindSimilarArtistsForFavourites());
+                    var similarArtists = FindSimilarArtistsForFavourites();
+                    if (similarArtists.Any())
+                        SearchSimilarTracks(similarArtists);
                 } catch (Exception e) {
                     Logger.Error(e, "Searching similar tracks failed.");
                 }
+                forceUpdate = false;
                 long now = Environment.TickCount;
                 long start = Environment.TickCount;
-                lock (lock_)
-                    while (now - start < interval) {
-                        Monitor.Wait(lock_, interval);
+                lock (Lock)
+                    while (!forceUpdate && now - start < interval) {
+                        Monitor.Wait(Lock, interval);
                         now = Environment.TickCount;
                     }
             }
@@ -93,8 +118,10 @@ namespace AutoTune.Local {
             var app = AppSettings.Instance;
             Logger.Info("Searching similar artists...");
             Dictionary<Artist, List<string>> result = new Dictionary<Artist, List<string>>();
-            var artists = Library.GetFavouriteArtistsWithoutPendingSuggestions(SearchEngine.LocalTypeId);
+            var artists = Library.GetFavouriteArtistsWithoutPendingSuggestions(SearchEngine.LocalTypeId, app.SuggestionSearchArtistLimit);
             int i = 1;
+            if (artists.Count == 0)
+                Logger.Info("No similar artists without pending suggestions found.");
             foreach (var artist in artists) {
                 try {
                     Logger.Debug("Searching similar artists {0}/{1}.", i++, artists.Count);
@@ -132,11 +159,14 @@ namespace AutoTune.Local {
                                         searchTitle = searchTitle.Substring(1);
                                     if (searchTitle.EndsWith("-"))
                                         searchTitle = searchTitle.Substring(0, searchTitle.Length - 1);
-                                    if (!Library.HasSearchResults(searchArtist, searchTitle))
+                                    bool handled = Library.IsSuggestionHandled(result.TypeId, result.VideoId);
+                                    bool hasResults = Library.HasSearchResults(searchArtist, searchTitle);
+                                    if (!handled && !hasResults)
                                         filteredResults.Add(result);
                                 }
                                 Logger.Debug("Found {0} similar tracks for {1}, {2} new.", results.Count, similarArtist, filteredResults.Count);
                                 Library.Suggest(entry.Key, filteredResults);
+                                Suggested(typeof(SuggestionScanner), new EventArgs<List<SearchResult>>(filteredResults));
                             } catch (Exception e) {
                                 Logger.Error(e, "Searching tracks failed for {0}.", similarArtist);
                             }
