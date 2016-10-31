@@ -128,10 +128,11 @@ namespace AutoTune.Gui {
             uiPlaylistModeAll.ForeColor = fore1;
             uiPlaylistModeTrack.ForeColor = fore1;
             uiPlaylistModeRandom.ForeColor = fore1;
+            UiUtility.SetLinkForeColors(uiLoadMore);
             UiUtility.SetLinkForeColors(uiPlaylistStop);
             UiUtility.SetLinkForeColors(uiPlaylistNext);
             UiUtility.SetLinkForeColors(uiPlaylistClear);
-            UiUtility.SetLinkForeColors(uiLoadMore);
+            UiUtility.SetLinkForeColors(uiReplacePlaylist);
             UiUtility.SetToggleForeColors(uiToggleLog);
             UiUtility.SetToggleForeColors(uiToggleSearch);
             UiUtility.SetToggleForeColors(uiToggleFullScreen);

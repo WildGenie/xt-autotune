@@ -60,6 +60,7 @@
             this.uiSearchLocalFavouritePanel = new System.Windows.Forms.TableLayoutPanel();
             this.uiSearchFavouriteOnly = new System.Windows.Forms.CheckBox();
             this.uiSearchLocalOnly = new System.Windows.Forms.CheckBox();
+            this.uiReplacePlaylist = new System.Windows.Forms.LinkLabel();
             this.uiLogGroup = new System.Windows.Forms.GroupBox();
             this.uiPlaylistModePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.uiPlaylistModeRandom = new System.Windows.Forms.RadioButton();
@@ -565,12 +566,13 @@
             // 
             // uiSearchLocalFavouritePanel
             // 
-            this.uiSearchLocalFavouritePanel.ColumnCount = 2;
+            this.uiSearchLocalFavouritePanel.ColumnCount = 3;
             this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.uiSearchLocalFavouritePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchFavouriteOnly, 0, 0);
             this.uiSearchLocalFavouritePanel.Controls.Add(this.uiSearchLocalOnly, 1, 0);
+            this.uiSearchLocalFavouritePanel.Controls.Add(this.uiReplacePlaylist, 2, 0);
             this.uiSearchLocalFavouritePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiSearchLocalFavouritePanel.Location = new System.Drawing.Point(0, 0);
             this.uiSearchLocalFavouritePanel.Margin = new System.Windows.Forms.Padding(0);
@@ -605,6 +607,20 @@
             this.uiTooltip.SetToolTip(this.uiSearchLocalOnly, "Search local tracks only.");
             this.uiSearchLocalOnly.UseVisualStyleBackColor = true;
             this.uiSearchLocalOnly.CheckedChanged += new System.EventHandler(this.OnSearchLocalOnlyCheckedChanged);
+            // 
+            // uiReplacePlaylist
+            // 
+            this.uiReplacePlaylist.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiReplacePlaylist.AutoSize = true;
+            this.uiReplacePlaylist.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiReplacePlaylist.Location = new System.Drawing.Point(143, 8);
+            this.uiReplacePlaylist.Name = "uiReplacePlaylist";
+            this.uiReplacePlaylist.Size = new System.Drawing.Size(81, 13);
+            this.uiReplacePlaylist.TabIndex = 4;
+            this.uiReplacePlaylist.TabStop = true;
+            this.uiReplacePlaylist.Text = "Replace playlist";
+            this.uiTooltip.SetToolTip(this.uiReplacePlaylist, "Replace playlist contents with search results.");
+            this.uiReplacePlaylist.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnReplacePlaylistClicked);
             // 
             // uiPadLog
             // 
@@ -987,6 +1003,7 @@
         private System.Windows.Forms.FlowLayoutPanel uiPlaylist;
         private System.Windows.Forms.LinkLabel uiPlaylistClear;
         private System.Windows.Forms.LinkLabel uiPlaylistNext;
+        private System.Windows.Forms.LinkLabel uiReplacePlaylist;
     }
 }
 

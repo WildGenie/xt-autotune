@@ -144,6 +144,20 @@ namespace AutoTune.Gui {
             AddToPlaylist(e.Data);
         }
 
+        void OnReplacePlaylistClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Playlist.Instance.Clear();
+            uiPlaylist.Controls.Clear();
+            try {
+                SuspendLayout();
+                foreach (var view in uiResults.Controls)
+                    AddToPlaylist(((ResultView)view).Result);
+                uiLeftTabs.SelectedIndex = TabIndexPlaylist;
+            } finally {
+                ResumeLayout();
+            }
+            Playlist.Instance.Start();
+        }
+
         void OnResultDownloadClicked(object sender, EventArgs<SearchResult> e) {
             uiDownloadQueue.Enqueue(new QueueItem(e.Data));
         }
@@ -199,11 +213,15 @@ namespace AutoTune.Gui {
         }
 
         void OnSearchFavouriteOnlyCheckedChanged(object sender, EventArgs e) {
+            if (initializing)
+                return;
             UiSettings.Instance.SearchFavouritesOnly = uiSearchFavouriteOnly.Checked;
             StartSearch();
         }
 
         void OnSearchLocalOnlyCheckedChanged(object sender, EventArgs e) {
+            if (initializing)
+                return;
             UiSettings.Instance.SearchLocalOnly = uiSearchLocalOnly.Checked;
             StartSearch();
         }
