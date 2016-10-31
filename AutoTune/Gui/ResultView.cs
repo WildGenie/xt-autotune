@@ -104,7 +104,7 @@ namespace AutoTune.Gui {
             uiType.Text = result == null ? "" : result.TypeId + (!playing ? "" : " (playing)");
             if (result != null) {
                 string text = "{\\rtf \\b " + result.Title + " \\b0 ";
-                text += " \\line " + result.Description.Replace("\\", "\\\\") + " }";
+                text += " \\line " + result?.Description?.Replace("\\", "\\\\") + " }";
                 uiText.Rtf = text;
             }
             uiImage.Image = UiUtility.ImageFromBase64(result?.ThumbnailBase64 ?? AppSettings.NoImageAvailableBase64);
