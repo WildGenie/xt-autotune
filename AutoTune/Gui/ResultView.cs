@@ -72,9 +72,14 @@ namespace AutoTune.Gui {
             var theme = ThemeSettings.Instance;
             var back2 = ColorTranslator.FromHtml(theme.BackColor2);
             var fore1 = ColorTranslator.FromHtml(theme.ForeColor1);
+            var fore2 = ColorTranslator.FromHtml(theme.ForeColor2);
             uiType.ForeColor = fore1;
             uiText.ForeColor = fore1;
             SetFavouriteState(false);
+            uiPlayingIndicatorTop.Visible = false;
+            uiPlayingIndicatorTop.BackColor = fore2;
+            uiPlayingIndicatorBottom.Visible = false;
+            uiPlayingIndicatorBottom.BackColor = fore2;
             UiUtility.SetLinkForeColors(uiRemove);
             UiUtility.SetLinkForeColors(uiRelated);
             UiUtility.SetLinkForeColors(uiSimilar);
@@ -92,8 +97,9 @@ namespace AutoTune.Gui {
 
         internal void SetPlaying(bool playing) {
             this.playing = playing;
+            uiPlayingIndicatorTop.Visible = playing;
+            uiPlayingIndicatorBottom.Visible = playing;
             uiType.Text = result.TypeId + (!playing ? "" : " (playing)");
-            BorderStyle = playing ? BorderStyle.FixedSingle : BorderStyle.None;
         }
 
         internal void SetResult(SearchResult result) {

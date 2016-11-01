@@ -31,8 +31,10 @@
             this.uiType = new System.Windows.Forms.Label();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.uiToggleFavourite = new System.Windows.Forms.LinkLabel();
-            this.uiRemove = new System.Windows.Forms.LinkLabel();
             this.uiSimilar = new System.Windows.Forms.LinkLabel();
+            this.uiRemove = new System.Windows.Forms.LinkLabel();
+            this.uiPlayingIndicatorTop = new System.Windows.Forms.Label();
+            this.uiPlayingIndicatorBottom = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.uiImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -117,20 +119,6 @@
             this.uiTooltip.SetToolTip(this.uiToggleFavourite, "Toggle track favourite status.");
             this.uiToggleFavourite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnToggleFavouriteClicked);
             // 
-            // uiRemove
-            // 
-            this.uiRemove.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.uiRemove.AutoSize = true;
-            this.uiRemove.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiRemove.Location = new System.Drawing.Point(323, 16);
-            this.uiRemove.Margin = new System.Windows.Forms.Padding(0);
-            this.uiRemove.Name = "uiRemove";
-            this.uiRemove.Size = new System.Drawing.Size(47, 13);
-            this.uiRemove.TabIndex = 8;
-            this.uiRemove.TabStop = true;
-            this.uiRemove.Text = "Remove";
-            this.uiRemove.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnRemoveClicked);
-            // 
             // uiSimilar
             // 
             this.uiSimilar.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -146,11 +134,46 @@
             this.uiTooltip.SetToolTip(this.uiSimilar, "Search similar tracks.");
             this.uiSimilar.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSimilarClicked);
             // 
+            // uiRemove
+            // 
+            this.uiRemove.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.uiRemove.AutoSize = true;
+            this.uiRemove.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiRemove.Location = new System.Drawing.Point(323, 16);
+            this.uiRemove.Margin = new System.Windows.Forms.Padding(0);
+            this.uiRemove.Name = "uiRemove";
+            this.uiRemove.Size = new System.Drawing.Size(47, 13);
+            this.uiRemove.TabIndex = 8;
+            this.uiRemove.TabStop = true;
+            this.uiRemove.Text = "Remove";
+            this.uiRemove.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnRemoveClicked);
+            // 
+            // uiPlayingIndicatorTop
+            // 
+            this.uiPlayingIndicatorTop.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.uiPlayingIndicatorTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.uiPlayingIndicatorTop.Location = new System.Drawing.Point(0, 0);
+            this.uiPlayingIndicatorTop.Name = "uiPlayingIndicatorTop";
+            this.uiPlayingIndicatorTop.Size = new System.Drawing.Size(370, 1);
+            this.uiPlayingIndicatorTop.TabIndex = 10;
+            // 
+            // uiPlayingIndicatorBottom
+            // 
+            this.uiPlayingIndicatorBottom.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.uiPlayingIndicatorBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.uiPlayingIndicatorBottom.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.uiPlayingIndicatorBottom.Location = new System.Drawing.Point(0, 63);
+            this.uiPlayingIndicatorBottom.Name = "uiPlayingIndicatorBottom";
+            this.uiPlayingIndicatorBottom.Size = new System.Drawing.Size(370, 1);
+            this.uiPlayingIndicatorBottom.TabIndex = 11;
+            // 
             // ResultView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.uiPlayingIndicatorBottom);
+            this.Controls.Add(this.uiPlayingIndicatorTop);
             this.Controls.Add(this.uiSimilar);
             this.Controls.Add(this.uiRemove);
             this.Controls.Add(this.uiToggleFavourite);
@@ -179,5 +202,7 @@
         private System.Windows.Forms.LinkLabel uiToggleFavourite;
         private System.Windows.Forms.LinkLabel uiRemove;
         private System.Windows.Forms.LinkLabel uiSimilar;
+        private System.Windows.Forms.Label uiPlayingIndicatorTop;
+        private System.Windows.Forms.Label uiPlayingIndicatorBottom;
     }
 }
