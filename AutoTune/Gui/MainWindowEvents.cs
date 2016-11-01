@@ -184,13 +184,8 @@ namespace AutoTune.Gui {
                 UiSettings.Instance.TraceLevel = (LogLevel)uiLogLevel.SelectedItem;
         }
 
-        void OnScannerSuggestions(object sender, EventArgs<List<SearchResult>> e) {
-            BeginInvoke(new Action(() => {
-                this.WithLayoutSuspended(() => {
-                    foreach (var result in e.Data)
-                        AddToResultsViews(uiSuggestions, result, ResultViewType.Suggestion);
-                });
-            }));
+        void OnScannerSuggestions(object sender, EventArgs<SearchResponse> e) {
+            HandleSuggestions(e.Data);
         }
 
         void OnResultsScroll(object sender, ScrollEventArgs e) {
@@ -225,15 +220,15 @@ namespace AutoTune.Gui {
         void OnResultSimilarClicked(object sender, EventArgs<SearchResult> e) {
             searchQuery = null;
             searchRelated = null;
-            searchSimilar = e.Data;
             uiResults.Controls.Clear();
-            uiLeftTabs.SelectedIndex = TabIndexSearch;
-            SuggestionScanner.SearchSimilar(e.Data.Title, AppendResults);
+            uiLeftTabs.SelectedIndex = TabIndexSuggestions;
+            Library.ClearOpenSuggestions();
+            uiSuggestions.Controls.Clear();
+            SuggestionScanner.SearchSimilar(e.Data.Title, HandleSuggestions);
         }
 
         void OnResultRelatedClicked(object sender, EventArgs<SearchResult> e) {
             searchQuery = null;
-            searchSimilar = null;
             searchRelated = e.Data;
             uiResults.Controls.Clear();
             uiLeftTabs.SelectedIndex = TabIndexSearch;

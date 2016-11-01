@@ -97,7 +97,6 @@ namespace AutoTune.Gui {
         private object searchState = null;
         private string searchQuery = null;
         private SearchResult searchRelated = null;
-        private SearchResult searchSimilar = null;
         private ChromiumWebBrowser uiBrowser;
         private AxWindowsMediaPlayer uiPlayer;
         private readonly object shutdownLock = new object();
@@ -310,7 +309,6 @@ namespace AutoTune.Gui {
             var ui = UiSettings.Instance;
             uiResults.Controls.Clear();
             searchRelated = null;
-            searchSimilar = null;
             searchQuery = uiQuery.Text.Trim();
             UiSettings.Instance.LastSearch = searchQuery;
             var pageSize = AppSettings.Instance.SearchPageSize;
@@ -377,8 +375,6 @@ namespace AutoTune.Gui {
         }
 
         void LoadMoreResults() {
-            if (searchSimilar != null)
-                return;
             var ui = UiSettings.Instance;
             var typeId = searchRelated?.TypeId;
             SearchCredentials searchCredentials = null;
@@ -425,6 +421,16 @@ namespace AutoTune.Gui {
 
         void DownloadResult(SearchResult result) {
             uiDownloadQueue.Enqueue(new QueueItem(result));
+        }
+
+        void HandleSuggestions(SearchResponse response) {
+            BeginInvoke(new Action(() => {
+                this.WithLayoutSuspended(() => {
+                    if (response.Results != null)
+                        foreach (var result in response.Results)
+                            AddToResultsViews(uiSuggestions, result, ResultViewType.Suggestion);
+                });
+            }));
         }
 
         void ToggleFullScreen(bool fullScreen) {

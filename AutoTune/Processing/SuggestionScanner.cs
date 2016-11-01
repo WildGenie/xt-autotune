@@ -13,7 +13,7 @@ namespace AutoTune.Local {
 
         static bool forceUpdate = false;
         static readonly object Lock = new object();
-        public static event EventHandler<EventArgs<List<SearchResult>>> Suggested;
+        public static event EventHandler<EventArgs<SearchResponse>> Suggested;
 
         public static void Start(int delay, int interval) {
             var thread = new Thread(() => Run(delay, interval));
@@ -166,7 +166,7 @@ namespace AutoTune.Local {
                                 }
                                 Logger.Debug("Found {0} similar tracks for {1}, {2} new.", results.Count, similarArtist, filteredResults.Count);
                                 Library.Suggest(entry.Key, filteredResults);
-                                Suggested(typeof(SuggestionScanner), new EventArgs<List<SearchResult>>(filteredResults));
+                                Suggested(typeof(SuggestionScanner), new EventArgs<SearchResponse>(new SearchResponse(null, filteredResults)));
                             } catch (Exception e) {
                                 Logger.Error(e, "Searching tracks failed for {0}.", similarArtist);
                             }

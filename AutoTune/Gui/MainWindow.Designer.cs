@@ -281,6 +281,7 @@
             // uiCurrentGroup
             // 
             this.uiCurrentGroup.Controls.Add(this.uiCurrentResult);
+            this.uiCurrentGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiCurrentGroup.Location = new System.Drawing.Point(0, 3);
             this.uiCurrentGroup.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.uiCurrentGroup.Name = "uiCurrentGroup";
