@@ -93,6 +93,7 @@ namespace AutoTune.Gui {
         internal void SetPlaying(bool playing) {
             this.playing = playing;
             uiType.Text = result.TypeId + (!playing ? "" : " (playing)");
+            BorderStyle = playing ? BorderStyle.FixedSingle : BorderStyle.None;
         }
 
         internal void SetResult(SearchResult result) {

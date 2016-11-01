@@ -67,6 +67,13 @@ namespace AutoTune.Processing {
             }
         }
 
+        internal void Randomize() {
+            lock (Lock) {
+                var random = new Random();
+                Items = new List<SearchResult>(Items.OrderBy(_ => random.NextDouble()));
+            }
+        }
+
         internal void Stopped() {
             lock (Lock) {
                 playing = false;

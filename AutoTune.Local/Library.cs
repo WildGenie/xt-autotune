@@ -103,15 +103,18 @@ namespace AutoTune.Local {
         }
 
         public static List<Artist> GetFavouriteArtistsWithoutPendingSuggestions(string localTypeId, int limit) {
+            var random = new Random();
             using (var library = new Library()) {
-                return library.Tracks
+                var result = library.Tracks
                     .Join(library.Favourites, t => t.Path, f => f.VideoId,
                         (t, f) => new { Track = t, Favourite = f })
                     .Where(tf => !library.Suggestions.Where(s => s.Artist.Id == tf.Track.Artist.Id && !s.Declined && !s.Accepted).Any())
                     .Where(tsf => tsf.Favourite.TypeId.Equals(localTypeId))
                     .Select(tsf => tsf.Track.Artist)
                     .Distinct()
-                    .OrderBy(_ => Guid.NewGuid())
+                    .ToList();
+                return result
+                    .OrderBy(_ => random.NextDouble())
                     .Take(limit)
                     .ToList();
             }

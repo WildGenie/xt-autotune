@@ -61,8 +61,9 @@
             this.uiLoadMore = new System.Windows.Forms.LinkLabel();
             this.uiSearchLocalFavouritePanel = new System.Windows.Forms.TableLayoutPanel();
             this.uiSearchFavouriteOnly = new System.Windows.Forms.CheckBox();
-            this.uiSearchLocalOnly = new System.Windows.Forms.CheckBox();
             this.uiSearchReplacePlaylist = new System.Windows.Forms.LinkLabel();
+            this.uiSearchLocalOnly = new System.Windows.Forms.CheckBox();
+            this.uiSearchUpdateLibrary = new System.Windows.Forms.LinkLabel();
             this.uiLogGroup = new System.Windows.Forms.GroupBox();
             this.uiPlaylistModePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.uiPlaylistModeRandom = new System.Windows.Forms.RadioButton();
@@ -71,8 +72,9 @@
             this.uiPlaylist = new System.Windows.Forms.FlowLayoutPanel();
             this.uiPlaylistControls = new System.Windows.Forms.TableLayoutPanel();
             this.uiPlaylistNext = new System.Windows.Forms.LinkLabel();
-            this.uiPlaylistStop = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistClear = new System.Windows.Forms.LinkLabel();
+            this.uiPlaylistRandomize = new System.Windows.Forms.LinkLabel();
+            this.uiPlaylistStop = new System.Windows.Forms.LinkLabel();
             this.uiSuggestions = new System.Windows.Forms.FlowLayoutPanel();
             this.uiSuggestionsSearchMore = new System.Windows.Forms.LinkLabel();
             this.uiSuggestionsActionsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -89,7 +91,6 @@
             this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.uiSearchUpdateLibrary = new System.Windows.Forms.LinkLabel();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -615,19 +616,6 @@
             this.uiSearchFavouriteOnly.UseVisualStyleBackColor = true;
             this.uiSearchFavouriteOnly.CheckedChanged += new System.EventHandler(this.OnSearchFavouriteOnlyCheckedChanged);
             // 
-            // uiSearchLocalOnly
-            // 
-            this.uiSearchLocalOnly.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiSearchLocalOnly.AutoSize = true;
-            this.uiSearchLocalOnly.Location = new System.Drawing.Point(83, 6);
-            this.uiSearchLocalOnly.Name = "uiSearchLocalOnly";
-            this.uiSearchLocalOnly.Size = new System.Drawing.Size(52, 17);
-            this.uiSearchLocalOnly.TabIndex = 3;
-            this.uiSearchLocalOnly.Text = "Local";
-            this.uiTooltip.SetToolTip(this.uiSearchLocalOnly, "Search local tracks only.");
-            this.uiSearchLocalOnly.UseVisualStyleBackColor = true;
-            this.uiSearchLocalOnly.CheckedChanged += new System.EventHandler(this.OnSearchLocalOnlyCheckedChanged);
-            // 
             // uiSearchReplacePlaylist
             // 
             this.uiSearchReplacePlaylist.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -641,6 +629,33 @@
             this.uiSearchReplacePlaylist.Text = "Replace playlist";
             this.uiTooltip.SetToolTip(this.uiSearchReplacePlaylist, "Replace playlist contents with search results.");
             this.uiSearchReplacePlaylist.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSearchReplacePlaylistClicked);
+            // 
+            // uiSearchLocalOnly
+            // 
+            this.uiSearchLocalOnly.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSearchLocalOnly.AutoSize = true;
+            this.uiSearchLocalOnly.Location = new System.Drawing.Point(83, 6);
+            this.uiSearchLocalOnly.Name = "uiSearchLocalOnly";
+            this.uiSearchLocalOnly.Size = new System.Drawing.Size(52, 17);
+            this.uiSearchLocalOnly.TabIndex = 3;
+            this.uiSearchLocalOnly.Text = "Local";
+            this.uiTooltip.SetToolTip(this.uiSearchLocalOnly, "Search local tracks only.");
+            this.uiSearchLocalOnly.UseVisualStyleBackColor = true;
+            this.uiSearchLocalOnly.CheckedChanged += new System.EventHandler(this.OnSearchLocalOnlyCheckedChanged);
+            // 
+            // uiSearchUpdateLibrary
+            // 
+            this.uiSearchUpdateLibrary.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiSearchUpdateLibrary.AutoSize = true;
+            this.uiSearchUpdateLibrary.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiSearchUpdateLibrary.Location = new System.Drawing.Point(143, 8);
+            this.uiSearchUpdateLibrary.Name = "uiSearchUpdateLibrary";
+            this.uiSearchUpdateLibrary.Size = new System.Drawing.Size(72, 13);
+            this.uiSearchUpdateLibrary.TabIndex = 5;
+            this.uiSearchUpdateLibrary.TabStop = true;
+            this.uiSearchUpdateLibrary.Text = "Update library";
+            this.uiTooltip.SetToolTip(this.uiSearchUpdateLibrary, "Re-scan local library.");
+            this.uiSearchUpdateLibrary.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSearchUpdateLibraryClicked);
             // 
             // uiPadLog
             // 
@@ -750,14 +765,15 @@
             // 
             // uiPlaylistControls
             // 
-            this.uiPlaylistControls.ColumnCount = 3;
+            this.uiPlaylistControls.ColumnCount = 4;
+            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.uiPlaylistControls.Controls.Add(this.uiPlaylistNext, 0, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistStop, 1, 0);
             this.uiPlaylistControls.Controls.Add(this.uiPlaylistClear, 2, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistRandomize, 2, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistStop, 1, 0);
             this.uiPlaylistControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiPlaylistControls.Location = new System.Drawing.Point(0, 0);
             this.uiPlaylistControls.Margin = new System.Windows.Forms.Padding(0);
@@ -780,19 +796,6 @@
             this.uiPlaylistNext.Text = "Next";
             this.uiPlaylistNext.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistNextClicked);
             // 
-            // uiPlaylistStop
-            // 
-            this.uiPlaylistStop.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiPlaylistStop.AutoSize = true;
-            this.uiPlaylistStop.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistStop.Location = new System.Drawing.Point(43, 8);
-            this.uiPlaylistStop.Name = "uiPlaylistStop";
-            this.uiPlaylistStop.Size = new System.Drawing.Size(29, 13);
-            this.uiPlaylistStop.TabIndex = 1;
-            this.uiPlaylistStop.TabStop = true;
-            this.uiPlaylistStop.Text = "Stop";
-            this.uiPlaylistStop.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistStopClicked);
-            // 
             // uiPlaylistClear
             // 
             this.uiPlaylistClear.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -805,6 +808,33 @@
             this.uiPlaylistClear.TabStop = true;
             this.uiPlaylistClear.Text = "Clear";
             this.uiPlaylistClear.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistClearClicked);
+            // 
+            // uiPlaylistRandomize
+            // 
+            this.uiPlaylistRandomize.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiPlaylistRandomize.AutoSize = true;
+            this.uiPlaylistRandomize.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiPlaylistRandomize.Location = new System.Drawing.Point(123, 8);
+            this.uiPlaylistRandomize.Name = "uiPlaylistRandomize";
+            this.uiPlaylistRandomize.Size = new System.Drawing.Size(60, 13);
+            this.uiPlaylistRandomize.TabIndex = 5;
+            this.uiPlaylistRandomize.TabStop = true;
+            this.uiPlaylistRandomize.Text = "Randomize";
+            this.uiTooltip.SetToolTip(this.uiPlaylistRandomize, "Randomize the playlist.");
+            this.uiPlaylistRandomize.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistRandomizeClicked);
+            // 
+            // uiPlaylistStop
+            // 
+            this.uiPlaylistStop.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiPlaylistStop.AutoSize = true;
+            this.uiPlaylistStop.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiPlaylistStop.Location = new System.Drawing.Point(43, 8);
+            this.uiPlaylistStop.Name = "uiPlaylistStop";
+            this.uiPlaylistStop.Size = new System.Drawing.Size(29, 13);
+            this.uiPlaylistStop.TabIndex = 1;
+            this.uiPlaylistStop.TabStop = true;
+            this.uiPlaylistStop.Text = "Stop";
+            this.uiPlaylistStop.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistStopClicked);
             // 
             // uiSuggestionsPanel
             // 
@@ -1065,20 +1095,6 @@
             this.uiSplitSearch.SplitterDistance = 415;
             this.uiSplitSearch.TabIndex = 6;
             // 
-            // uiSearchUpdateLibrary
-            // 
-            this.uiSearchUpdateLibrary.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiSearchUpdateLibrary.AutoSize = true;
-            this.uiSearchUpdateLibrary.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiSearchUpdateLibrary.Location = new System.Drawing.Point(143, 8);
-            this.uiSearchUpdateLibrary.Name = "uiSearchUpdateLibrary";
-            this.uiSearchUpdateLibrary.Size = new System.Drawing.Size(72, 13);
-            this.uiSearchUpdateLibrary.TabIndex = 5;
-            this.uiSearchUpdateLibrary.TabStop = true;
-            this.uiSearchUpdateLibrary.Text = "Update library";
-            this.uiTooltip.SetToolTip(this.uiSearchUpdateLibrary, "Re-scan local library.");
-            this.uiSearchUpdateLibrary.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSearchUpdateLibraryClicked);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1217,6 +1233,7 @@
         private System.Windows.Forms.LinkLabel uiSuggestionsReplacePlayist;
         private System.Windows.Forms.LinkLabel uiSuggestionsClearHistory;
         private System.Windows.Forms.LinkLabel uiSearchUpdateLibrary;
+        private System.Windows.Forms.LinkLabel uiPlaylistRandomize;
     }
 }
 

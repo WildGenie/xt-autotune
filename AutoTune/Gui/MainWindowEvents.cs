@@ -212,6 +212,16 @@ namespace AutoTune.Gui {
             SuggestionScanner.UpdateSuggestions();
         }
 
+        void OnPlaylistRandomizeClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Playlist.Instance.Randomize();
+            this.WithLayoutSuspended(() => {
+                uiPlaylist.Controls.Clear();
+                foreach (var item in Playlist.Instance.Items)
+                    AddToResultsViews(uiPlaylist, item, ResultViewType.Playlist);
+                Playlist.Instance.PlayNext();
+            });
+        }
+
         void OnResultSimilarClicked(object sender, EventArgs<SearchResult> e) {
             searchQuery = null;
             searchRelated = null;
