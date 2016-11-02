@@ -17,6 +17,7 @@ namespace AutoTune.Gui {
         internal event EventHandler<EventArgs<SearchResult>> RelatedClicked;
         internal event EventHandler<EventArgs<SearchResult>> SimilarClicked;
         internal event EventHandler<EventArgs<SearchResult>> DownloadClicked;
+        internal event EventHandler<EventArgs<SearchResult>> FavouriteChanged;
 
         bool playing;
         long clickTime;
@@ -84,6 +85,7 @@ namespace AutoTune.Gui {
             RelatedClicked = null;
             SimilarClicked = null;
             DownloadClicked = null;
+            FavouriteChanged = null;
         }
 
         void InitializeColors() {
@@ -157,6 +159,7 @@ namespace AutoTune.Gui {
             bool isFavourite = Library.IsFavourite(result?.TypeId, result?.VideoId);
             Library.SetFavourite(result?.TypeId, result?.VideoId, !isFavourite);
             SetFavouriteState(!isFavourite);
+            FavouriteChanged(this, new EventArgs<SearchResult>(result));
         }
 
         void OnImageMouseDown(object sender, MouseEventArgs e) {
@@ -181,7 +184,7 @@ namespace AutoTune.Gui {
                 doubleClick = true;
         }
 
-        void SetFavouriteState(bool favourite) {
+        internal void SetFavouriteState(bool favourite) {
             var theme = ThemeSettings.Instance;
             var back = ColorTranslator.FromHtml(favourite ? theme.BackColor3 : theme.BackColor2);
             BackColor = back;

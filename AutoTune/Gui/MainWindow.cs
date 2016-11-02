@@ -394,6 +394,7 @@ namespace AutoTune.Gui {
             view.QueueClicked += OnResultQueueClicked;
             view.RelatedClicked += OnResultRelatedClicked;
             view.SimilarClicked += OnResultSimilarClicked;
+            view.FavouriteChanged += OnResultFavouriteChanged;
             if (view.Type != ResultViewType.Suggestion)
                 view.DownloadClicked += OnResultDownloadClicked;
             else

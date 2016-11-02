@@ -211,6 +211,24 @@ namespace AutoTune.Gui {
             SuggestionScanner.UpdateSuggestions();
         }
 
+        void OnResultFavouriteChanged(object sender, EventArgs<SearchResult> e) {
+            Func<SearchResult, SearchResult, bool> same = (l, r) =>
+                l?.TypeId?.Equals(r?.TypeId) == true && l?.VideoId?.Equals(r?.VideoId) == true;
+            bool favourite = Library.IsFavourite(e.Data?.TypeId, e.Data?.VideoId);
+            this.WithLayoutSuspended(() => {
+                uiCurrentResult.SetFavouriteState(favourite);
+                foreach (var v in uiPlaylist.Controls.Cast<ResultView>())
+                    if (same(v.Result, e.Data))
+                        v.SetFavouriteState(favourite);
+                foreach (ResultView v in uiResults.Controls)
+                    if (same(v.Result, e.Data))
+                        v.SetFavouriteState(favourite);
+                foreach (ResultView v in uiSuggestions.Controls)
+                    if (same(v.Result, e.Data))
+                        v.SetFavouriteState(favourite);
+            });
+        }
+
         void OnPlaylistRandomizeClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Playlist.Instance.Randomize();
             this.WithLayoutSuspended(() => {
