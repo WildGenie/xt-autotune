@@ -71,12 +71,15 @@
             this.uiPlaylistModeAll = new System.Windows.Forms.RadioButton();
             this.uiPlaylist = new System.Windows.Forms.FlowLayoutPanel();
             this.uiPlaylistControls = new System.Windows.Forms.TableLayoutPanel();
+            this.uiPlaylistPrevious = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistNext = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistClear = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistRandomize = new System.Windows.Forms.LinkLabel();
             this.uiPlaylistStop = new System.Windows.Forms.LinkLabel();
             this.uiSuggestions = new System.Windows.Forms.FlowLayoutPanel();
+            this.uiSuggestionsFolderSearchMoreContainer = new System.Windows.Forms.TableLayoutPanel();
             this.uiSuggestionsSearchMore = new System.Windows.Forms.LinkLabel();
+            this.uiSuggestionsFromLocation = new System.Windows.Forms.ComboBox();
             this.uiSuggestionsActionsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.uiSuggestionsDownloadAll = new System.Windows.Forms.LinkLabel();
             this.uiSuggestionsRemoveAll = new System.Windows.Forms.LinkLabel();
@@ -91,7 +94,6 @@
             this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.uiPlaylistPrevious = new System.Windows.Forms.LinkLabel();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -136,6 +138,7 @@
             this.uiPlaylistControls.SuspendLayout();
             uiSuggestionsPanel.SuspendLayout();
             uiSuggestionsSearchMoreContainer.SuspendLayout();
+            this.uiSuggestionsFolderSearchMoreContainer.SuspendLayout();
             this.uiSuggestionsActionsPanel.SuspendLayout();
             this.uiLeftTabs.SuspendLayout();
             this.uiLeftTabsPlaylist.SuspendLayout();
@@ -787,6 +790,19 @@
             this.uiPlaylistControls.Size = new System.Drawing.Size(401, 30);
             this.uiPlaylistControls.TabIndex = 0;
             // 
+            // uiPlaylistPrevious
+            // 
+            this.uiPlaylistPrevious.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiPlaylistPrevious.AutoSize = true;
+            this.uiPlaylistPrevious.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiPlaylistPrevious.Location = new System.Drawing.Point(3, 8);
+            this.uiPlaylistPrevious.Name = "uiPlaylistPrevious";
+            this.uiPlaylistPrevious.Size = new System.Drawing.Size(48, 13);
+            this.uiPlaylistPrevious.TabIndex = 6;
+            this.uiPlaylistPrevious.TabStop = true;
+            this.uiPlaylistPrevious.Text = "Previous";
+            this.uiPlaylistPrevious.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistPreviousClicked);
+            // 
             // uiPlaylistNext
             // 
             this.uiPlaylistNext.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -864,14 +880,14 @@
             uiSuggestionsSearchMoreContainer.ColumnCount = 1;
             uiSuggestionsSearchMoreContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             uiSuggestionsSearchMoreContainer.Controls.Add(this.uiSuggestions, 0, 0);
-            uiSuggestionsSearchMoreContainer.Controls.Add(this.uiSuggestionsSearchMore, 0, 1);
+            uiSuggestionsSearchMoreContainer.Controls.Add(this.uiSuggestionsFolderSearchMoreContainer, 0, 1);
             uiSuggestionsSearchMoreContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             uiSuggestionsSearchMoreContainer.Location = new System.Drawing.Point(3, 63);
             uiSuggestionsSearchMoreContainer.Name = "uiSuggestionsSearchMoreContainer";
             uiSuggestionsSearchMoreContainer.RowCount = 2;
             uiSuggestionsSearchMoreContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             uiSuggestionsSearchMoreContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            uiSuggestionsSearchMoreContainer.Size = new System.Drawing.Size(395, 624);
+            uiSuggestionsSearchMoreContainer.Size = new System.Drawing.Size(395, 583);
             uiSuggestionsSearchMoreContainer.TabIndex = 5;
             // 
             // uiSuggestions
@@ -882,16 +898,32 @@
             this.uiSuggestions.Location = new System.Drawing.Point(0, 0);
             this.uiSuggestions.Margin = new System.Windows.Forms.Padding(0);
             this.uiSuggestions.Name = "uiSuggestions";
-            this.uiSuggestions.Size = new System.Drawing.Size(395, 599);
+            this.uiSuggestions.Size = new System.Drawing.Size(395, 558);
             this.uiSuggestions.TabIndex = 2;
             this.uiSuggestions.WrapContents = false;
             // 
+            // uiSuggestionsFolderSearchMoreContainer
+            // 
+            this.uiSuggestionsFolderSearchMoreContainer.ColumnCount = 2;
+            this.uiSuggestionsFolderSearchMoreContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.uiSuggestionsFolderSearchMoreContainer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.uiSuggestionsFolderSearchMoreContainer.Controls.Add(this.uiSuggestionsSearchMore, 1, 0);
+            this.uiSuggestionsFolderSearchMoreContainer.Controls.Add(this.uiSuggestionsFromLocation, 0, 0);
+            this.uiSuggestionsFolderSearchMoreContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiSuggestionsFolderSearchMoreContainer.Location = new System.Drawing.Point(0, 558);
+            this.uiSuggestionsFolderSearchMoreContainer.Margin = new System.Windows.Forms.Padding(0);
+            this.uiSuggestionsFolderSearchMoreContainer.Name = "uiSuggestionsFolderSearchMoreContainer";
+            this.uiSuggestionsFolderSearchMoreContainer.RowCount = 1;
+            this.uiSuggestionsFolderSearchMoreContainer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.uiSuggestionsFolderSearchMoreContainer.Size = new System.Drawing.Size(395, 25);
+            this.uiSuggestionsFolderSearchMoreContainer.TabIndex = 3;
+            // 
             // uiSuggestionsSearchMore
             // 
-            this.uiSuggestionsSearchMore.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.uiSuggestionsSearchMore.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiSuggestionsSearchMore.AutoSize = true;
             this.uiSuggestionsSearchMore.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiSuggestionsSearchMore.Location = new System.Drawing.Point(164, 605);
+            this.uiSuggestionsSearchMore.Location = new System.Drawing.Point(200, 6);
             this.uiSuggestionsSearchMore.Name = "uiSuggestionsSearchMore";
             this.uiSuggestionsSearchMore.Size = new System.Drawing.Size(67, 13);
             this.uiSuggestionsSearchMore.TabIndex = 3;
@@ -899,6 +931,18 @@
             this.uiSuggestionsSearchMore.Text = "Search more";
             this.uiTooltip.SetToolTip(this.uiSuggestionsSearchMore, "Search more suggestions.");
             this.uiSuggestionsSearchMore.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnSuggestionsSearchMoreClicked);
+            // 
+            // uiSuggestionsFromLocation
+            // 
+            this.uiSuggestionsFromLocation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiSuggestionsFromLocation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.uiSuggestionsFromLocation.FormattingEnabled = true;
+            this.uiSuggestionsFromLocation.Location = new System.Drawing.Point(3, 3);
+            this.uiSuggestionsFromLocation.Name = "uiSuggestionsFromLocation";
+            this.uiSuggestionsFromLocation.Size = new System.Drawing.Size(191, 21);
+            this.uiSuggestionsFromLocation.TabIndex = 4;
+            this.uiTooltip.SetToolTip(this.uiSuggestionsFromLocation, "Search more suggestions starting from favourites in this folder.");
+            this.uiSuggestionsFromLocation.DropDown += new System.EventHandler(this.OnSuggestionsFromLocationDropDown);
             // 
             // uiSuggestionsActionsPanel
             // 
@@ -1099,19 +1143,6 @@
             this.uiSplitSearch.SplitterDistance = 415;
             this.uiSplitSearch.TabIndex = 6;
             // 
-            // uiPlaylistPrevious
-            // 
-            this.uiPlaylistPrevious.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.uiPlaylistPrevious.AutoSize = true;
-            this.uiPlaylistPrevious.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistPrevious.Location = new System.Drawing.Point(3, 8);
-            this.uiPlaylistPrevious.Name = "uiPlaylistPrevious";
-            this.uiPlaylistPrevious.Size = new System.Drawing.Size(48, 13);
-            this.uiPlaylistPrevious.TabIndex = 6;
-            this.uiPlaylistPrevious.TabStop = true;
-            this.uiPlaylistPrevious.Text = "Previous";
-            this.uiPlaylistPrevious.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistPreviousClicked);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1171,7 +1202,8 @@
             uiSuggestionsPanel.ResumeLayout(false);
             uiSuggestionsPanel.PerformLayout();
             uiSuggestionsSearchMoreContainer.ResumeLayout(false);
-            uiSuggestionsSearchMoreContainer.PerformLayout();
+            this.uiSuggestionsFolderSearchMoreContainer.ResumeLayout(false);
+            this.uiSuggestionsFolderSearchMoreContainer.PerformLayout();
             this.uiSuggestionsActionsPanel.ResumeLayout(false);
             this.uiSuggestionsActionsPanel.PerformLayout();
             this.uiLeftTabs.ResumeLayout(false);
@@ -1252,6 +1284,8 @@
         private System.Windows.Forms.LinkLabel uiSearchUpdateLibrary;
         private System.Windows.Forms.LinkLabel uiPlaylistRandomize;
         private System.Windows.Forms.LinkLabel uiPlaylistPrevious;
+        private System.Windows.Forms.TableLayoutPanel uiSuggestionsFolderSearchMoreContainer;
+        private System.Windows.Forms.ComboBox uiSuggestionsFromLocation;
     }
 }
 

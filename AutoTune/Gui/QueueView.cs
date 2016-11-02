@@ -100,7 +100,7 @@ namespace AutoTune.Gui {
         List<QueueItemView> FindViews(QueueItem item) {
             return uiItems.Controls
                 .Cast<QueueItemView>()
-                .Where(v => v.item.Equals(item))
+                .Where(v => v.item?.Equals(item) == true)
                 .ToList();
         }
 

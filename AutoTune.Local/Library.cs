@@ -102,7 +102,7 @@ namespace AutoTune.Local {
             }
         }
 
-        public static List<Artist> GetFavouriteArtistsWithoutPendingSuggestions(string localTypeId, int limit) {
+        public static List<Artist> GetFavouriteArtistsWithoutPendingSuggestions(string searchFolder, string localTypeId, int limit) {
             var random = new Random();
             using (var library = new Library()) {
                 var result = library.Tracks
@@ -111,6 +111,7 @@ namespace AutoTune.Local {
                     .Where(tf => !library.Suggestions.Where(s => s.Artist.Id == tf.Track.Artist.Id && !s.Declined && !s.Accepted).Any())
                     .Where(tsf => tsf.Favourite.TypeId.Equals(localTypeId))
                     .Where(tsf => tsf.Track.Artist != null)
+                    .Where(tsf => tsf.Track.Path.StartsWith(searchFolder))
                     .Select(tsf => tsf.Track.Artist)
                     .Distinct()
                     .ToList();

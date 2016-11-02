@@ -12,6 +12,7 @@ namespace AutoTune.Local {
     static class SuggestionScanner {
 
         static bool forceUpdate = false;
+        static string searchFolder = null;
         static readonly object Lock = new object();
         public static event EventHandler<EventArgs<SearchResponse>> Suggested;
 
@@ -32,9 +33,10 @@ namespace AutoTune.Local {
             };
         }
 
-        public static void UpdateSuggestions() {
+        public static void UpdateSuggestions(string searchFolder) {
             lock (Lock) {
                 forceUpdate = true;
+                SuggestionScanner.searchFolder = searchFolder;
                 Monitor.Pulse(Lock);
             }
         }
@@ -69,9 +71,12 @@ namespace AutoTune.Local {
 
         static void Run(int delay, int interval) {
             Thread.Sleep(delay);
+            var user = UserSettings.Instance;
             while (true) {
                 try {
-                    var similarArtists = FindSimilarArtistsForFavourites();
+                    var similarArtists = FindSimilarArtistsForFavourites(searchFolder ?? user.LibraryFolder);
+                    lock (Lock)
+                        searchFolder = null;
                     if (similarArtists.Any())
                         SearchSimilarTracks(similarArtists);
                 } catch (Exception e) {
@@ -114,11 +119,11 @@ namespace AutoTune.Local {
             return SearchEngine.Search(query);
         }
 
-        static Dictionary<Artist, List<string>> FindSimilarArtistsForFavourites() {
+        static Dictionary<Artist, List<string>> FindSimilarArtistsForFavourites(string searchFolder) {
             var app = AppSettings.Instance;
             Logger.Info("Searching similar artists...");
             Dictionary<Artist, List<string>> result = new Dictionary<Artist, List<string>>();
-            var artists = Library.GetFavouriteArtistsWithoutPendingSuggestions(SearchEngine.LocalTypeId, app.SuggestionSearchArtistLimit);
+            var artists = Library.GetFavouriteArtistsWithoutPendingSuggestions(searchFolder, SearchEngine.LocalTypeId, app.SuggestionSearchArtistLimit);
             int i = 1;
             if (artists.Count == 0)
                 Logger.Info("No similar artists without pending suggestions found.");

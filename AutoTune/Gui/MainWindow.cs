@@ -140,6 +140,8 @@ namespace AutoTune.Gui {
             uiPlaylistModeAll.ForeColor = fore1;
             uiPlaylistModeTrack.ForeColor = fore1;
             uiPlaylistModeRandom.ForeColor = fore1;
+            uiSuggestionsFromLocation.BackColor = back1;
+            uiSuggestionsFromLocation.ForeColor = fore1;
             UiUtility.SetLinkForeColors(uiLoadMore);
             UiUtility.SetLinkForeColors(uiPlaylistStop);
             UiUtility.SetLinkForeColors(uiPlaylistNext);
@@ -163,6 +165,8 @@ namespace AutoTune.Gui {
         }
 
         void InitializeControls() {
+            uiSuggestionsFromLocation.Items.Add(UserSettings.Instance.LibraryFolder);
+            uiSuggestionsFromLocation.SelectedIndex = 0;
             uiSplitBrowserPlayer.Panel1Collapsed = true;
             uiSplitBrowserPlayer.Panel2Collapsed = true;
             uiBrowser = new ChromiumWebBrowser(AppSettings.EmptyHtmlFilePath);

@@ -208,7 +208,7 @@ namespace AutoTune.Gui {
         }
 
         void OnSuggestionsSearchMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            SuggestionScanner.UpdateSuggestions();
+            SuggestionScanner.UpdateSuggestions(uiSuggestionsFromLocation.SelectedItem.ToString());
         }
 
         void OnResultFavouriteChanged(object sender, EventArgs<SearchResult> e) {
@@ -226,6 +226,21 @@ namespace AutoTune.Gui {
                 foreach (ResultView v in uiSuggestions.Controls)
                     if (same(v.Result, e.Data))
                         v.SetFavouriteState(favourite);
+            });
+        }
+
+        void OnSuggestionsFromLocationDropDown(object sender, EventArgs e) {
+            string root = UserSettings.Instance.LibraryFolder;
+            List<string> allFolders = new List<string>();
+            allFolders.Add(root);
+            allFolders.AddRange(Directory.GetDirectories(root));
+            uiSuggestionsFromLocation.WithLayoutSuspended(() => {
+                foreach (var folder in allFolders)
+                    if (!uiSuggestionsFromLocation.Items.Contains(folder))
+                        uiSuggestionsFromLocation.Items.Add(folder);
+                foreach (var item in uiSuggestionsFromLocation.Items)
+                    if (!allFolders.Contains(item.ToString()))
+                        uiSuggestionsFromLocation.Items.Remove(item);
             });
         }
 
