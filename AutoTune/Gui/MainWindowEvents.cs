@@ -110,6 +110,10 @@ namespace AutoTune.Gui {
             Playlist.Instance.PlayNext();
         }
 
+        void OnPlaylistPreviousClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            Playlist.Instance.PlayPrevious();
+        }
+
         void OnPlaylistStopClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             LoadResult(null, false);
             SetPlaylistPlaying(null);

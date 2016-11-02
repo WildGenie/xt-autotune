@@ -13,6 +13,8 @@ namespace AutoTune.Processing {
     class Playlist : SettingsBase<Playlist> {
 
         private int current;
+        private int prevprev;
+        private int previous;
         private bool running;
         private bool playing;
         private bool terminated;
@@ -49,6 +51,13 @@ namespace AutoTune.Processing {
                 running = true;
                 playing = false;
                 Monitor.Pulse(Lock);
+            }
+        }
+
+        internal void PlayPrevious() {
+            lock (Lock) {
+                current = prevprev;
+                PlayNext();
             }
         }
 
@@ -121,7 +130,8 @@ namespace AutoTune.Processing {
         }
 
         SearchResult GetNext() {
-            int newCurrent;
+            prevprev = previous;
+            previous = current;
             if (current >= Items.Count || current < 0)
                 current = 0;
             var result = Items[current];
@@ -132,7 +142,7 @@ namespace AutoTune.Processing {
                     current++;
                     break;
                 case PlaylistMode.Random:
-                    newCurrent = new Random().Next(0, Items.Count);
+                    int newCurrent = new Random().Next(0, Items.Count);
                     while (newCurrent == current && Items.Count != 1)
                         newCurrent = new Random().Next(0, Items.Count);
                     current = newCurrent;

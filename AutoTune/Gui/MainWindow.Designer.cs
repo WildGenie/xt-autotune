@@ -91,6 +91,7 @@
             this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.uiPlaylistPrevious = new System.Windows.Forms.LinkLabel();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -766,15 +767,17 @@
             // 
             // uiPlaylistControls
             // 
-            this.uiPlaylistControls.ColumnCount = 4;
+            this.uiPlaylistControls.ColumnCount = 5;
+            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistNext, 0, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistClear, 2, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistRandomize, 2, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistStop, 1, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistPrevious, 0, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistNext, 1, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistClear, 3, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistRandomize, 3, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistStop, 2, 0);
             this.uiPlaylistControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiPlaylistControls.Location = new System.Drawing.Point(0, 0);
             this.uiPlaylistControls.Margin = new System.Windows.Forms.Padding(0);
@@ -789,7 +792,7 @@
             this.uiPlaylistNext.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiPlaylistNext.AutoSize = true;
             this.uiPlaylistNext.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistNext.Location = new System.Drawing.Point(3, 8);
+            this.uiPlaylistNext.Location = new System.Drawing.Point(63, 8);
             this.uiPlaylistNext.Name = "uiPlaylistNext";
             this.uiPlaylistNext.Size = new System.Drawing.Size(29, 13);
             this.uiPlaylistNext.TabIndex = 4;
@@ -802,7 +805,7 @@
             this.uiPlaylistClear.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiPlaylistClear.AutoSize = true;
             this.uiPlaylistClear.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistClear.Location = new System.Drawing.Point(83, 8);
+            this.uiPlaylistClear.Location = new System.Drawing.Point(143, 8);
             this.uiPlaylistClear.Name = "uiPlaylistClear";
             this.uiPlaylistClear.Size = new System.Drawing.Size(31, 13);
             this.uiPlaylistClear.TabIndex = 3;
@@ -815,7 +818,7 @@
             this.uiPlaylistRandomize.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiPlaylistRandomize.AutoSize = true;
             this.uiPlaylistRandomize.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistRandomize.Location = new System.Drawing.Point(123, 8);
+            this.uiPlaylistRandomize.Location = new System.Drawing.Point(183, 8);
             this.uiPlaylistRandomize.Name = "uiPlaylistRandomize";
             this.uiPlaylistRandomize.Size = new System.Drawing.Size(60, 13);
             this.uiPlaylistRandomize.TabIndex = 5;
@@ -829,7 +832,7 @@
             this.uiPlaylistStop.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.uiPlaylistStop.AutoSize = true;
             this.uiPlaylistStop.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.uiPlaylistStop.Location = new System.Drawing.Point(43, 8);
+            this.uiPlaylistStop.Location = new System.Drawing.Point(103, 8);
             this.uiPlaylistStop.Name = "uiPlaylistStop";
             this.uiPlaylistStop.Size = new System.Drawing.Size(29, 13);
             this.uiPlaylistStop.TabIndex = 1;
@@ -1096,6 +1099,19 @@
             this.uiSplitSearch.SplitterDistance = 415;
             this.uiSplitSearch.TabIndex = 6;
             // 
+            // uiPlaylistPrevious
+            // 
+            this.uiPlaylistPrevious.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiPlaylistPrevious.AutoSize = true;
+            this.uiPlaylistPrevious.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiPlaylistPrevious.Location = new System.Drawing.Point(3, 8);
+            this.uiPlaylistPrevious.Name = "uiPlaylistPrevious";
+            this.uiPlaylistPrevious.Size = new System.Drawing.Size(48, 13);
+            this.uiPlaylistPrevious.TabIndex = 6;
+            this.uiPlaylistPrevious.TabStop = true;
+            this.uiPlaylistPrevious.Text = "Previous";
+            this.uiPlaylistPrevious.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistPreviousClicked);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1235,6 +1251,7 @@
         private System.Windows.Forms.LinkLabel uiSuggestionsClearHistory;
         private System.Windows.Forms.LinkLabel uiSearchUpdateLibrary;
         private System.Windows.Forms.LinkLabel uiPlaylistRandomize;
+        private System.Windows.Forms.LinkLabel uiPlaylistPrevious;
     }
 }
 
