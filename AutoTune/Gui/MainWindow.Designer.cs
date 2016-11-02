@@ -94,6 +94,7 @@
             this.uiSplitNotifications = new System.Windows.Forms.SplitContainer();
             this.uiSplitSearch = new System.Windows.Forms.SplitContainer();
             this.uiTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.uiPlaylistDump = new System.Windows.Forms.LinkLabel();
             uiSplitPlayerToggleSearch = new System.Windows.Forms.SplitContainer();
             uiSplitPlayerToggleNotications = new System.Windows.Forms.SplitContainer();
             uiNotificationsPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -770,17 +771,19 @@
             // 
             // uiPlaylistControls
             // 
-            this.uiPlaylistControls.ColumnCount = 5;
+            this.uiPlaylistControls.ColumnCount = 6;
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
             this.uiPlaylistControls.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.uiPlaylistControls.Controls.Add(this.uiPlaylistPrevious, 0, 0);
             this.uiPlaylistControls.Controls.Add(this.uiPlaylistNext, 1, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistClear, 3, 0);
-            this.uiPlaylistControls.Controls.Add(this.uiPlaylistRandomize, 3, 0);
             this.uiPlaylistControls.Controls.Add(this.uiPlaylistStop, 2, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistDump, 5, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistRandomize, 4, 0);
+            this.uiPlaylistControls.Controls.Add(this.uiPlaylistClear, 3, 0);
             this.uiPlaylistControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uiPlaylistControls.Location = new System.Drawing.Point(0, 0);
             this.uiPlaylistControls.Margin = new System.Windows.Forms.Padding(0);
@@ -1143,6 +1146,20 @@
             this.uiSplitSearch.SplitterDistance = 415;
             this.uiSplitSearch.TabIndex = 6;
             // 
+            // uiPlaylistDump
+            // 
+            this.uiPlaylistDump.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.uiPlaylistDump.AutoSize = true;
+            this.uiPlaylistDump.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.uiPlaylistDump.Location = new System.Drawing.Point(253, 8);
+            this.uiPlaylistDump.Name = "uiPlaylistDump";
+            this.uiPlaylistDump.Size = new System.Drawing.Size(35, 13);
+            this.uiPlaylistDump.TabIndex = 7;
+            this.uiPlaylistDump.TabStop = true;
+            this.uiPlaylistDump.Text = "Dump";
+            this.uiTooltip.SetToolTip(this.uiPlaylistDump, "Copy all local playlist files to playlist dump folder.");
+            this.uiPlaylistDump.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnPlaylistDumpClicked);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1286,6 +1303,7 @@
         private System.Windows.Forms.LinkLabel uiPlaylistPrevious;
         private System.Windows.Forms.TableLayoutPanel uiSuggestionsFolderSearchMoreContainer;
         private System.Windows.Forms.ComboBox uiSuggestionsFromLocation;
+        private System.Windows.Forms.LinkLabel uiPlaylistDump;
     }
 }
 

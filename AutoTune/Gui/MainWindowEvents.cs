@@ -9,6 +9,7 @@ using System;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace AutoTune.Gui {
 
@@ -251,6 +252,22 @@ namespace AutoTune.Gui {
                 foreach (var item in Playlist.Instance.Items)
                     AddToResultsViews(uiPlaylist, item, ResultViewType.Playlist);
                 Playlist.Instance.PlayNext();
+            });
+        }
+
+        void OnPlaylistDumpClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            var user = UserSettings.Instance;
+            List<SearchResult> results = uiPlaylist.Controls
+                .Cast<ResultView>()
+                .Select(v => v.Result)
+                .Where(v => v.Local)
+                .ToList();
+            ThreadPool.QueueUserWorkItem(_ => {
+                for (int i = 0; i < results.Count; i++) {
+                    string fileName = Path.GetFileName(results[i].VideoId);
+                    File.Copy(results[i].VideoId, Path.Combine(user.PlaylistDumpFolder, fileName), true);
+                    Logger.Info("Copying playlistfile {0} of {1}: {2}.", i + 1, results.Count, fileName);
+                }
             });
         }
 

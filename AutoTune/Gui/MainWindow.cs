@@ -145,6 +145,7 @@ namespace AutoTune.Gui {
             UiUtility.SetLinkForeColors(uiLoadMore);
             UiUtility.SetLinkForeColors(uiPlaylistStop);
             UiUtility.SetLinkForeColors(uiPlaylistNext);
+            UiUtility.SetLinkForeColors(uiPlaylistDump);
             UiUtility.SetLinkForeColors(uiPlaylistClear);
             UiUtility.SetLinkForeColors(uiPlaylistPrevious);
             UiUtility.SetLinkForeColors(uiPlaylistRandomize);

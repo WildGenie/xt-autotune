@@ -24,6 +24,7 @@ namespace AutoTune.Settings {
         internal string TempFolder { get; set; } = Path.Combine(GetFolderPath(), "temp");
         internal string TargetFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
         internal string LibraryFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+        internal string PlaylistDumpFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "AutoTunePlaylist");
 
         [YAXDictionary(EachPairName = "Provider", KeyName = "Id", ValueName = "Credentials", SerializeKeyAs = YAXNodeTypes.Attribute)]
         internal Dictionary<string, SearchCredentials> Credentials { get; set; } = new Dictionary<string, SearchCredentials>() {
@@ -40,6 +41,7 @@ namespace AutoTune.Settings {
             Directory.CreateDirectory(Instance.LibraryFolder);
             Directory.CreateDirectory(Instance.ProcessFolder);
             Directory.CreateDirectory(Instance.DownloadFolder);
+            Directory.CreateDirectory(Instance.PlaylistDumpFolder);
         }
     }
 }
