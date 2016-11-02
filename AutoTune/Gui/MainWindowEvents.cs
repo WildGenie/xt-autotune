@@ -103,7 +103,7 @@ namespace AutoTune.Gui {
 
         void OnPlaylistClearClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Playlist.Instance.Clear();
-            uiPlaylist.Controls.Clear();
+            UiUtility.ClearContainer<ResultView>(uiPlaylist);
         }
 
         void OnPlaylistNextClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -156,7 +156,7 @@ namespace AutoTune.Gui {
         }
 
         void OnSuggestionsClearHistoryClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            uiSuggestions.Controls.Clear();
+            UiUtility.ClearContainer<ResultView>(uiSuggestions);
             Library.ForgetSuggestions();
         }
 
@@ -204,7 +204,7 @@ namespace AutoTune.Gui {
 
         void OnSuggestionsIgnoreAllClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Library.ClearOpenSuggestions();
-            uiSuggestions.Controls.Clear();
+            UiUtility.ClearContainer<ResultView>(uiSuggestions);
         }
 
         void OnSuggestionsSearchMoreClicked(object sender, LinkLabelLinkClickedEventArgs e) {
@@ -214,7 +214,7 @@ namespace AutoTune.Gui {
         void OnPlaylistRandomizeClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Playlist.Instance.Randomize();
             this.WithLayoutSuspended(() => {
-                uiPlaylist.Controls.Clear();
+                UiUtility.ClearContainer<ResultView>(uiPlaylist);
                 foreach (var item in Playlist.Instance.Items)
                     AddToResultsViews(uiPlaylist, item, ResultViewType.Playlist);
                 Playlist.Instance.PlayNext();
@@ -224,17 +224,17 @@ namespace AutoTune.Gui {
         void OnResultSimilarClicked(object sender, EventArgs<SearchResult> e) {
             searchQuery = null;
             searchRelated = null;
-            uiResults.Controls.Clear();
+            UiUtility.ClearContainer<ResultView>(uiResults);
             uiLeftTabs.SelectedIndex = TabIndexSuggestions;
             Library.ClearOpenSuggestions();
-            uiSuggestions.Controls.Clear();
+            UiUtility.ClearContainer<ResultView>(uiSuggestions);
             SuggestionScanner.SearchSimilar(e.Data.Title, HandleSuggestions);
         }
 
         void OnResultRelatedClicked(object sender, EventArgs<SearchResult> e) {
             searchQuery = null;
             searchRelated = e.Data;
-            uiResults.Controls.Clear();
+            UiUtility.ClearContainer<ResultView>(uiResults);
             uiLeftTabs.SelectedIndex = TabIndexSearch;
             SearchCredentials searchCredentials;
             var pageSize = AppSettings.Instance.SearchPageSize;

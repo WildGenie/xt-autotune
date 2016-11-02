@@ -27,6 +27,15 @@ namespace AutoTune.Shared {
                 return Image.FromStream(stream);
         }
 
+        internal static void ClearContainer<T>(Control container)
+            where T : Control {
+            container.WithLayoutSuspended(() => {
+                foreach (T t in container.Controls)
+                    t.Dispose();
+                container.Controls.Clear();
+            });
+        }
+
         public static void WithLayoutSuspended(this Control control, Action action) {
             try {
                 control.SuspendLayout();

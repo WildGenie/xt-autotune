@@ -63,14 +63,16 @@ namespace AutoTune.Gui {
 
         void OnClearQueueClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             queue.Clear();
-            uiItems.Controls.Clear();
+            UiUtility.ClearContainer<QueueItemView>(uiItems);
         }
 
         void OnHideCompletedClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             var controls = uiItems.Controls.Cast<QueueItemView>().ToList();
             foreach (var v in controls)
-                if (QueueItemView.Done.Equals(v.State))
+                if (QueueItemView.Done.Equals(v.State)) {
+                    v.Dispose();
                     uiItems.Controls.Remove(v);
+                }
         }
 
         void OnCompleted(object sender, EventArgs<QueueItem> e) {

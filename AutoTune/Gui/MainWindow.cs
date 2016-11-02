@@ -272,7 +272,7 @@ namespace AutoTune.Gui {
         void ReplacePlaylist(FlowLayoutPanel container) {
             Playlist.Instance.Clear();
             this.WithLayoutSuspended(() => {
-                uiPlaylist.Controls.Clear();
+                UiUtility.ClearContainer<ResultView>(uiPlaylist);
                 foreach (var view in container.Controls)
                     AddToPlaylist(((ResultView)view).Result);
                 uiLeftTabs.SelectedIndex = TabIndexPlaylist;
@@ -308,7 +308,7 @@ namespace AutoTune.Gui {
 
         void StartSearch() {
             var ui = UiSettings.Instance;
-            uiResults.Controls.Clear();
+            UiUtility.ClearContainer<ResultView>(uiResults);
             searchRelated = null;
             searchQuery = uiQuery.Text.Trim();
             UiSettings.Instance.LastSearch = searchQuery;
@@ -405,18 +405,21 @@ namespace AutoTune.Gui {
         }
 
         void RemoveFromPlaylist(ResultView view) {
+            view.Dispose();
             uiPlaylist.Controls.Remove(view);
             Playlist.Instance.Remove(view.Result);
         }
 
         void AcceptSuggestion(ResultView view) {
             Library.HandleSuggestion(view.Result.TypeId, view.Result.VideoId, true);
+            view.Dispose();
             uiSuggestions.Controls.Remove(view);
             DownloadResult(view.Result);
         }
 
         void DeclineSuggestion(ResultView view) {
             Library.HandleSuggestion(view.Result.TypeId, view.Result.VideoId, false);
+            view.Dispose();
             uiSuggestions.Controls.Remove(view);
         }
 

@@ -39,6 +39,7 @@ namespace AutoTune.Gui {
                 return;
             InitializeColors();
             Resize += OnResize;
+            Disposed += OnDisposed;
             switch (type) {
                 case ResultViewType.Search:
                     uiTooltip.SetToolTip(uiImage, "Click to queue, double-click to play.");
@@ -68,6 +69,23 @@ namespace AutoTune.Gui {
             SetResult(Result);
         }
 
+        void OnResize(object sender, EventArgs e) {
+            uiText.Width = Width - uiText.Left;
+        }
+
+        long CurrentMillis() {
+            return (long)(DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds;
+        }
+
+        void OnDisposed(object sender, EventArgs e) {
+            PlayClicked = null;
+            QueueClicked = null;
+            RemoveClicked = null;
+            RelatedClicked = null;
+            SimilarClicked = null;
+            DownloadClicked = null;
+        }
+
         void InitializeColors() {
             var theme = ThemeSettings.Instance;
             var back2 = ColorTranslator.FromHtml(theme.BackColor2);
@@ -85,15 +103,7 @@ namespace AutoTune.Gui {
             UiUtility.SetLinkForeColors(uiSimilar);
             UiUtility.SetLinkForeColors(uiDownload);
             UiUtility.SetLinkForeColors(uiToggleFavourite);
-        }
-
-        void OnResize(object sender, EventArgs e) {
-            uiText.Width = Width - uiText.Left;
-        }
-
-        long CurrentMillis() {
-            return (long)(DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds;
-        }
+        }        
 
         internal void SetPlaying(bool playing) {
             this.playing = playing;
