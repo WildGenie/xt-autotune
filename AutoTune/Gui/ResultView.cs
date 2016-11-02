@@ -97,9 +97,13 @@ namespace AutoTune.Gui {
 
         internal void SetPlaying(bool playing) {
             this.playing = playing;
-            uiPlayingIndicatorTop.Visible = playing;
-            uiPlayingIndicatorBottom.Visible = playing;
-            uiType.Text = result.TypeId + (!playing ? "" : " (playing)");
+            Parent.WithLayoutSuspended(() => {
+                uiPlayingIndicatorTop.Visible = playing;
+                uiPlayingIndicatorBottom.Visible = playing;
+                uiType.Text = result.TypeId + (!playing ? "" : " (playing)");
+                if (playing)
+                    ((FlowLayoutPanel)Parent).ScrollControlIntoView(this);
+            });
         }
 
         internal void SetResult(SearchResult result) {
