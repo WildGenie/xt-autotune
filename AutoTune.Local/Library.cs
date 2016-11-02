@@ -110,6 +110,7 @@ namespace AutoTune.Local {
                         (t, f) => new { Track = t, Favourite = f })
                     .Where(tf => !library.Suggestions.Where(s => s.Artist.Id == tf.Track.Artist.Id && !s.Declined && !s.Accepted).Any())
                     .Where(tsf => tsf.Favourite.TypeId.Equals(localTypeId))
+                    .Where(tsf => tsf.Track.Artist != null)
                     .Select(tsf => tsf.Track.Artist)
                     .Distinct()
                     .ToList();
